@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+    <title>login</title>
+</head>
+<body>
+    <form action="/accounts/login/" method="post">
+        {% csrf_token %}
+        Username<input type="text" name="username" required="required"><br>
+        Password<input type="password" name="password" required="required">
+        <input type="submit" name="ENTER">
+    </form>
+    <div>
+        {% for message in messages %}
+            <bold>{{ ms }}</bold>
+        {% endfor %}
+    </div>
+</body>
+</html>

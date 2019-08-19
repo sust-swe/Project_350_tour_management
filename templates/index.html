@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+    <title>index</title>
+</head>
+<body>
+
+
+{% if msg != 'logged in' %}
+
+    <a href="/accounts/register/">REGISTER</a>
+    <a href="/accounts/login/">LOGIN</a>
+
+
+{% else %}
+    <h1>{{ msg }}</h1>
+    <form action="/" method="get">
+        <input type="submit" value="logout">
+    </form>
+
+{% endif %}
+
+</body>
+</html>
