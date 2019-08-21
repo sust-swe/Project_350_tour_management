@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from homepage.models import Place
+from homepage.models import City
 
 # Create your models here.
 
@@ -16,7 +16,7 @@ class AvailableGuide(models.Model):
     guide = models.ForeignKey(Guide, on_delete=models.CASCADE)
     avail_from = models.DateField()
     avail_to = models.DateField()
-    place = models.ForeignKey(Place, on_delete=models.CASCADE)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
     rent_per_day = models.FloatField()
 
 

@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'v%9)h#b(r_3f*6n=zhn0qh3qe_1zwf8bbi_819k_#8t!w^hvfp'
+SECRET_KEY = 'gb=dppy4d6nfy+*09*cdg9z74mr)_3b6ya*_sa7&&c9v(vuy=r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,11 +31,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'guide.apps.GuideConfig',
-    'restaurant.apps.RestaurantConfig',
-    'residence.apps.ResidenceConfig',
     'accounts.apps.AccountsConfig',
+    'guide.apps.GuideConfig',
     'homepage.apps.HomepageConfig',
+    'residence.apps.ResidenceConfig',
+    'restaurant.apps.RestaurantConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,12 +54,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'bravo1.urls'
+ROOT_URLCONF = 'DjangoAdmin.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,7 +86,6 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': 'localhost'
-
     }
 }
 
@@ -127,7 +127,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
@@ -136,3 +135,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'assets')  # python manage.py collectstatic
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# pip install Pillow
+# config url.py
+# config settings database
+# python manage.py collectstatic
+# pip install psycopg2
