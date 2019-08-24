@@ -11,14 +11,14 @@ class City(models.Model):
     ]
 
     country = models.CharField(max_length=3, choices=countries)
-    state = models.CharField(max_length=255, null=True)
+    state = models.CharField(max_length=255, blank=True)
     district = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='CityPhoto', null=True)
+    img = models.ImageField(upload_to='CityPhoto', null=True, blank=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['country', 'state', 'district', 'city'], name='primary constraint')
+            models.UniqueConstraint(fields=['country', 'state', 'district', 'city'], name='uniqcon')
         ]
 
     def __str__(self):
@@ -28,17 +28,40 @@ class City(models.Model):
 class Contact(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     address = models.CharField(max_length=255)
-    mobile = models.IntegerField(null=True)
-    email = models.EmailField()
+    mobile = models.IntegerField()
 
     class Meta:
+        abstract = True
         constraints = [
-            models.UniqueConstraint(fields=['mobile'], name='unique mobile'),
-            models.UniqueConstraint(fields=['email'], name='unique email')
+            models.UniqueConstraint(fields=['mobile'], name='unique mobile')
         ]
 
     def __str__(self):
-        return '%s %s %s %s' % (self.city.__str__(), self.address.__str__(), str(self.mobile), self.email)
+        return '%s %s %s' % (self.city.__str__(), self.address.__str__(), str(self.mobile))
+
+
+class UserDetail(Contact):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    img = models.ImageField(upload_to='UserDetailPhoto', null=True, blank=True)
+
+    def __str__(self):
+        return '%s' % self.user.username
+
+
+class MyChoice:
+    MyDays = [
+        ('mo', 'Monday'), ('tu', 'Tuesday'), ('we', 'Wednesday'), ('th', 'Thursday'),
+        ('fr', 'Friday'), ('sa', 'Saturday'), ('su', 'Sunday')
+    ]
+
+    MyDayTime = [
+        ('mo', 'Morning'), ('no', 'Noon'), ('af', 'Afternoon'), ('ev', 'Evening'), ('ni', 'Night')
+    ]
+
+    Eating_time = [
+        ('b', 'Breakfast'), ('l', 'Lunch'), ('d', 'Dinner'), ('a', 'all time')
+    ]
+
 
 '''
 class MyUser(models.Model):

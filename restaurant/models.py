@@ -1,70 +1,81 @@
 from django.db import models
 from django.contrib.auth.models import User
-from homepage.models import City
+from django.db.models import Q
+
+from homepage.models import City, UserDetail, Contact, MyChoice
 
 # Create your models here.
 
 
-class Restaurant(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    restaurant_name = models.CharField(max_length=200)
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
-    address = models.CharField(max_length=255)
-
-    class Meta:
-        pass
+class RestaurantOwner(models.Model):
+    user_detail = models.OneToOneField(UserDetail, on_delete=models.CASCADE, primary_key=True)
+    description = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return '%s at %s in ' % (self.restaurant_name, self.address) + self.city.__str__()
+        return self.user_detail.__str__()
 
 
-class Food(models.Model):
-    available_times = [
-        ('b', 'Breakfast'), ('l', 'Lunch'), ('d', 'Dinner')
-    ]
-    food_name = models.CharField(max_length=200)
-    img = models.ImageField(upload_to='FoodPhoto', null=True)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    price = models.FloatField()
-    person = models.IntegerField(default=1)
-    available_at_time = models.CharField(max_length=1, choices=available_times)
+class Restaurant(Contact):
+    restaurant_owner = models.ForeignKey(RestaurantOwner, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=255)
+    img = models.ImageField(upload_to='RestaurantPhoto', null=True, blank=True)
+    open_from_day = models.CharField(max_length=2, choices=MyChoice.MyDays)
+    open_to_day = models.CharField(max_length=2, choices=MyChoice.MyDays)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['restaurant', 'food_name'], name='unique food in restaurant')
+            models.UniqueConstraint(fields=['name', 'city'], name='unique restaurant in city')
         ]
 
     def __str__(self):
-        return '%s in -> ' % self.food_name + self.restaurant.__str__()
+        return '%s in %s' % (self.name, self.city.__str__())
 
 
-class Order(models.Model):
+class Food(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    img = models.ImageField(upload_to='FoodPhoto', null=True, blank=True)
+    price = models.FloatField()
+    person = models.PositiveIntegerField(default=1)
+    available_at_time = models.CharField(max_length=1, choices=MyChoice.Eating_time)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['restaurant', 'name'], name='unique food in restaurant'),
+            models.CheckConstraint(check=Q(price__gte=0), name='non-negative food price')
+        ]
+
+    def __str__(self):
+        return '%s serves %s' % (self.restaurant.__str__(), self.name)
+
+
+class Orders(models.Model):
+    customer = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
     total_amount = models.FloatField()
     order_time = models.DateTimeField()
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['restaurant', 'customer', 'order_time'], name='primary constraint')
+            models.UniqueConstraint(fields=['customer', 'order_time'], name='order primary constraint')
         ]
+        ordering = ['-order_time', 'customer']
 
     def __str__(self):
-        return self.restaurant.__str__() + ' serves %s at time %s' % (self.customer.username, str(self.order_time))
+        return '%s at %s' % (self.customer.__str__(), str(self.order_time))
 
 
 class OrderDetail(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    orders = models.ForeignKey(Orders, on_delete=models.CASCADE)
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['order', 'food'], name='primary constraint')
+            models.UniqueConstraint(fields=['orders', 'food'], name='order has unique food')
         ]
 
     def __str__(self):
-        return self.order.__str__() + ' item %s ' % self.food.food_name
+        return '%s contains %s' % (self.orders, self.food)
 
 
 '''
