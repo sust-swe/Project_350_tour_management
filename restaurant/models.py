@@ -1,42 +1,33 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q
-
-from homepage.models import City, UserDetail, Contact, MyChoice
+from homepage.models import City, UserDetail, Address, MyChoice
 
 # Create your models here.
 
 
-class RestaurantOwner(models.Model):
-    user_detail = models.OneToOneField(UserDetail, on_delete=models.CASCADE, primary_key=True)
-    description = models.CharField(max_length=255, null=True, blank=True)
-
-    def __str__(self):
-        return self.user_detail.__str__()
-
-
-class Restaurant(Contact):
-    restaurant_owner = models.ForeignKey(RestaurantOwner, on_delete=models.CASCADE, null=True)
+class Restaurant(Address):
+    user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='RestaurantPhoto', null=True, blank=True)
-    open_from_day = models.CharField(max_length=2, choices=MyChoice.MyDays)
-    open_to_day = models.CharField(max_length=2, choices=MyChoice.MyDays)
+    mobile = models.IntegerField(default=None, null=True, blank=True)
+    description = models.CharField(max_length=255, null=True, blank=True)
+    img = models.ImageField(upload_to='RestaurantPhoto', null=True, blank=True, default=None)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['name', 'city'], name='unique restaurant in city')
+            models.UniqueConstraint(fields=['user_detail', 'name', 'city'], name='user\'s unique restaurant in city')
         ]
 
     def __str__(self):
-        return '%s in %s' % (self.name, self.city.__str__())
+        return '%s\'s %s in %s' % (self.user_detail, self.name, self.city.__str__())
 
 
 class Food(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='FoodPhoto', null=True, blank=True)
+    img = models.ImageField(upload_to='FoodPhoto', null=True, blank=True, default=None)
     price = models.FloatField()
-    person = models.PositiveIntegerField(default=1)
+    person = models.PositiveIntegerField(default=1, blank=True)
     available_at_time = models.CharField(max_length=1, choices=MyChoice.Eating_time)
 
     class Meta:
@@ -58,7 +49,7 @@ class Orders(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['customer', 'order_time'], name='order primary constraint')
         ]
-        ordering = ['-order_time', 'customer']
+        ordering = ['-order_time']
 
     def __str__(self):
         return '%s at %s' % (self.customer.__str__(), str(self.order_time))
@@ -67,7 +58,7 @@ class Orders(models.Model):
 class OrderDetail(models.Model):
     orders = models.ForeignKey(Orders, on_delete=models.CASCADE)
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    quantity = models.IntegerField()
 
     class Meta:
         constraints = [

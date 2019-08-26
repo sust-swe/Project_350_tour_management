@@ -11,38 +11,39 @@ class City(models.Model):
     ]
 
     country = models.CharField(max_length=3, choices=countries)
-    state = models.CharField(max_length=255, blank=True)
+    state = models.CharField(max_length=255, blank=True, default=None, null=True)
     district = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='CityPhoto', null=True, blank=True)
+    img = models.ImageField(upload_to='CityPhoto', null=True, blank=True, default=None)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['country', 'state', 'district', 'city'], name='uniqcon')
+            models.UniqueConstraint(fields=['country', 'state', 'district', 'city'], name='unique city')
         ]
 
     def __str__(self):
         return '%s %s %s %s' % (self.country, self.state, self.district, self.city)
 
 
-class Contact(models.Model):
+class Address(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     address = models.CharField(max_length=255)
-    mobile = models.IntegerField()
 
     class Meta:
         abstract = True
-        constraints = [
-            models.UniqueConstraint(fields=['mobile'], name='unique mobile')
-        ]
 
     def __str__(self):
-        return '%s %s %s' % (self.city.__str__(), self.address.__str__(), str(self.mobile))
+        return '%s %s' % (self.city.__str__(), self.address.__str__())
 
 
-class UserDetail(Contact):
+class UserDetail(Address):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    img = models.ImageField(upload_to='UserDetailPhoto', null=True, blank=True)
+    mobile = models.IntegerField(default=None, null=True, blank=True)
+    img = models.ImageField(upload_to='UserDetailPhoto', null=True, blank=True, default=None)
+    description = models.TextField(max_length=255, default=None, null=True, blank=True)
+    restaurant_description = models.CharField(max_length=255, default=None, null=True, blank=True)
+    residence_description = models.CharField(max_length=255, default=None, null=True, blank=True)
+    guide_description = models.CharField(max_length=255, default=None, null=True, blank=True)
 
     def __str__(self):
         return '%s' % self.user.username

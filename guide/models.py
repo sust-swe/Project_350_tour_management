@@ -1,18 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Q
-from homepage.models import City
-from homepage.models import City, UserDetail
+from django.db.models import Q, F
+from homepage.models import City, UserDetail, Address
 
 # Create your models here.
 
 
 class Guide(models.Model):
-    user_detail = models.OneToOneField(UserDetail, on_delete=models.CASCADE, primary_key=True)
-    description = models.CharField(max_length=255, null=True, blank=True, default=None)
+    user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
+    name = models.CharField(max_length=40)
+    mobile = models.IntegerField()
+    img = models.ImageField(upload_to='GuidePhoto', default=None, null=True, blank=True)
+    description = models.CharField(max_length=255, default=None, null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user_detail', 'name'], name='users unique guide'),
+            models.UniqueConstraint(fields=['mobile'], name='guides unique mobile')
+        ]
 
     def __str__(self):
-        return self.user_detail.__str__()
+        return '%s from %s' % (self.name, self.user_detail)
 
 
 class GuideAvailable(models.Model):
@@ -26,7 +34,8 @@ class GuideAvailable(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['guide', 'avail_from'], name='unique from'),
             models.UniqueConstraint(fields=['guide', 'avail_to'], name='unique to'),
-            models.CheckConstraint(check=Q(rent_per_day__gte=0), name='positive rent')
+            models.CheckConstraint(check=Q(rent_per_day__gte=0), name='positive rent'),
+            models.CheckConstraint(check=Q(avail_from__lte=F('avail_to')), name='valid date span')
         ]
 
     def __str__(self):
@@ -45,7 +54,8 @@ class GuideBooking(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['guide', 'book_from'], name='uc1'),
             models.UniqueConstraint(fields=['guide', 'book_to'], name='uc2'),
-            models.CheckConstraint(check=Q(total_rent__gte=0), name='positive total')
+            models.CheckConstraint(check=Q(total_rent__gte=0), name='positive total'),
+            models.CheckConstraint(check=Q(book_from__lte=F('book_to')), name='gb valid date span')
         ]
 
     def __str__(self):
