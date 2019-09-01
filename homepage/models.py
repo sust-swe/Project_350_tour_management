@@ -26,8 +26,8 @@ class City(models.Model):
 
 
 class Address(models.Model):
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
-    address = models.CharField(max_length=255)
+    city = models.ForeignKey(City, on_delete=models.CASCADE, null=True, default=None, blank=True)
+    address = models.CharField(max_length=255, null=True, default=None, blank=True)
 
     class Meta:
         abstract = True
@@ -38,7 +38,7 @@ class Address(models.Model):
 
 class UserDetail(Address):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    mobile = models.IntegerField(default=None, null=True, blank=True)
+    mobile = models.CharField(max_length=15, default=None, null=True, blank=True)
     img = models.ImageField(upload_to='UserDetailPhoto', null=True, blank=True, default=None)
     description = models.TextField(max_length=255, default=None, null=True, blank=True)
     restaurant_description = models.CharField(max_length=255, default=None, null=True, blank=True)

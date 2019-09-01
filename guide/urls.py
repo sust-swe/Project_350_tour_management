@@ -6,9 +6,7 @@ from . import views
 
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    # path('', include('homepage.urls')),
-    # path('login/', views.login, name='login')
+    path('', views.register, name='aha')
 ]
 
 # urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

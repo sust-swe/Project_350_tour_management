@@ -7,7 +7,7 @@ from homepage.models import City, UserDetail, Address, MyChoice
 
 
 class Restaurant(Address):
-    user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE, null=True)
+    user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     mobile = models.IntegerField(default=None, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)

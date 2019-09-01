@@ -1,0 +1,35 @@
+
+{% load crispy_forms_tags %}
+{% load static %}
+{% static "images" as statimgsrc %}
+<!DOCTYPE>
+<html lang="en">
+<head>
+    {% block content_1 %}<title>base</title> {% endblock %}
+</head>
+
+<body>
+
+{% block content_2 %} {% endblock %}
+
+<div>
+
+{% for ms in messages %}
+    <bold>{{ ms }}</bold>
+{% endfor %}
+
+<p>
+{% if request.user.is_authenticated %}
+    Hi
+    <a href="/homepage/userdetail/">{{ request.user.first_name }}</a> <br>
+    <a href="/accounts/logout/">Logout</a>
+{% else %}
+    <a href="/accounts/register/">Register</a> OR
+    <a href="/accounts/login/">Login</a>
+{% endif %}
+</p>
+
+</div>
+
+</body>
+</html>

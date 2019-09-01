@@ -5,7 +5,11 @@ from .models import Restaurant, Food
 class RestaurantForm(forms.ModelForm):
     class Meta:
         model = Restaurant
-        fields = ['name', 'mobile', 'description', 'img']
+        fields = ['name', 'city', 'address', 'mobile', 'description', 'img', ]
+        labels = {
+            'name': 'Restaurant Name', 'city': 'City', 'address': 'Address',
+            'mobile': 'Mobile No', 'description': 'Description', 'img': 'Photo'
+        }
 
 
 class FoodForm(forms.ModelForm):
