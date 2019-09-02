@@ -58,8 +58,6 @@ def my_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        print(username)
-        print(password)
         current_user = authenticate(request, username=username, password=password)
         print(type(current_user))
         if current_user is None:

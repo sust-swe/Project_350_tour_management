@@ -15,11 +15,11 @@ class Restaurant(Address):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user_detail', 'name', 'city'], name='user\'s unique restaurant in city')
+            models.UniqueConstraint(fields=['user_detail', 'name'], name='user\'s unique restaurant')
         ]
 
     def __str__(self):
-        return '%s\'s %s in %s' % (self.user_detail, self.name, self.city.__str__())
+        return self.name
 
 
 class Food(models.Model):

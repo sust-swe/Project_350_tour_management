@@ -3,6 +3,8 @@ from .models import Restaurant, Food
 
 
 class RestaurantForm(forms.ModelForm):
+    description = forms.CharField(max_length=255, widget=forms.TextInput(), required=False)
+
     class Meta:
         model = Restaurant
         fields = ['name', 'city', 'address', 'mobile', 'description', 'img', ]

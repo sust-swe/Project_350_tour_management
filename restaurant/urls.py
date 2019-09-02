@@ -6,11 +6,10 @@ from . import views
 
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    # path('', include('homepage.urls')),
-    # path('login/', views.login, name='login')
     path('myrestaurant/', views.my_restaurant, name='my restaurant'),
     path('addres/', views.add_restaurant, name='add restaurants'),
+    path('detail/<slug:restaurant_name>/', views.restaurant_detail, name='restaurant detail'),
 ]
+
 
 # urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -21,7 +21,8 @@
 <p>
 {% if request.user.is_authenticated %}
     Hi
-    <a href="/homepage/userdetail/">{{ request.user.first_name }}</a> <br>
+    <a href="/profile/">{{ request.user.username }}</a> <br>
+    <a href="/home/">My Home</a> <br>
     <a href="/accounts/logout/">Logout</a>
 {% else %}
     <a href="/accounts/register/">Register</a> OR
