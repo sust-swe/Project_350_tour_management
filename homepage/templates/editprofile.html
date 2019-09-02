@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content_1 %}
+    <title>Edit Detail</title>
+{% endblock %}
+
+{% block content_2 %}
+    <form method="post">
+    {% csrf_token %}
+<div class="fieldWrapper">
+    {{ user_form.first_name.errors }}
+    {{ user_form.first_name.label_tag }}
+    {{ user_form.first_name }}
+</div>
+    <div class="fieldWrapper">
+    {{ user_form.last_name.errors }}
+    {{ user_form.last_name.label_tag }}
+    {{ user_form.last_name }}
+</div>
+    <div class="fieldWrapper">
+    {{ user_form.email.errors }}
+    {{ user_form.email.label_tag }}
+    {{ user_form.email }}
+</div>
+    <div class="fieldWrapper">
+    {{ user_detail_form.mobile.errors }}
+    {{ user_detail_form.mobile.label_tag }}
+    {{ user_detail_form.mobile }}
+</div>
+    <div class="fieldWrapper">
+    {{ user_detail_form.description.errors }}
+    {{ user_detail_form.description.label_tag }}
+    {{ user_detail_form.description }}
+</div>
+    </div>
+        <div class="fieldWrapper">
+    {{ user_detail_form.img.errors }}
+    {{ user_detail_form.img.label_tag }}
+    {{ user_detail_form.img }}
+</div>
+        {% if user_form %}
+    <input type="submit" value="Save">
+        {% endif %}
+    </form>
+{% endblock %}

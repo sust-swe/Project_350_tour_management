@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+
+{% block content_1 %} <title>login</title> {% endblock %}
+
+{% block content_2 %}
+
+    <form action="/accounts/login/" method="post">
+        {% csrf_token %}
+        Username<input type="text" name="username" required="required"><br>
+        Password<input type="password" name="password" required="required"> <br>
+        <input type="submit" value="Log In">
+    </form>
+
+    <div>
+        {% for message in messages %}
+            <bold>{{ message }}</bold>
+        {% endfor %}
+    </div>
+{% endblock %}

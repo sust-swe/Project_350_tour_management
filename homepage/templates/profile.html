@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content_1 %}
+    <title>My Profile</title>
+{% endblock %}
+
+{% block content_2 %}
+    Username {{ user.username }} <br>
+    First Name {{ user.first_name }} <br>
+    Last Name {{ user.last_name }} <br>
+    Email Address{{ user.email }} <br>
+    Description {{ user_detail.description }}<br>
+    Mobile No{{ user_detail.mobile }}<br>
+    {% if user_detail.img %}
+    <img src="{{ user_detail.img.url }}" height="150" width="150" alt="No Photo"> <br>
+    {% endif %}
+    <a href="/edit_profile/">Edit Profile</a>
+    <a href="/change_password/">Change Password</a> <br>
+
+{% endblock %}
