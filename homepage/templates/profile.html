@@ -14,9 +14,11 @@
     <tr><td>Email Address</td><td>{{ user.email }}</td></tr>
     <tr> <td>Mobile</td> <td>{{ user_detail.mobile }}</td> </tr>
     <tr> <td>Description</td> <td>{{ user_detail.description }}</td> </tr>
+        <tr><td>Address</td><td>{{ user_detail.address }}</td></tr>
+        <tr><td>City</td><td>{{ user_detail.city }}</td></tr>
     </table>
     {% if user_detail.img %}
-    <tr><td></td> <td><img src="{{ user_detail.img.url }}" height="150" width="150" alt="Add Photo"></td> </tr>
+    <img src="{{ user_detail.img.url }}" height="150" width="150" alt="Add Photo">
         {% endif %}
     <br><br>
     {% if request.user.is_authenticated %}

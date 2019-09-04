@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content_2 %}
-    <form method="post">
+    <form method="post" enctype="multipart/form-data" >
     {% csrf_token %}
     <table>
         {{ user_form.as_table }}

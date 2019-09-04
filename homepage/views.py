@@ -47,7 +47,7 @@ def edit_profile(request):
 
         else:
             user_form = UpdateUserForm(request.POST or None, instance=user)
-            user_detail_form = UserDetailForm(request.POST or None, instance=user_detail)
+            user_detail_form = UserDetailForm(request.POST, request.FILES, instance=user_detail)
             if user_form.is_valid() and user_detail_form.is_valid():
                 user_form.save()
                 user_detail_form.save()
