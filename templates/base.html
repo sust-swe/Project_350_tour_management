@@ -1,4 +1,3 @@
-
 {% load crispy_forms_tags %}
 {% load static %}
 {% static "images" as statimgsrc %}
@@ -9,10 +8,11 @@
 </head>
 
 <body>
-
+<div align="center">
 {% block content_2 %} {% endblock %}
-
-<div>
+</div>
+<br><br>
+<div align="center">
 
 {% for ms in messages %}
     <bold>{{ ms }}</bold>

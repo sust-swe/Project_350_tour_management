@@ -31,4 +31,18 @@ class UserForm(forms.ModelForm):
         }
 
 
+class UpdateUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+
+
+class PasswordChangeForm(forms.Form):
+    current_password = forms.CharField(max_length=100, widget=forms.PasswordInput, required=True,
+                                       label='Current Password')
+    new_password = forms.CharField(max_length=100, widget=forms.PasswordInput, required=True,
+                                   label='New Password')
+    confirm_password = forms.CharField(max_length=100, widget=forms.PasswordInput, required=True,
+                                       label='Confirm Password')
+
 # pip install django-crispy-forms
