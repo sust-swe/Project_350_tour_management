@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import UserDetail
-from .forms import UserForm, UserDetailForm
+from .forms import UserForm, UserDetailForm, UpdateUserForm, PasswordChangeForm
+
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth import login, authenticate, logout
@@ -18,14 +19,13 @@ def home(request):
 
 def profile(request):
     if request.user.is_authenticated:
-        user = request.user
-        user_d = UserDetail.objects.get(user=user)
-        form = UserDetailForm(instance=user_d)
-
+        current_user = request.user
+        user_detail = UserDetail.objects.get(user=current_user)
         if request.method == 'POST':
             pass
         else:
-            return render(request, 'profile.html', {'user': user, 'user_detail': user_d})
+            context = {'user': current_user, 'user_detail': user_detail}
+            return render(request, 'profile.html', context)
 
     else:
         messages.info(request, 'You must log in first')
@@ -35,37 +35,29 @@ def profile(request):
 def edit_profile(request):
     if request.user.is_authenticated:
         user = request.user
-        user_d = UserDetail.objects.get(user=user)
+        user_detail = UserDetail.objects.get(user=user)
 
         if request.method == 'GET':
-            user_form = UserForm(instance=user)
-            user_detail_form = UserDetailForm(instance=user_d)
-            return render(request, 'editprofile.html', {'user_form': user_form, 'user_detail_form': user_detail_form})
+            user_form = UpdateUserForm(instance=user)
+            user_detail_form = UserDetailForm(instance=user_detail)
+            context = {
+                'user_form': user_form, 'user_detail_form': user_detail_form
+            }
+            return render(request, 'edit_profile.html', context)
 
         else:
-            user_form = UserForm(request.POST)
-            user_detail_form = UserDetailForm(request.POST)
-
+            user_form = UpdateUserForm(request.POST or None, instance=user)
+            user_detail_form = UserDetailForm(request.POST or None, instance=user_detail)
             if user_form.is_valid() and user_detail_form.is_valid():
-                email = user_form.cleaned_data['email']
-                mobile = user_detail_form.cleaned_data['mobile']
-
-                if User.objects.filter(Q(email=email),Q(id!=user.id)).exists():
-                    messages.info(request, 'Email already used')
-                    return render(request, 'editprofile.html', {'user_form': user_form, 'user_detail_form': user_detail_form})
-
-                elif UserDetail.objects.filter(Q(mobile=mobile), Q(user != user)).exists():
-                    messages.info(request, 'Mobile No already used')
-                    return render(request, 'editprofile.html', {'user_form': user_form, 'user_detail_form': user_detail_form})
-
-                else:
-                    user_form.save()
-                    user_detail_form.save()
-                    return redirect('/profile/')
-
+                user_form.save()
+                user_detail_form.save()
+                messages.info(request, 'Successfully updated')
+                return redirect('/profile/')
             else:
-                messages.info(request, 'Invalid Credentials')
-                return render(request, 'editprofile.html', {'user_form': user_form, 'user_detail_form': user_detail_form})
+                context = {
+                    'user_form': user_form, 'user_detail_form': user_detail_form
+                }
+                return render(request, 'edit_profile.html', context)
 
     else:
         messages.info(request, 'Log in first')
@@ -75,27 +67,36 @@ def edit_profile(request):
 def change_password(request):
     if request.user.is_authenticated:
         user = request.user
-        user_d = UserDetail.objects.get(user=user)
 
         if request.method == 'GET':
-            return render(request, 'changepassword.html')
+            form = PasswordChangeForm()
+            context = {'form': form}
+            return render(request, 'change_password.html', context)
 
         else:
-            current_password = request.POST['current_password']
-            new_password = request.POST['new_password']
-            confirm_password = request.POST['confirm_password']
-            user_2 = authenticate(request, username=user.username, password=current_password)
+            form = PasswordChangeForm(request.POST or None)
+            if form.is_valid():
+                cur_pass = form.cleaned_data['current_password']
+                new_pass = form.cleaned_data['new_password']
+                con_pass = form.cleaned_data['confirm_password']
 
-            if user_2 is not None and user_2 == user:
-                if new_password == confirm_password:
-                    user.set_password(new_password)
-                    messages.info(request, 'Password successfully changed')
-                    return redirect('/profile/')
+                if new_pass == con_pass:
+                    username = user.username
+                    auth_user = authenticate(request, username=username, password=cur_pass)
+                    if auth_user is not None:
+                        user.set_password(new_pass)
+                        user.save()
+                        return redirect('/profile/')
 
+                    else:
+                        messages.info(request, 'Wrong Password')
+                        return redirect('/change_password/')
                 else:
                     messages.info(request, 'Passwords not matching')
                     return redirect('/change_password/')
-
             else:
-                messages.info(request, 'Wrong Password')
+                messages.info(request, 'Passwords must be between 8 to 100 characters inclusive')
                 return redirect('/change_password/')
+    else:
+        messages.info(request, 'You must log in first')
+        return redirect('/')

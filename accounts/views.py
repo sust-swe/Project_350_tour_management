@@ -48,6 +48,9 @@ def my_register(request):
                 return redirect('/home/')
 
             return render(request, 'register.html', {'form1': user_form, 'form2': user_detail_form})
+        else:
+            messages.info(request, 'Invalid Credentials')
+            return render(request, 'register.html', {'form1': user_form, 'form2': user_detail_form})
 
     else:
         return render(request, 'register.html', {'form1': form1, 'form2': form2})

@@ -5,16 +5,23 @@
 {% endblock %}
 
 {% block content_2 %}
-    Username {{ user.username }} <br>
-    First Name {{ user.first_name }} <br>
-    Last Name {{ user.last_name }} <br>
-    Email Address{{ user.email }} <br>
-    Description {{ user_detail.description }}<br>
-    Mobile No{{ user_detail.mobile }}<br>
+    <div align="center">
+    <h1>My Profile</h1>
+    <table>
+    <tr> <td>Username</td> <td>{{ user.username }}</td> </tr>
+    <tr><td>First Name</td><td>{{ user.first_name }}</td></tr>
+    <tr><td>Last Name</td><td>{{ user.last_name }}</td></tr>
+    <tr><td>Email Address</td><td>{{ user.email }}</td></tr>
+    <tr> <td>Mobile</td> <td>{{ user_detail.mobile }}</td> </tr>
+    <tr> <td>Description</td> <td>{{ user_detail.description }}</td> </tr>
+    </table>
     {% if user_detail.img %}
-    <img src="{{ user_detail.img.url }}" height="150" width="150" alt="No Photo"> <br>
-    {% endif %}
-    <a href="/edit_profile/">Edit Profile</a>
+    <tr><td></td> <td><img src="{{ user_detail.img.url }}" height="150" width="150" alt="Add Photo"></td> </tr>
+        {% endif %}
+    <br><br>
+    {% if request.user.is_authenticated %}
+    <a href="/edit_profile/">Edit Profile </a> <br>
     <a href="/change_password/">Change Password</a> <br>
-
+    {% endif %}
+</div>
 {% endblock %}
