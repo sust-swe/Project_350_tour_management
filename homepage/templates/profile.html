@@ -18,7 +18,7 @@
         <tr><td>City</td><td>{{ user_detail.city }}</td></tr>
     </table>
     {% if user_detail.img %}
-    <img src="{{ user_detail.img.url }}" height="150" width="150" alt="Add Photo">
+    <img src="{{ user_detail.img.url }}" height="150" width="200" alt="Add Photo">
         {% endif %}
     <br><br>
     {% if request.user.is_authenticated %}

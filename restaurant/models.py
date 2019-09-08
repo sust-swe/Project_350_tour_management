@@ -17,6 +17,7 @@ class Restaurant(Address):
         constraints = [
             models.UniqueConstraint(fields=['user_detail', 'name'], name='user\'s unique restaurant')
         ]
+        ordering = ['user_detail']
 
     def __str__(self):
         return self.name
@@ -35,6 +36,7 @@ class Food(models.Model):
             models.UniqueConstraint(fields=['restaurant', 'name'], name='unique food in restaurant'),
             models.CheckConstraint(check=Q(price__gte=0), name='non-negative food price')
         ]
+        ordering = ['restaurant']
 
     def __str__(self):
         return '%s serves %s' % (self.restaurant.__str__(), self.name)
@@ -64,9 +66,11 @@ class OrderDetail(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['orders', 'food'], name='order has unique food')
         ]
+        ordering = ['orders']
 
     def __str__(self):
         return '%s contains %s' % (self.orders, self.food)
+
 
 
 '''

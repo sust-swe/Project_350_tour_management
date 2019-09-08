@@ -6,10 +6,10 @@ from . import views
 
 
 urlpatterns = [
-    path('myrestaurant/', views.my_restaurant, name='my restaurant'),
-    path('addres/', views.add_restaurant, name='add restaurants'),
-    path('detail/<slug:restaurant_name>/', views.restaurant_detail, name='restaurant detail'),
+    path('my_restaurant/', views.MyRestaurant.as_view(), name='my restaurant'),
+    path('detail/<int:id>/', views.RestaurantDetail.as_view(), name='restaurant detail'),
+    path('update/<int:id>/', views.UpdateRestaurant.as_view(), name='update restaurant'),
+    path('show/', views.ShowAllRestaurant.as_view(), name='show all restaurant'),
 ]
 
 
-# urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
