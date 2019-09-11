@@ -4,18 +4,24 @@
 
 {% block content_2 %}
     <table>
-    <tr><th>Item</th><th>Price</th><th>Available at</th><th>Photo</th><th></th><th></th></tr>
+    {% if menu %}<tr><th>Item</th><th>Price</th><th>Available at</th><th>Photo</th><th></th><th></th></tr>{% endif %}
+
     {% for item in menu %}
+
         <tr><td>{{ item.name }}</td><td>{{ item.price }}</td><td>{{ item.available_at_time }}</td>
             <td>
             {% if item.img %}
             <img src="{{ item.img.url }}" height="100" width="100">
             {% endif %}
             </td>
-        <td><a href="/restaurant/update_item/{{ item.id }}/">Update</a> </td>
-        <td><a href="/restaurant/delete_item/{{ item.id }}/">Delete</a> </td>
+        {% if item.restaurant.user_detail.user == request.user %}
+        <td><a href="{{ item.id }}/update/">Update</a> </td>
+        <td><a href="{{ item.id }}/delete/">Delete</a> </td>
+        {% endif %}
         </tr>
     {% endfor %}
     </table>
-    <p><a href="/restaurant/add_item/{{ restaurant.id }}/">Add Item</a></p>
+    {% if restaurant.user_detail.user == request.user %}
+    <p><a href="add_item/">Add Item</a></p>
+    {% endif %}
 {% endblock %}

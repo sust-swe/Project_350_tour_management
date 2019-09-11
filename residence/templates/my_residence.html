@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content_1 %}
+    <title>My Residence</title>
+{% endblock %}
+
+{% block content_2 %}
+    <h1>My Residences</h1>
+    <table>
+    <tr><th></th><th></th><th></th><th></th></tr>
+    {% for item in qs %}
+        <tr><td>  <a href="/residence/{{ item.id }}/">{{ item.name }}</a>  </td></tr>
+    {% endfor %}
+    </table>
+    <a href="/residence/add_residence/">Add New Residence</a>
+{% endblock %}

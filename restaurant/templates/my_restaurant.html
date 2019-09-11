@@ -9,7 +9,7 @@
 {% block content_2 %}
     <p>
     {% for restaurant in qs %}
-        <a href="/restaurant/detail/{{ restaurant.id }}/">{{ restaurant.name }}</a><br>
+        <a href="/restaurant/{{ restaurant.id }}/">{{ restaurant.name }}</a><br>
     {% endfor %}
     </p>
 <a href="/restaurant/add/"> Add New Restaurant </a> <br>

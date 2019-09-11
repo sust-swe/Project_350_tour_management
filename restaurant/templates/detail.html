@@ -6,21 +6,21 @@
 
 {% block content_2 %}
     <table>
-    <tr><td>Name</td><td>{{ restaurant.name }}</td></tr>
-    <tr><td>City</td><td>{{ restaurant.city }}</td></tr>
-    <tr><td>Address</td><td>{{ restaurant.address }}</td></tr>
-    <tr><td>Description</td><td>{{ restaurant.description }}</td></tr>
-    <tr><td>Mobile</td><td>{{ restaurant.mobile }}</td></tr>
+    {% if restaurant.name %}<tr><td>Name</td><td>{{ restaurant.name }}</td></tr>{% endif %}
+    {% if restaurant.city %}<tr><td>City</td><td>{{ restaurant.city }}</td></tr>{% endif %}
+    {% if restaurant.address %}<tr><td>Address</td><td>{{ restaurant.address }}</td></tr>{% endif %}
+    {% if restaurant.description %}<tr><td>Description</td><td>{{ restaurant.description }}</td></tr>{% endif %}
+    {% if restaurant.mobile %}<tr><td>Mobile</td><td>{{ restaurant.mobile }}</td></tr>{% endif %}
     </table>
     {% if restaurant.img %}
         <img src="{{ restaurant.img.url }}" height="200" width="350">
     {% endif %}
 
 <p>
-    <a href="/restaurant/menu/{{ restaurant.id }}/">Menu</a> <br>
+    <a href="menu/">Menu</a> <br>
     {% if request.user == restaurant.user_detail.user %}
-        <a href="/restaurant/update/{{ restaurant.id }}/">Update</a><br>
-        <a href="/restaurant/delete/{{ restaurant.id }}/">Delete</a><br>
+        <a href="update/">Update</a><br>
+        <a href="delete/">Delete</a><br>
     {% endif %}
     <a href="/restaurant/my_restaurant/">BACK</a>
 </p>
