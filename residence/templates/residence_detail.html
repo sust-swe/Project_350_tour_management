@@ -14,6 +14,8 @@
     </table>
     {% if ob.img %}  <img src="{{ ob.img.url }}" />  {% endif %}
     <br><br>
+    <a href="space/">Browse Spaces</a>
+    <br><br>
     {% if request.user == ob.user_detail.user %}
     <a href="/residence/{{ ob.id }}/update/">Update</a><br>
     <a href="/residence/{{ ob.id }}/delete/">Delete</a><br>

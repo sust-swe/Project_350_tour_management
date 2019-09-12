@@ -116,7 +116,7 @@ class DeleteResidence(views.View):
     def get(self, request, id):
         if request.user.is_authenticated:
             instance = Residence.objects.get(pk=id)
-            if instance.restaurant.user_detail.user == request.user:
+            if instance.user_detail.user == request.user:
                 instance.delete()
                 return redirect('/residence/my_residence/')
             else:
@@ -125,6 +125,14 @@ class DeleteResidence(views.View):
         else:
             messages.info(request, 'You must login first')
             redirect('/')
+
+
+class ShowResidenceSpace(views.View):
+    template_name = 'residence_space.html'
+
+    def get(self, request, id):
+        spaces = Space.objects.filter(residence_id=id)
+        return render(request, self.template_name, {'spaces': spaces})
 
 
 class AddSpace(views.View):
@@ -155,7 +163,7 @@ class AddSpace(views.View):
                     try:
                         ob.full_clean()
                         ob.save()
-                        return redirect('/residence/my_residence/{}/'.format(id))
+                        return redirect('/residence/{}/space/'.format(id))
                     except ValidationError as e:
                         nfe = e.message_dict[NON_FIELD_ERRORS]
                         return render(request, self.template_name, {'form': form, 'nfe': nfe})
@@ -170,15 +178,23 @@ class AddSpace(views.View):
             return redirect('/')
 
 
+class SpaceDetail(views.View):
+    template_name = 'space_detail.html'
+
+    def get(self, request, space_id):
+        space = Space.objects.get(pk=space_id)
+        return render(request, self.template_name, {'space': space})
+
+
 class UpdateSpace(views.View):
-    template_name = 'update_space'
+    template_name = 'update_space.html'
     form_class = SpaceForm
 
     def get(self, request, space_id):
         if request.user.is_authenticated:
             space = Space.objects.get(pk=space_id)
             if space.residence.user_detail.user == request.user:
-                form = self.form_class(request.POST, request.FILES, instance=space)
+                form = self.form_class(instance=space)
                 return render(request, self.template_name, {'form': form})
             else:
                 messages.info(request, 'Permission denied')
@@ -189,7 +205,7 @@ class UpdateSpace(views.View):
 
     def post(self, request, space_id):
         if request.user.is_authenticated:
-            space = Space.objects.get(pk=id)
+            space = Space.objects.get(pk=space_id)
             if space.residence.user_detail.user == request.user:
                 form = self.form_class(request.POST, request.FILES, instance=space)
                 if form.is_valid():
@@ -197,13 +213,29 @@ class UpdateSpace(views.View):
                     try:
                         ob.full_clean()
                         ob.save()
-                        return redirect('/residence/{}/space/{}/'.format(space.residence_id, space.id))
+                        return redirect('/residence/space/{}/'.format(space.id))
                     except ValidationError as e:
                         nfe = e.message_dict[NON_FIELD_ERRORS]
                         return render(request, self.template_name, {'form': form, 'nfe': nfe})
                 else:
                     messages.info(request, 'Invalid Credentials')
                     return render(request, self.template_name, {'form': form})
+            else:
+                messages.info(request, 'Permission denied')
+                return redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'Log in First')
+            return redirect('/')
+
+
+class DeleteSpace(views.View):
+    def get(self, request, space_id):
+        if request.user.is_authenticated:
+            space = Space.objects.get(pk=space_id)
+            if space.residence.user_detail.user == request.user:
+                tmp = space.residence.id
+                space.delete()
+                return redirect('/residence/{}/space/'.format(tmp))
             else:
                 messages.info(request, 'Permission denied')
                 return redirect('/homepage/underground/')

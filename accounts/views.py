@@ -34,11 +34,7 @@ def my_register(request):
                 mobile = user_detail_form.cleaned_data['mobile']
 
                 if password1 != password2:
-                    messages.info(request, 'Passwords do not match')
-                elif User.objects.filter(username=username).exists():
-                    messages.info(request, 'Username Taken')
-                elif UserDetail.objects.filter(mobile=mobile).exists():
-                    messages.info(request, 'Mobile Number Taken')
+                    messages.info(request, 'Passwords not matching')
                 elif User.objects.filter(email=email).exists():
                     messages.info(request, 'Email Address Taken')
                 else:

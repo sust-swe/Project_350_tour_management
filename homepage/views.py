@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import UserDetail
 from .forms import UserForm, UserDetailForm, UpdateUserForm, PasswordChangeForm
-
+from django import views
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth import login, authenticate, logout
@@ -100,3 +100,10 @@ def change_password(request):
     else:
         messages.info(request, 'You must log in first')
         return redirect('/')
+
+
+class Underground(views.View):
+    template_name = 'underground.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
