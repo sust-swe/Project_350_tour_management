@@ -8,9 +8,9 @@
     <h1>My Residences</h1>
     <table>
     <tr><th></th><th></th><th></th><th></th></tr>
-    {% for item in qs %}
-        <tr><td>  <a href="/residence/{{ item.id }}/">{{ item.name }}</a>  </td></tr>
+    {% for res in qs %}
+        <tr><td>  <a href="/residence/{{ res.id }}/">{{ res.name }}</a>  </td></tr>
     {% endfor %}
-    </table>
+    </table><br>
     <a href="/residence/add_residence/">Add New Residence</a>
 {% endblock %}

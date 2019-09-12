@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django import views
 from .models import Residence
-from .models import Residence
-from .forms import ResidenceForm
+from .models import Residence, Space
+from .forms import ResidenceForm, SpaceForm
 from homepage.models import UserDetail, User
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 
@@ -45,14 +45,14 @@ class AddResidence(views.View):
             form = self.form_class(request.POST, request.FILES)
             if form.is_valid():
                 ob = form.save(commit=False)
-                ob.user_detail = UserDetail.objects.filter(user=request.user)
+                ob.user_detail = UserDetail.objects.get(user=request.user)
                 try:
                     ob.full_clean()
                     ob.save()
                     return redirect('/residence/my_residence/')
                 except ValidationError as e:
                     nfe = e.message_dict[NON_FIELD_ERRORS]
-                    return (request, self.template_name, {'form': form, 'nfe': nfe})
+                    return render(request, self.template_name, {'form': form, 'nfe': nfe})
             else:
                 messages.info('Invalid Credentials')
                 return render(request, self.template_name, {'form': form})
@@ -68,9 +68,145 @@ class ResidenceDetail(views.View):
         ob = Residence.objects.get(pk=id)
         return render(request, self.template_name, {'ob': ob})
 
+
 class UpdateResidence(views.View):
     template_name = 'update_residence.html'
     form_class = ResidenceForm
 
     def get(self, request, id):
-        form = ResidenceForm()
+        if request.user.is_authenticated:
+            residence = Residence.objects.get(pk=id)
+            if residence.user_detail.user == request.user:
+                form = self.form_class(instance=residence)
+                return render(request, self.template_name, {'form': form})
+            else:
+                messages.info(request, 'Permission denied')
+                return redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'Log in First')
+            return redirect('/')
+
+    def post(self, request, id):
+        if request.user.is_authenticated:
+            instance = Residence.objects.get(pk=id)
+            if instance.user_detail.user == request.user:
+                form = self.form_class(request.POST, request.FILES, instance=instance)
+                if form.is_valid():
+                    ob = form.save(commit=False)
+                    try:
+                        ob.full_clean()
+                        ob.save()
+                        return redirect('/residence/my_residence/')
+                    except ValidationError as e:
+                        nfe = e.message_dict[NON_FIELD_ERRORS]
+                        return (request, self.template_name, {'form': form, 'nfe': nfe})
+                else:
+                    messages.info('Invalid Credentials')
+                    return render(request, self.template_name, {'form': form})
+            else:
+                messages.info(request, 'Permission denied')
+                return redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'Log in First')
+            return redirect('/')
+
+
+class DeleteResidence(views.View):
+
+    def get(self, request, id):
+        if request.user.is_authenticated:
+            instance = Residence.objects.get(pk=id)
+            if instance.restaurant.user_detail.user == request.user:
+                instance.delete()
+                return redirect('/residence/my_residence/')
+            else:
+                messages.info(request, 'Permission denied')
+                return redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'You must login first')
+            redirect('/')
+
+
+class AddSpace(views.View):
+    template_name = 'add_space.html'
+    form_class = SpaceForm
+
+    def get(self, request, id):
+        if request.user.is_authenticated:
+            residence = Residence.objects.get(pk=id)
+            if residence.user_detail.user == request.user:
+                form = self.form_class()
+                return render(request, self.template_name, {'form': form})
+            else:
+                messages.info(request, 'Permission denied')
+                redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'Log in First')
+            return redirect('/')
+
+    def post(self, request, id):
+        if request.user.is_authenticated:
+            residence = Residence.objects.get(pk=id)
+            if residence.user_detail.user == request.user:
+                form = self.form_class(request.POST, request.FILES)
+                if form.is_valid():
+                    ob = form.save(commit=False)
+                    ob.residence = residence
+                    try:
+                        ob.full_clean()
+                        ob.save()
+                        return redirect('/residence/my_residence/{}/'.format(id))
+                    except ValidationError as e:
+                        nfe = e.message_dict[NON_FIELD_ERRORS]
+                        return render(request, self.template_name, {'form': form, 'nfe': nfe})
+                else:
+                    messages.info('Invalid Credentials')
+                    return render(request, self.template_name, {'form': form})
+            else:
+                messages.info(request, 'Permission denied')
+                return redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'Log in First')
+            return redirect('/')
+
+
+class UpdateSpace(views.View):
+    template_name = 'update_space'
+    form_class = SpaceForm
+
+    def get(self, request, space_id):
+        if request.user.is_authenticated:
+            space = Space.objects.get(pk=space_id)
+            if space.residence.user_detail.user == request.user:
+                form = self.form_class(request.POST, request.FILES, instance=space)
+                return render(request, self.template_name, {'form': form})
+            else:
+                messages.info(request, 'Permission denied')
+                return redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'Log in First')
+            return redirect('/')
+
+    def post(self, request, space_id):
+        if request.user.is_authenticated:
+            space = Space.objects.get(pk=id)
+            if space.residence.user_detail.user == request.user:
+                form = self.form_class(request.POST, request.FILES, instance=space)
+                if form.is_valid():
+                    ob = form.save(commit=False)
+                    try:
+                        ob.full_clean()
+                        ob.save()
+                        return redirect('/residence/{}/space/{}/'.format(space.residence_id, space.id))
+                    except ValidationError as e:
+                        nfe = e.message_dict[NON_FIELD_ERRORS]
+                        return render(request, self.template_name, {'form': form, 'nfe': nfe})
+                else:
+                    messages.info(request, 'Invalid Credentials')
+                    return render(request, self.template_name, {'form': form})
+            else:
+                messages.info(request, 'Permission denied')
+                return redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'Log in First')
+            return redirect('/')
