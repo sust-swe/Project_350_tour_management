@@ -6,11 +6,16 @@
 {% endblock %}
 
 {% block content_2 %}
-    Hi {{ name }}
+    <h1>Create New Account</h1>
 <form method="post">
 {% csrf_token %}
-    {{ form1|crispy }}<br>
-    {{ form2|crispy }}<br>
-<input type="submit" value="Enter">
+    <table>
+        {{ form1.as_table }}
+        {{ form2.as_table }}
+        <tr><td></td><td>
+            <input type="submit" value="Register" />
+        </td></tr>
+    </table>
+
 </form>
 {% endblock %}

@@ -14,10 +14,7 @@ class Residence(Address):
     img = models.ImageField(upload_to='ResidencePhoto', null=True, blank=True, default=None)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user_detail', 'name', 'city'], name='user\'s unique residence in city')
-        ]
-
+        pass
     def __str__(self):
         return '%s\'s %s at %s' % (self.user_detail.__str__(), self.name, self.city.__str__())
 

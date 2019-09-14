@@ -7,9 +7,11 @@
 
     <form action="/accounts/login/" method="post">
         {% csrf_token %}
-        Username<input type="text" name="username" required="required"><br>
-        Password<input type="password" name="password" required="required"> <br>
-        <input type="submit" value="Log In">
+        <table>
+        <tr><td>Username</td><td><input type="text" name="username" required="required"></td></tr>
+        <tr><td>Password</td><td><input type="password" name="password" required="required"></td></tr>
+        <tr><td></td><td><input type="submit" value="Log In"></td></tr>
+        </table>
     </form>
 
     <div>

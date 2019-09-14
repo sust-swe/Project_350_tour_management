@@ -7,11 +7,17 @@
     {% block content_1 %}<title>base</title> {% endblock %}
 </head>
 
-<body>
+<body bgcolor="#bdb76b">
+
 <div align="center">
-{% block content_2 %} {% endblock %}
+{% block content_2 %}
+
+
+{% endblock %}
 </div>
+
 <br><br>
+
 <div align="center">
 
 {% for ms in messages %}
@@ -19,7 +25,18 @@
 {% endfor %}
 
 <p>
+    <h3>
+    Search
+    <a href="/search/resaturant/">Restaurant</a>
+    <a href="/search/residence/">Residence</a>
+    <a href="/search/guide/">Guide</a>
+    </h3>
+</p>
+
+<p>
 {% if request.user.is_authenticated %}
+
+
     Hi
     <a href="/profile/">{{ request.user.username }}</a> <br>
     <a href="/home/">My Home</a> <br>

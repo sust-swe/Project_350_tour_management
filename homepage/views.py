@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import UserDetail
 from .forms import UserForm, UserDetailForm, UpdateUserForm, PasswordChangeForm
-
+from django import views
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth import login, authenticate, logout
@@ -47,7 +47,7 @@ def edit_profile(request):
 
         else:
             user_form = UpdateUserForm(request.POST or None, instance=user)
-            user_detail_form = UserDetailForm(request.POST or None, instance=user_detail)
+            user_detail_form = UserDetailForm(request.POST, request.FILES, instance=user_detail)
             if user_form.is_valid() and user_detail_form.is_valid():
                 user_form.save()
                 user_detail_form.save()
@@ -100,3 +100,10 @@ def change_password(request):
     else:
         messages.info(request, 'You must log in first')
         return redirect('/')
+
+
+class Underground(views.View):
+    template_name = 'underground.html'
+
+    def get(self, request):
+        return render(request, self.template_name)

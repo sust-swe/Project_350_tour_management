@@ -7,7 +7,7 @@ class RestaurantForm(forms.ModelForm):
 
     class Meta:
         model = Restaurant
-        fields = ['name', 'city', 'address', 'mobile', 'description', 'img', ]
+        exclude = ['user_detail']
         labels = {
             'name': 'Restaurant Name', 'city': 'City', 'address': 'Address',
             'mobile': 'Mobile No', 'description': 'Description', 'img': 'Photo'
@@ -17,4 +17,4 @@ class RestaurantForm(forms.ModelForm):
 class FoodForm(forms.ModelForm):
     class Meta:
         model = Food
-        fields = ['name', 'img', 'price', 'person', 'available_at_time']
+        exclude = ['restaurant']

@@ -3,15 +3,16 @@ from .models import Residence, Space, SpaceAvailable
 
 
 class ResidenceForm(forms.ModelForm):
+
     class Meta:
         model = Residence
-        fields = ['name', 'mobile', 'description', 'img']
+        exclude = ['user_detail']
 
 
 class SpaceForm(forms.ModelForm):
     class Meta:
         model = Space
-        fields = '__all__'
+        exclude = ['residence']
 
 
 class SpaceAvailableForm(forms.ModelForm):
