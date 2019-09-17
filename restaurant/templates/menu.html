@@ -15,8 +15,8 @@
             {% endif %}
             </td>
         {% if item.restaurant.user_detail.user == request.user %}
-        <td><a href="{{ item.id }}/update/">Update</a> </td>
-        <td><a href="{{ item.id }}/delete/">Delete</a> </td>
+        <td><a href="/restaurant/food/{{ item.id }}/update/">Update</a> </td>
+        <td><a href="/restaurant/food/{{ item.id }}/delete/">Delete</a> </td>
         {% endif %}
         </tr>
     {% endfor %}

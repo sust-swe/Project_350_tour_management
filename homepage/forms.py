@@ -38,11 +38,11 @@ class UpdateUserForm(forms.ModelForm):
 
 
 class PasswordChangeForm(forms.Form):
-    current_password = forms.CharField(max_length=100, widget=forms.PasswordInput, required=True,
+    current_password = forms.CharField(max_length=100, min_length=8, widget=forms.PasswordInput, required=True,
                                        label='Current Password')
-    new_password = forms.CharField(max_length=100, widget=forms.PasswordInput, required=True,
+    new_password = forms.CharField(max_length=100, min_length=8, widget=forms.PasswordInput, required=True,
                                    label='New Password')
-    confirm_password = forms.CharField(max_length=100, widget=forms.PasswordInput, required=True,
+    confirm_password = forms.CharField(max_length=100, min_length=8, widget=forms.PasswordInput, required=True,
                                        label='Confirm Password')
 
 # pip install django-crispy-forms

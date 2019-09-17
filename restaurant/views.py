@@ -64,7 +64,7 @@ class AddRestaurant(views.View):
 
 class RestaurantDetail(views.View):
     context = {}
-    template_name = 'residence_detail.html'
+    template_name = 'restaurant_detail.html'
 
     def get(self, request, id):
         restaurant = Restaurant.objects.get(pk=id)
@@ -98,11 +98,11 @@ class UpdateRestaurant(views.View):
                 if form.is_valid():
                     ob = form.save(commit=False)
                     # print(ob.user_detail_id, 'hi')
-                    print(ob.user_detail_id)
+                    # print(ob.user_detail_id)
                     try:
                         ob.full_clean()
                         ob.save()
-                        return redirect('/restaurant/detail/{}'.format(id))
+                        return redirect('/restaurant/{}/'.format(id))
                     except ValidationError as e:
                         nfe = e.message_dict[NON_FIELD_ERRORS]
                         return render(request, self.template_name, {'form': form, 'nfe': nfe})
@@ -143,7 +143,7 @@ class Menu(views.View):
         return render(request, self.template_name, {'menu': menu, 'restaurant': restaurant})
 
 
-class AddMenuItem(views.View):
+class AddFood(views.View):
     template_name = 'add_menu_item.html'
     form_class = FoodForm
 
@@ -186,13 +186,14 @@ class AddMenuItem(views.View):
             redirect('/')
 
 
-class UpdateMenuItem(views.View):
+class UpdateFood(views.View):
     form_class = FoodForm
     template_name = 'update_menu_item.html'
 
-    def get(self, request, item_id):
+    def get(self, request, food_id):
+        print('update menu item get')
         if request.user.is_authenticated:
-            food = Food.objects.get(pk=item_id)
+            food = Food.objects.get(pk=food_id)
             if food.restaurant.user_detail.user == request.user:
                 form = self.form_class(instance=food)
                 return render(request, self.template_name, {'form': form})
@@ -203,11 +204,12 @@ class UpdateMenuItem(views.View):
             messages.info(request, 'You must login first')
             redirect('/')
 
-    def post(self, request, item_id):
+    def post(self, request, food_id):
         if request.user.is_authenticated:
-            food = Food.objects.get(pk=item_id)
+            food = Food.objects.get(pk=food_id)
             if food.restaurant.user_detail.user == request.user:
                 form = self.form_class(request.POST, request.FILES, instance=food)
+
                 if form.is_valid():
                     ob = form.save(commit=False)
                     try:
@@ -228,11 +230,11 @@ class UpdateMenuItem(views.View):
             redirect('/')
 
 
-class DeleteMenuItem(views.View):
+class DeleteFood(views.View):
 
-    def get(self, request, item_id):
+    def get(self, request, food_id):
         if request.user.is_authenticated:
-            food = Food.objects.get(pk=item_id)
+            food = Food.objects.get(pk=food_id)
             if food.restaurant.user_detail.user == request.user:
                 food.delete()
                 return redirect('/restaurant/{}/menu/'.format(food.restaurant.id))

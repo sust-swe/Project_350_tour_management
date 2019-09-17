@@ -210,6 +210,7 @@ class UpdateSpace(views.View):
                 form = self.form_class(request.POST, request.FILES, instance=space)
                 if form.is_valid():
                     ob = form.save(commit=False)
+                    # print('Update space post')
                     try:
                         ob.full_clean()
                         ob.save()

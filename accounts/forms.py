@@ -17,9 +17,10 @@ class UserDetailForm(forms.ModelForm):
 
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(max_length=20, min_length=2, label='Password (Minimum 8 characters)',
+    password = forms.CharField(max_length=100, min_length=8, label='Password (Minimum 8 characters)',
                                widget=forms.PasswordInput, required=True)
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput, required=True)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput, required=True, max_length=100,
+                                min_length=8)
     email = forms.EmailField(label='Email Address', widget=forms.EmailInput, required=True)
 
     class Meta:

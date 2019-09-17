@@ -64,42 +64,49 @@ def edit_profile(request):
         return redirect('/')
 
 
-def change_password(request):
-    if request.user.is_authenticated:
-        user = request.user
+class ChangePassword(views.View):
+    template_name = 'change_password.html'
+    form_class = PasswordChangeForm
 
-        if request.method == 'GET':
-            form = PasswordChangeForm()
-            context = {'form': form}
-            return render(request, 'change_password.html', context)
-
+    def get(self, request):
+        if request.user.is_authenticated:
+            user = request.user
+            form = self.form_class()
+            return render(request, self.template_name, {'form': form})
         else:
-            form = PasswordChangeForm(request.POST or None)
+            messages.info(request, 'You must log in first')
+            return redirect('/')
+
+    def post(self, request):
+
+        if request.user.is_authenticated:
+            user = request.user
+            form = self.form_class(request.POST or None)
+
             if form.is_valid():
-                cur_pass = form.cleaned_data['current_password']
+                username = user.username
+                password = form.cleaned_data['current_password']
                 new_pass = form.cleaned_data['new_password']
-                con_pass = form.cleaned_data['confirm_password']
-
-                if new_pass == con_pass:
-                    username = user.username
-                    auth_user = authenticate(request, username=username, password=cur_pass)
-                    if auth_user is not None:
-                        user.set_password(new_pass)
-                        user.save()
-                        return redirect('/profile/')
-
+                confirm_pass = form.cleaned_data['confirm_password']
+                auth_user = authenticate(request, username=username, password=password)
+                if auth_user is not None:
+                    if new_pass == confirm_pass:
+                        auth_user.set_password(new_pass)
+                        print('cppost')
+                        auth_user.save()
+                        login(request, auth_user)
+                        return redirect('/home/')
                     else:
-                        messages.info(request, 'Wrong Password')
+                        messages.info(request, 'Passwords not matching')
                         return redirect('/change_password/')
                 else:
-                    messages.info(request, 'Passwords not matching')
-                    return redirect('/change_password/')
+                    messages.info(request, 'Permission denied')
+                    return redirect('/underground/')
             else:
-                messages.info(request, 'Passwords must be between 8 to 100 characters inclusive')
-                return redirect('/change_password/')
-    else:
-        messages.info(request, 'You must log in first')
-        return redirect('/')
+                return render(request, self.template_name, {'form': form})
+        else:
+            messages.info(request, 'You must log in first')
+            return redirect('/')
 
 
 class Underground(views.View):
@@ -107,3 +114,4 @@ class Underground(views.View):
 
     def get(self, request):
         return render(request, self.template_name)
+
