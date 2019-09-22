@@ -36,4 +36,14 @@
     });
 </script>
 
+
+{% if restaurants %}
+
+{% for restaurant in restaurants %}
+<a href="/restaurant/{{restaurant.id}}/">{{restaurant.name}}</a><br>
+{% endfor %}
+
+{% endif %}
+
+
 {% endblock content_2 %}
