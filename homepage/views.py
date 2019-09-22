@@ -17,19 +17,17 @@ def home(request):
     return render(request, 'home.html')
 
 
-def profile(request):
-    if request.user.is_authenticated:
-        current_user = request.user
-        user_detail = UserDetail.objects.get(user=current_user)
-        if request.method == 'POST':
-            pass
-        else:
-            context = {'user': current_user, 'user_detail': user_detail}
-            return render(request, 'profile.html', context)
+class Profile(views.View):
+    template_name = 'profile.html'
 
-    else:
-        messages.info(request, 'You must log in first')
-        return redirect('/')
+    def get(self, request):
+        if request.user.is_authenticated:
+            user_detail = UserDetail.objects.get(user=request.user)
+            context = {'user': request.user, 'user_detail': user_detail}
+            return render(request, self.template_name, context)
+        else:
+            messages.info(request, 'Log in first')
+            return redirect('/')
 
 
 def edit_profile(request):
@@ -47,7 +45,8 @@ def edit_profile(request):
 
         else:
             user_form = UpdateUserForm(request.POST or None, instance=user)
-            user_detail_form = UserDetailForm(request.POST, request.FILES, instance=user_detail)
+            user_detail_form = UserDetailForm(
+                request.POST, request.FILES, instance=user_detail)
             if user_form.is_valid() and user_detail_form.is_valid():
                 user_form.save()
                 user_detail_form.save()
@@ -88,7 +87,8 @@ class ChangePassword(views.View):
                 password = form.cleaned_data['current_password']
                 new_pass = form.cleaned_data['new_password']
                 confirm_pass = form.cleaned_data['confirm_password']
-                auth_user = authenticate(request, username=username, password=password)
+                auth_user = authenticate(
+                    request, username=username, password=password)
                 if auth_user is not None:
                     if new_pass == confirm_pass:
                         auth_user.set_password(new_pass)
@@ -114,4 +114,3 @@ class Underground(views.View):
 
     def get(self, request):
         return render(request, self.template_name)
-

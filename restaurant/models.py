@@ -1,21 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q
-from homepage.models import City, UserDetail, Address, MyChoice
+from homepage.models import City, UserDetail, Address, MyChoice, Country
 
 # Create your models here.
 
 
-class Restaurant(Address):
-    user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE, default=100)
+class Restaurant(models.Model):
+    user_detail = models.ForeignKey(
+        UserDetail, on_delete=models.CASCADE, default=100)
     name = models.CharField(max_length=255)
     mobile = models.IntegerField(default=None, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)
-    img = models.ImageField(upload_to='RestaurantPhoto', null=True, blank=True, default=None)
+    img = models.ImageField(upload_to='RestaurantPhoto',
+                            null=True, blank=True, default=None)
+    city = models.ForeignKey(
+        City, on_delete=models.CASCADE, null=True, default=None)
+    country = models.ForeignKey(
+        Country, on_delete=models.CASCADE, null=True, default=None)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user_detail', 'name'], name='user\'s unique restaurant')
+            models.UniqueConstraint(
+                fields=['user_detail', 'name'], name='user\'s unique restaurant')
         ]
         ordering = ['user_detail']
 
@@ -26,15 +33,19 @@ class Restaurant(Address):
 class Food(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='FoodPhoto', null=True, blank=True, default=None)
+    img = models.ImageField(upload_to='FoodPhoto',
+                            null=True, blank=True, default=None)
     price = models.FloatField()
     person = models.PositiveIntegerField(default=1, blank=True)
-    available_at_time = models.CharField(max_length=1, choices=MyChoice.Eating_time)
+    available_at_time = models.CharField(
+        max_length=1, choices=MyChoice.Eating_time)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['restaurant', 'name'], name='unique food in restaurant'),
-            models.CheckConstraint(check=Q(price__gte=0), name='non-negative food price')
+            models.UniqueConstraint(
+                fields=['restaurant', 'name'], name='unique food in restaurant'),
+            models.CheckConstraint(check=Q(price__gte=0),
+                                   name='non-negative food price')
         ]
         ordering = ['restaurant']
 
@@ -49,7 +60,8 @@ class Orders(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['customer', 'order_time'], name='order primary constraint')
+            models.UniqueConstraint(
+                fields=['customer', 'order_time'], name='order primary constraint')
         ]
         ordering = ['-order_time']
 
@@ -64,13 +76,13 @@ class OrderDetail(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['orders', 'food'], name='order has unique food')
+            models.UniqueConstraint(
+                fields=['orders', 'food'], name='order has unique food')
         ]
         ordering = ['orders']
 
     def __str__(self):
         return '%s contains %s' % (self.orders, self.food)
-
 
 
 '''

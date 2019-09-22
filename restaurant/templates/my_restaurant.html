@@ -1,16 +1,15 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 {% load static %}
 {% static "images" as statimgsrc %}
 {% block content_1 %}
-    <title>My Restaurants</title>
+<title>My Restaurants</title>
 {% endblock %}
 
 {% block content_2 %}
-    <p>
+<p>
     {% for restaurant in qs %}
-        <a href="/restaurant/{{ restaurant.id }}/">{{ restaurant.name }}</a><br>
+    <a href="/restaurant/{{ restaurant.id }}/">{{ restaurant.name }}</a><br>
     {% endfor %}
-    </p>
+</p>
 <a href="/restaurant/add/"> Add New Restaurant </a> <br>
 {% endblock %}

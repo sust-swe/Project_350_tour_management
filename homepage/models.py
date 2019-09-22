@@ -1,33 +1,39 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 # Create your models here.
 
 
-class City(models.Model):
-    countries = [
-        ('BGD', 'Bangladesh'), ('IND', 'India'), ('PAK', 'Pakistan'),
-        ('NEP', 'Nepal'), ('BHU', 'Bhutan'), ('MYA', 'Myanmar')
-    ]
+class Country(models.Model):
+    name = models.CharField(max_length=50)
 
-    country = models.CharField(max_length=3, choices=countries)
-    state = models.CharField(max_length=255, blank=True, default=None, null=True)
-    district = models.CharField(max_length=255)
+    def __str__(self):
+        return self.name
+
+
+class City(models.Model):
+
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
     city = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='CityPhoto', null=True, blank=True, default=None)
+    img = models.ImageField(upload_to='CityPhoto',
+                            null=True, blank=True, default=None)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['country', 'state', 'district', 'city'], name='unique city')
+            models.UniqueConstraint(
+                fields=['country', 'city'], name='unique city')
         ]
 
     def __str__(self):
-        return '%s %s %s %s' % (self.country, self.state, self.district, self.city)
+        return '%s, %s' % (self.city, self.country)
 
 
 class Address(models.Model):
-    city = models.ForeignKey(City, on_delete=models.CASCADE, null=True, default=None, blank=True)
-    address = models.CharField(max_length=255, null=True, default=None, blank=True)
+    city = models.ForeignKey(
+        City, on_delete=models.CASCADE, null=True, default=None, blank=True)
+    address = models.CharField(
+        max_length=255, null=True, default=None, blank=True)
 
     class Meta:
         abstract = True
@@ -37,13 +43,20 @@ class Address(models.Model):
 
 
 class UserDetail(Address):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    mobile = models.CharField(max_length=15, default=None, null=True, blank=True)
-    img = models.ImageField(upload_to='UserDetailPhoto', null=True, blank=True, default=None)
-    description = models.TextField(max_length=255, default=None, null=True, blank=True)
-    restaurant_description = models.CharField(max_length=255, default=None, null=True, blank=True)
-    residence_description = models.CharField(max_length=255, default=None, null=True, blank=True)
-    guide_description = models.CharField(max_length=255, default=None, null=True, blank=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True)
+    mobile = models.CharField(
+        max_length=15, default=None, null=True, blank=True)
+    img = models.ImageField(upload_to='UserDetailPhoto',
+                            null=True, blank=True, default=None)
+    description = models.TextField(
+        max_length=255, default=None, null=True, blank=True)
+    restaurant_description = models.CharField(
+        max_length=255, default=None, null=True, blank=True)
+    residence_description = models.CharField(
+        max_length=255, default=None, null=True, blank=True)
+    guide_description = models.CharField(
+        max_length=255, default=None, null=True, blank=True)
 
     def __str__(self):
         return '%s' % self.user.username
@@ -56,12 +69,35 @@ class MyChoice:
     ]
 
     MyDayTime = [
-        ('mo', 'Morning'), ('no', 'Noon'), ('af', 'Afternoon'), ('ev', 'Evening'), ('ni', 'Night')
+        ('mo', 'Morning'), ('no', 'Noon'), ('af',
+                                            'Afternoon'), ('ev', 'Evening'), ('ni', 'Night')
     ]
 
     Eating_time = [
         ('b', 'Breakfast'), ('l', 'Lunch'), ('d', 'Dinner'), ('a', 'all time')
     ]
+
+
+class Cart(models.Model):
+    item_types = [('Space', 'Space'), ('Food', 'Food'), ('Guide', 'Guide')]
+
+    owner = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
+    item_type = models.CharField(max_length=20, choices=item_types)
+    item_id = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField()
+    from_date = models.DateField(blank=True, null=True, default=None)
+    to_date = models.DateField(blank=True, null=True, default=None)
+    price = models.FloatField()
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(check=Q(price__gte=0),
+                                   name='non-negative cart_item price'),
+        ]
+        ordering = ['owner']
+
+    def __str__(self):
+        return self.item_type
 
 
 '''
