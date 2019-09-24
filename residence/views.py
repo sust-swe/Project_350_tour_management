@@ -8,6 +8,7 @@ from .models import Residence, Space
 from .forms import ResidenceForm, SpaceForm
 from homepage.models import UserDetail, User
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from django.db.models import Q
 
 # Create your views here.
 
@@ -54,11 +55,12 @@ class AddResidence(views.View):
                     nfe = e.message_dict[NON_FIELD_ERRORS]
                     return render(request, self.template_name, {'form': form, 'nfe': nfe})
             else:
-                messages.info('Invalid Credentials')
+                messages.info(request, 'Invalid Credentials')
                 return render(request, self.template_name, {'form': form})
         else:
             messages.info(request, 'Log in First')
             return redirect('/')
+
 
 class ResidenceDetail(views.View):
     template_name = 'residence_detail.html'
@@ -90,7 +92,8 @@ class UpdateResidence(views.View):
         if request.user.is_authenticated:
             instance = Residence.objects.get(pk=id)
             if instance.user_detail.user == request.user:
-                form = self.form_class(request.POST, request.FILES, instance=instance)
+                form = self.form_class(
+                    request.POST, request.FILES, instance=instance)
                 if form.is_valid():
                     ob = form.save(commit=False)
                     try:
@@ -207,7 +210,8 @@ class UpdateSpace(views.View):
         if request.user.is_authenticated:
             space = Space.objects.get(pk=space_id)
             if space.residence.user_detail.user == request.user:
-                form = self.form_class(request.POST, request.FILES, instance=space)
+                form = self.form_class(
+                    request.POST, request.FILES, instance=space)
                 if form.is_valid():
                     ob = form.save(commit=False)
                     # print('Update space post')

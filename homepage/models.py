@@ -77,10 +77,16 @@ class MyChoice:
         ('b', 'Breakfast'), ('l', 'Lunch'), ('d', 'Dinner'), ('a', 'all time')
     ]
 
+    months = [
+        (1, 'January'), (2, 'February'), (3,
+                                          'March'), (4, 'April'), (5, 'May'), (6, 'June'),
+        (7, 'July'), (8, 'August'), (9, 'September'), (10,
+                                                       'Octobor'), (11, 'November'), (12, 'December')
+    ]
+
 
 class Cart(models.Model):
     item_types = [('Space', 'Space'), ('Food', 'Food'), ('Guide', 'Guide')]
-
     owner = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
     item_type = models.CharField(max_length=20, choices=item_types)
     item_id = models.PositiveIntegerField()

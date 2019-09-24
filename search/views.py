@@ -25,6 +25,8 @@ class SearchRestaurant(views.View):
             # print(country_id, city_id, restaurant_name, type(country_id))
             # print(Restaurant.objects.all())
 
+            restaurants = Restaurant.objects.all()
+
             if country_id:
                 restaurants = Restaurant.objects.filter(
                     country_id=country_id)
@@ -48,3 +50,16 @@ def load_city(request):
     cities = City.objects.filter(country_id=country_id)
     # print(cities)
     return render(request, 'ajax_city.html', {'cities': cities})
+
+
+def load_date(request):
+    month_id = int(request.GET.get('month', None))
+    var = 0
+    if month_id == 1 or month_id == 3 or month_id == 5 or month_id == 7 or month_id == 8 or month_id == 10 or month_id == 12:
+        var = [o for o in range(1, 32)]
+    elif month_id == 2:
+        var = [o for o in range(1, 29)]
+    else:
+        var = [o for o in range(1, 31)]
+
+    return render(request, 'load_date.html', {'var': var})

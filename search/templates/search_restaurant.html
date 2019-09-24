@@ -7,7 +7,7 @@
 
 
 {% block content_2 %}
-<form method="POST" id="person-create-form" city-url="ajax/load_city/" novalidate>
+<form method="POST" id="person-create-form" city-url="/search/ajax/load_city/" novalidate>
     {% csrf_token %}
     <table>
         {{ form.as_table }}

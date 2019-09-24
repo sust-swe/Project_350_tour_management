@@ -1,5 +1,6 @@
 from django import forms
-from homepage.models import MyChoice, Country, City
+from homepage.models import MyChoice, Country, City, MyChoice
+import datetime
 
 
 class SearchRestaurantForm(forms.Form):
@@ -20,3 +21,30 @@ class SearchRestaurantForm(forms.Form):
 
             except (ValueError, TypeError):
                 pass
+
+
+class DateForm(forms.Form):
+    year = forms.ChoiceField(choices=[(ch, ch) for ch in range(
+        datetime.date.today().year, datetime.date.today().year+5
+    )])
+
+    month = forms.ChoiceField(choices=MyChoice.months)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['date'] = forms.ChoiceField(choices=[])
+
+        if 'month' in self.data:
+            month_id = self.data.get('month', None)
+            if month_id == 1 or month_id == 3 or month_id == 5 or month_id == 7 or month_id == 8 or month_id == 10 or month_id == 12:
+                self.fields['data'] = forms.ChoiceField(
+                    choices=[o for o in range(1, 32)])
+            elif month_id == 2:
+                self.fields['data'] = forms.ChoiceField(
+                    choices=[o for o in range(1, 29)])
+            else:
+                self.fields['data'] = forms.ChoiceField(
+                    choices=[o for o in range(1, 31)])
+
+
+          

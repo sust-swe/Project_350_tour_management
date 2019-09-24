@@ -114,3 +114,10 @@ class Underground(views.View):
 
     def get(self, request):
         return render(request, self.template_name)
+
+
+class PermissionDenied(views.View):
+
+    def get(self, request):
+        messages.info(request, 'Permission Denied')
+        return redirect('/')
