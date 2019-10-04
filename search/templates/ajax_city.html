@@ -1,11 +1,4 @@
-{% extends 'base.html' %}
-
-
-
-{% block content_2 %}
 <option value="">---------</option>
 {% for city in cities %}
 <option value="{{city.id}}">{{city.city}}</option>
 {% endfor %}
-
-{% endblock content_2 %}

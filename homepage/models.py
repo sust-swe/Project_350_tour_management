@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q
-
 # Create your models here.
 
 
@@ -90,7 +89,7 @@ class Cart(models.Model):
     owner = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
     item_type = models.CharField(max_length=20, choices=item_types)
     item_id = models.PositiveIntegerField()
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(blank=True, null=True, default=None)
     from_date = models.DateField(blank=True, null=True, default=None)
     to_date = models.DateField(blank=True, null=True, default=None)
     price = models.FloatField()

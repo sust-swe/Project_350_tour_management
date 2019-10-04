@@ -45,21 +45,4 @@ class SearchRestaurant(views.View):
             return render(request, self.template_name, {'form': form})
 
 
-def load_city(request):
-    country_id = int(request.GET.get('country'))
-    cities = City.objects.filter(country_id=country_id)
-    # print(cities)
-    return render(request, 'ajax_city.html', {'cities': cities})
 
-
-def load_date(request):
-    month_id = int(request.GET.get('month', None))
-    var = 0
-    if month_id == 1 or month_id == 3 or month_id == 5 or month_id == 7 or month_id == 8 or month_id == 10 or month_id == 12:
-        var = [o for o in range(1, 32)]
-    elif month_id == 2:
-        var = [o for o in range(1, 29)]
-    else:
-        var = [o for o in range(1, 31)]
-
-    return render(request, 'load_date.html', {'var': var})
