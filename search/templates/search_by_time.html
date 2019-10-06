@@ -9,7 +9,7 @@
 <button id="b1">Click Me</button>
 
 {% block content_2 %}
-
+<div id="test"></div>
 
 <form method="POST" enctype="multipart/form-data" load_month="/search/ajax/load_month/"
     load_day="/search/ajax/load_day/" id="form1" novalidate>
@@ -24,22 +24,31 @@
         </tr>
     </table>
 </form>
+<div id="urls" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
+    load_to_day="/search/ajax/load_to_day/">
 
+</div>
 <script>
     $("#b1").click(function () { $("#test").show(); });
     $("#b1").dblclick(function () { $("#test").hide(); });
 
 
     $("#id_year").change(function () {
-        $("#test").html('changed');
+        // $("#test").html('changed');
         var year = $(this).val();
         var url = $("#form1").attr("load_month");
-        $("#test").html(url);
+        // $("#test").html(url);
 
         $.ajax({
             url: url,
             data: { 'year': year },
             success: function (shoaib) { $("#id_month").html(shoaib); }
+        });
+
+        $.ajax({
+            url: $("#urls").attr("load_to_year"),
+            data: { 'year': year },
+            success: function (redata) { $("#id_to_year").html(redata) }
         });
     });
 
@@ -47,12 +56,57 @@
         var year = $("#id_year").val();
         var month = $("#id_month").val();
         var url = $("#form1").attr("load_day");
-
+        // $("#test").html('ok');
         $.ajax({
             url: url,
             data: { 'year': year, 'month': month },
             success: function (tasrif) { $("#id_day").html(tasrif); }
         });
+
+        $.ajax({
+            url: $("#urls").attr("load_to_month"),
+            data: { 'from_year': $("#id_year").val(), 'to_year': $("#id_to_year").val(), 'from_month': $("#id_month").val() },
+            success: function (redata) { $("#id_to_month").html(redata); }
+        });
     });
+
+    $("#id_to_year").change(function () {
+        // $("#test").html('ok');
+        $.ajax({
+            url: $("#urls").attr("load_to_month"),
+            data: { 'from_year': $("#id_year").val(), 'to_year': $("#id_to_year").val(), 'from_month': $("#id_month").val() },
+            success: function (redata) { $("#id_to_month").html(redata); }
+        });
+    });
+
+    $("#id_to_month").change(function () {
+        $.ajax({
+            url: $("#urls").attr("load_to_day"),
+            data: {
+                'from_year': $("#id_year").val(),
+                'from_month': $("#id_month").val(),
+                'from_day': $("#id_day").val(),
+                'to_year': $("#id_to_year").val(),
+                'to_month': $("#id_to_month").val(),
+            },
+            success: function (redata) { $("#id_to_day").html(redata); }
+        });
+    });
+
+    $("#id_day").change(function () {
+        $.ajax({
+            url: $("#urls").attr("load_to_day"),
+            data: {
+                'from_year': $("#id_year").val(),
+                'from_month': $("#id_month").val(),
+                'from_day': $("#id_day").val(),
+                'to_year': $("#id_to_year").val(),
+                'to_month': $("#id_to_month").val(),
+            },
+            success: function (redata) { $("#id_to_day").html(redata); }
+        });
+    });
+
+
 </script>
 {% endblock content_2 %}
