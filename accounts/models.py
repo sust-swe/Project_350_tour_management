@@ -3,10 +3,6 @@ from django.db import models
 # Create your models here.
 
 
-class A:
-    MyArray = [('a', 'b')]
-
-
 #  pip install Pillow
 #  python manage.py makemigrations
 # python manage.py sqlmigrate @appname @migrationid

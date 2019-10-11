@@ -21,12 +21,52 @@
 </table>
 {% if space.img %} <img src="{{ space.img.url }}" height="300" width="450"> {% endif %}
 <br><br><br>
+<div>
+    <a href="/residence/space/{{space.id}}/book/">Book</a>
+</div>
 {% if space.residence.user_detail.user == request.user %}
 <a href="/residence/space/{{ space.id }}/update/"> Update</a> <br>
 <a href="/residence/space/{{ space.id }}/delete/"> Delete</a> <br>
 <a href="/residence/space/{{ space.id }}/avail/"> Create New Availability </a><br>
-
 {% endif %}
 
+<div id="availables">
+    <table class="spacing-table">
+        <tr>
+            <td>Number Of Space</td>
+            <td>From</td>
+            <td>To</td>
+        </tr>
+        {% for avail in avails %}
+
+        <tr>
+            <td>{{avail.number_of_space}}</td>
+            <td>{{avail.avail_from}}</td>
+            <td>{{avail.avail_to}}</td>
+        </tr>
+
+        {% endfor %}
+    </table>
+</div>
+<div id="Bookings">
+    <tr>
+        <td>Number Of Space</td>
+        <td>From</td>
+        <td>To</td>
+        <td>By</td>
+        <td>Total Payable</td>
+        <td>Booked at</td>
+    </tr>
+
+    {% for booking in bookings %}
+    <td>{{booking.number_of_space}}</td>
+    <td>{{booking.book_from}}</td>
+    <td>{{booking.book_to}}</td>
+    <td>{{booking.guest}}</td>
+    <td>{{booking.total_rent}}</td>
+    <td>{{booking.booking_time}}</td>
+    {% endfor %}
+
+</div>
 
 {% endblock %}

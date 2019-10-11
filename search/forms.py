@@ -1,5 +1,5 @@
 from django import forms
-from homepage.models import MyChoice, Country, City, MyChoice
+from homepage.models import MyChoice, Country, City
 import datetime
 
 

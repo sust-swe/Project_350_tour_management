@@ -1,6 +1,5 @@
-from django import forms
 from .models import Residence, Space, SpaceAvailable
-from homepage.models import Country, City
+from homepage.base import *
 
 
 class ResidenceForm(forms.ModelForm):
@@ -34,3 +33,25 @@ class SpaceAvailabilityForm(forms.ModelForm):
     class Meta:
         model = SpaceAvailable
         exclude = ['space']
+
+
+class DateForm(forms.Form):
+    number_of_space = forms.IntegerField(initial=1)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        year_choice = [("", "------------")]
+        for i in range(datetime.today().year, datetime.today().year+5):
+            year_choice += [(str(i), str(i))]
+        self.fields['from_year'] = forms.ChoiceField(
+            choices=year_choice, label="From Year")
+        self.fields['from_month'] = forms.ChoiceField(
+            choices=[("", "------------")], label="From Month")
+        self.fields['from_day'] = forms.ChoiceField(
+            choices=[("", "------------")], label="From Day")
+        self.fields['to_year'] = forms.ChoiceField(
+            choices=[("", "------------")], label='To Year')
+        self.fields['to_month'] = forms.ChoiceField(
+            choices=[("", "------------")], label='To Month')
+        self.fields['to_day'] = forms.ChoiceField(
+            choices=[("", "------------")], label='To Day')

@@ -1,0 +1,7 @@
+.spacing-table {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 15px;
+    border-collapse: separate;
+    table-layout: fixed;
+    width: 80%;
+    border-spacing: 0 5px; /* this is the ultimate fix */

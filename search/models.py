@@ -1,3 +1,3 @@
-from django.db import models
+from homepage.base import *
 
 # Create your models here.

@@ -1,10 +1,10 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models import Q, F
-from homepage.models import City, UserDetail, Address, Country
+from homepage.base import *
+from django.utils.translation import gettext_lazy as _
+from .views_1 import is_space_ordered, get_aggregated_avail_space,
+from homepage.models import UserDetail, City, Country, Address, MyChoice, Cart
 
-# Create your models here.
 
+#####################################         Models           ########################################################
 
 class Residence(models.Model):
     user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
@@ -58,10 +58,6 @@ class SpaceAvailable(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=['space', 'avail_from'], name='Space avail unique from'),
-            models.UniqueConstraint(
-                fields=['space', 'avail_to'], name='Space avail unique to'),
             models.CheckConstraint(check=Q(avail_from__lte=F(
                 'avail_to')), name='sa valid date span ')
         ]
@@ -69,6 +65,26 @@ class SpaceAvailable(models.Model):
 
     def __str__(self):
         return '%s from %s to %s' % (self.space.__str__(), str(self.avail_from), str(self.avail_to))
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
+        # print(exclude, type(exclude))
+
+        if exclude and 'space' in exclude:
+            pass
+        else:
+            if is_space_ordered(self.space, self.avail_from, self.avail_to):
+                raise ValidationError(_("Already Ordered"))
+            else:
+                (from_date, to_date, msg) = get_aggregated_avail_space(
+                    self.space, self.avail_from, self.avail_to)
+                if from_date and to_date:
+                    self.avail_from = from_date
+                    self.avail_to = to_date
+                    if msg:
+                        print(msg)
+                else:
+                    raise ValidationError(_("Alaready Available for Booking"))
 
 
 class SpaceBooking(models.Model):
@@ -96,6 +112,13 @@ class SpaceBooking(models.Model):
     def __str__(self):
         return '%s by %s from %s to %s' % (self.space.__str__(), self.guest.__str__(), str(self.book_from),
                                            str(self.book_to))
+
+    def clean(self):
+        if is_space_ordered(SpaceBooking, self.space, self.book_from, self.book_to):
+            raise ValidationError(_("Already Booked"))
+
+        if not is_space_available(SpaceBooking, self.space, self.book_from, self.book_to):
+            raise ValidationError(_("Not Available"))
 
 
 # pip install Pillow

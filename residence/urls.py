@@ -1,9 +1,7 @@
-# main urls from django.contrib import admin
-from django.urls import path, include
-from . import views, views_1
+from homepage.base import *
+from . import views
 
 urlpatterns = [
-
     # path('login/', views.login, name='login')
     path('my_residence/', views.MyResidence.as_view(), name='my residence'),
     path('add_residence/', views.AddResidence.as_view(), name='add residence'),
@@ -21,5 +19,7 @@ urlpatterns = [
     path('space/<int:space_id>/delete/',
          views.DeleteSpace.as_view(), name='Delete Space'),
     path('space/<int:space_id>/avail/',
-         views_1.CreateSpaceAvailability.as_view(), name='c_s_a'),
+         views.CreateSpaceAvailability.as_view(), name='c_s_a'),
+    path("space/<int:space_id>/book/", views.BookSpace.as_view()),
+    path("ajax/", include("residence.ajax_handler")),
 ]

@@ -1,20 +1,16 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib import messages
-from django.contrib.auth.models import User, auth
-from django import views
-from .models import Residence
-from .models import Residence, Space
-from .forms import ResidenceForm, SpaceForm
-from homepage.models import UserDetail, User
-from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
-from django.db.models import Q
+from homepage.base import *
+from .models import Space, SpaceAvailable, SpaceBooking, Residence
+from .forms import SpaceForm, SpaceAvailabilityForm, ResidenceForm, DateForm
+from .views_1 import is_space_ordered, get_aggregated_avail_space
+
 
 # Create your views here.
 
 
 def register(request):
     return render(request, 'register.html')
+
+##########################################      Residence      #####################################################
 
 
 class MyResidence(views.View):
@@ -66,8 +62,9 @@ class ResidenceDetail(views.View):
     template_name = 'residence_detail.html'
 
     def get(self, request, id):
-        print('hi')
+        # print('hi')
         ob = Residence.objects.get(pk=id)
+
         return render(request, self.template_name, {'ob': ob})
 
 
@@ -138,6 +135,8 @@ class ShowResidenceSpace(views.View):
         return render(request, self.template_name, {'spaces': spaces})
 
 
+##################################       Space        ##############################################################
+
 class AddSpace(views.View):
     template_name = 'add_space.html'
     form_class = SpaceForm
@@ -186,7 +185,9 @@ class SpaceDetail(views.View):
 
     def get(self, request, space_id):
         space = Space.objects.get(pk=space_id)
-        return render(request, self.template_name, {'space': space})
+        avail = SpaceAvailable.objects.filter(
+            space_id=space_id).order_by('avail_from')
+        return render(request, self.template_name, {'space': space, 'avails': avail})
 
 
 class UpdateSpace(views.View):
@@ -247,3 +248,83 @@ class DeleteSpace(views.View):
         else:
             messages.info(request, 'Log in First')
             return redirect('/')
+
+############################################    Availability        ################################################
+
+
+class CreateSpaceAvailability(views.View):
+    template_name = 'c_s_a.html'
+    form_class = SpaceAvailabilityForm
+
+    def get(self, request, space_id):
+        space = Space.objects.get(pk=space_id)
+        if request.user.is_authenticated and space.residence.user_detail.user == request.user:
+            form = self.form_class()
+            return render(request, self.template_name, {'form': form})
+        else:
+            return redirect('/permission_denied/')
+
+    def post(self, request, space_id):
+        space = Space.objects.get(pk=space_id)
+        if request.user.is_authenticated and space.residence.user_detail.user == request.user:
+            form = self.form_class(request.POST or None)
+            if form.is_valid():
+                space_available = form.save(commit=False)
+                space_available.space = space
+                try:
+                    space_available.full_clean()
+                    space_available.save()
+                    return redirect('/residence/space/{}/'.format(space.id))
+                except ValidationError as ve:
+                    # print(ve.message_dict)
+                    for k in ve.message_dict:
+                        # form error filled by ve
+                        form.add_error(k, ve.message_dict.get(k, None))
+                    # print(form.as_table())
+                    return render(request, self.template_name, {'form': form})
+            else:
+                return render(request, self.template_name, {'form': form})
+        else:
+            return redirect('/permission_denied/')
+
+
+class BookSpace(views.View):
+    template_name = "book_space.html"
+
+    def get(self, request, space_id):
+        date_form = DateForm()
+        return render(request, self.template_name, {'form': date_form})
+
+    def post(self, request, space_id):
+        form = DateForm(request.POST or None)
+        if form.is_valid():
+            year = form.cleaned_data['from_year']
+            month = form.cleaned_data['from_month']
+            day = form.cleaned_data['from_day']
+
+            from_date = date(year, month, day)
+
+            year = form.cleaned_data['to_year']
+            month = form.cleaned_data['to_month']
+            day = form.cleaned_data['to_day']
+
+            to_date = date(year, month, day)
+
+            space = Space.objects.filter(pk=space_id)
+            new_booking = SpaceBooking()
+            new_booking.space = space
+            new_booking.number_of_space = form.cleaned_data['number_of_space']
+            new_booking.guest = UserDetail.objects.get(user=request.user)
+            new_booking.booking_time = datetime.now()
+            new_booking.total_rent = space.rent * new_booking.number_of_space
+            new_booking.book_from = from_date
+            new_booking.book_to = to_date
+
+            try:
+                new_booking.full_clean()
+                new_booking.save()
+                return redirect("/residence/{}/".format(space_id))
+            except ValidationError as ve:
+                for kk in ve:
+                    form.add_error(kk, ve.message_dict.get(kk))
+                return render(request, self.template_name, {'form': form})
