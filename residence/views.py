@@ -1,7 +1,8 @@
 from homepage.base import *
+from homepage.models import UserDetail
 from .models import Space, SpaceAvailable, SpaceBooking, Residence
-from .forms import SpaceForm, SpaceAvailabilityForm, ResidenceForm, DateForm
-from .views_1 import is_space_ordered, get_aggregated_avail_space
+from .forms import SpaceForm, SpaceAvailabilityForm, ResidenceForm, SpaceBookForm
+from .views_1 import is_space_booked, get_aggregated_avail_space
 
 
 # Create your views here.
@@ -290,33 +291,30 @@ class CreateSpaceAvailability(views.View):
 
 class BookSpace(views.View):
     template_name = "book_space.html"
+    form_class = SpaceBookForm
 
     def get(self, request, space_id):
-        date_form = DateForm()
+        date_form = SpaceBookForm()
         return render(request, self.template_name, {'form': date_form})
 
     def post(self, request, space_id):
-        form = DateForm(request.POST or None)
+        form = SpaceBookForm(request.POST or None)
         if form.is_valid():
-            year = form.cleaned_data['from_year']
-            month = form.cleaned_data['from_month']
-            day = form.cleaned_data['from_day']
-
+            year = int(form.cleaned_data['from_year'])
+            month = int(form.cleaned_data['from_month'])
+            day = int(form.cleaned_data['from_day'])
             from_date = date(year, month, day)
-
-            year = form.cleaned_data['to_year']
-            month = form.cleaned_data['to_month']
-            day = form.cleaned_data['to_day']
-
+            year = int(form.cleaned_data['to_year'])
+            month = int(form.cleaned_data['to_month'])
+            day = int(form.cleaned_data['to_day'])
             to_date = date(year, month, day)
 
-            space = Space.objects.filter(pk=space_id)
+            space = Space.objects.get(pk=space_id)
             new_booking = SpaceBooking()
             new_booking.space = space
-            new_booking.number_of_space = form.cleaned_data['number_of_space']
             new_booking.guest = UserDetail.objects.get(user=request.user)
             new_booking.booking_time = datetime.now()
-            new_booking.total_rent = space.rent * new_booking.number_of_space
+            new_booking.total_rent = space.rent
             new_booking.book_from = from_date
             new_booking.book_to = to_date
 
@@ -326,5 +324,8 @@ class BookSpace(views.View):
                 return redirect("/residence/{}/".format(space_id))
             except ValidationError as ve:
                 for kk in ve:
+
                     form.add_error(kk, ve.message_dict.get(kk))
                 return render(request, self.template_name, {'form': form})
+        else:
+            return render(request, self.template_name, {'form': form})

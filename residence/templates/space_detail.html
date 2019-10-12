@@ -33,14 +33,13 @@
 <div id="availables">
     <table class="spacing-table">
         <tr>
-            <td>Number Of Space</td>
             <td>From</td>
             <td>To</td>
         </tr>
         {% for avail in avails %}
 
         <tr>
-            <td>{{avail.number_of_space}}</td>
+
             <td>{{avail.avail_from}}</td>
             <td>{{avail.avail_to}}</td>
         </tr>
@@ -49,23 +48,27 @@
     </table>
 </div>
 <div id="Bookings">
-    <tr>
-        <td>Number Of Space</td>
-        <td>From</td>
-        <td>To</td>
-        <td>By</td>
-        <td>Total Payable</td>
-        <td>Booked at</td>
-    </tr>
+    <table class="spacing-table">
+        <tr>
 
-    {% for booking in bookings %}
-    <td>{{booking.number_of_space}}</td>
-    <td>{{booking.book_from}}</td>
-    <td>{{booking.book_to}}</td>
-    <td>{{booking.guest}}</td>
-    <td>{{booking.total_rent}}</td>
-    <td>{{booking.booking_time}}</td>
-    {% endfor %}
+            <td>From</td>
+            <td>To</td>
+            <td>By</td>
+            <td>Total Payable</td>
+            <td>Booked at</td>
+        </tr>
+
+        {% for booking in bookings %}
+        <tr>
+
+            <td>{{booking.book_from}}</td>
+            <td>{{booking.book_to}}</td>
+            <td>{{booking.guest}}</td>
+            <td>{{booking.total_rent}}</td>
+            <td>{{booking.booking_time}}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
 </div>
 

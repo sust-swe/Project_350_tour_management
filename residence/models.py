@@ -1,6 +1,6 @@
 from homepage.base import *
 from django.utils.translation import gettext_lazy as _
-from .views_1 import is_space_ordered, get_aggregated_avail_space,
+from .views_1 import is_space_booked, get_aggregated_avail_space, is_space_available
 from homepage.models import UserDetail, City, Country, Address, MyChoice, Cart
 
 
@@ -52,7 +52,6 @@ class Space(models.Model):
 
 class SpaceAvailable(models.Model):
     space = models.ForeignKey(Space, on_delete=models.CASCADE)
-    number_of_space = models.IntegerField(default=1)
     avail_from = models.DateField()
     avail_to = models.DateField()
 
@@ -73,7 +72,7 @@ class SpaceAvailable(models.Model):
         if exclude and 'space' in exclude:
             pass
         else:
-            if is_space_ordered(self.space, self.avail_from, self.avail_to):
+            if is_space_booked_tricky(self.space, self.avail_from, self.avail_to):
                 raise ValidationError(_("Already Ordered"))
             else:
                 (from_date, to_date, msg) = get_aggregated_avail_space(
@@ -89,7 +88,6 @@ class SpaceAvailable(models.Model):
 
 class SpaceBooking(models.Model):
     space = models.ForeignKey(Space, on_delete=models.CASCADE)
-    number_of_space = models.IntegerField(default=1)
     guest = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
     booking_time = models.DateTimeField()
     total_rent = models.FloatField()
@@ -114,11 +112,12 @@ class SpaceBooking(models.Model):
                                            str(self.book_to))
 
     def clean(self):
-        if is_space_ordered(SpaceBooking, self.space, self.book_from, self.book_to):
-            raise ValidationError(_("Already Booked"))
-
-        if not is_space_available(SpaceBooking, self.space, self.book_from, self.book_to):
+        if not is_space_available(SpaceAvailable, self.space, self.book_from, self.book_to):
             raise ValidationError(_("Not Available"))
+
+
+def is_space_booked_tricky(space, from_date, to_date):
+    is_space_booked(SpaceBooking, space, from_date, to_date)
 
 
 # pip install Pillow
