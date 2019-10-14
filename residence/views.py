@@ -299,6 +299,7 @@ class BookSpace(views.View):
 
     def post(self, request, space_id):
         form = SpaceBookForm(request.POST or None)
+        print(form.as_table())
         if form.is_valid():
             year = int(form.cleaned_data['from_year'])
             month = int(form.cleaned_data['from_month'])
@@ -323,8 +324,9 @@ class BookSpace(views.View):
                 new_booking.save()
                 return redirect("/residence/{}/".format(space_id))
             except ValidationError as ve:
-                for kk in ve:
-
+                # adding form error after being valid
+                for kk in ve.message_dict:
+                    print(kk, ve.message_dict[kk])
                     form.add_error(kk, ve.message_dict.get(kk))
                 return render(request, self.template_name, {'form': form})
         else:

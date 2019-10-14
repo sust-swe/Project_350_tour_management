@@ -18,26 +18,21 @@ def is_space_booked(SpaceBooking, space, from_date, to_date):
     # proposed time span includes booked time span
     dec3 = SpaceBooking.objects.filter(
         space=space, book_from__gte=from_date, book_to__lte=to_date).exists()
-
     if dec1 or dec2 or dec3:
         return True
     else:
         return False
 
 
-def get_aggregated_avail_space(space, from_date, to_date):
-
+def create_avail_space(SpaceAvailable, space, from_date, to_date):
     # proposed time span entirely included in old time span
     if SpaceAvailable.objects.filter(space=space, avail_from__lte=from_date, avail_to__gte=to_date).exists():
-        return (None, None, None)
+        return
     flag = False
 
     # old time spans entirely included in proposed time span
-    qs1 = SpaceAvailable.objects.filter(
-        space=space, avail_from__gte=from_date, avail_to__lte=to_date)
-    if qs1.exists():
-        for ob in qs1:
-            ob.delete()
+    SpaceAvailable.objects.filter(
+        space=space, avail_from__gte=from_date, avail_to__lte=to_date).delete()
 
     # proposed time span starts within a old time span
     qs2 = SpaceAvailable.objects.filter(
@@ -46,7 +41,6 @@ def get_aggregated_avail_space(space, from_date, to_date):
         ob1 = qs2[0]
         from_date = ob1.avail_from
         ob1.delete()
-        flag = True
 
     # proposed time span ends within a old time span
     qs3 = SpaceAvailable.objects.filter(
@@ -55,40 +49,76 @@ def get_aggregated_avail_space(space, from_date, to_date):
         ob2 = qs3[0]
         to_date = ob2.avail_to
         ob2.delete()
-        flag = True
 
-    if flag:
-        return (from_date, to_date, "Availability been merged with old ones")
-    else:
-        return (from_date, to_date, None)
+    pre_date = ob.from_date - timedelta(1)
+    post_date = ob.to_date + timedelta(1)
+
+    # adjacent time span preceeding proposed time span be unified
+    qs4 = SpaceAvailable.objects.filter(space, avail_to=pre_date)
+    if qs4.exists():
+        from_date = qs4[0].avail_from
+        qs4[0].delete()
+
+    # adjacent time span following proposed time span be unified
+    qs5 = SpaceAvailable(space=space, avail_from=post_date)
+    if qs5.exists():
+        to_date = qs5[0].avail_to
+        qs5[0].delete()
+
+    ob = SpaceAvailable(space=space, avail_from=from_date, avail_to=to_date)
+    ob.save()
 
 
 def is_space_available(SpaceAvailable, space, from_date, to_date):
-
-    dec1 = SpaceAvailable.objects.filter(
+    qs = SpaceAvailable.objects.filter(
         space=space, avail_from__lte=from_date, avail_to__gte=to_date).exists()
 
-    if dec1:
+    if qs.exists():
         return True
     return False
 
-######################################       Load dependent date     ###################################
+
+def make_space_unavailable(SpaceAvailable, space, from_date, to_date):
+    qs = SpaceAvailable.objects.filter(
+        space=space, avail_from__lte=from_date, avail_to__gte=to_date)
+    if not qs.exists():
+        return
+    ob = qs[0]
+    pre_date = from_date - timedelta(1)
+    post_date = to_date + timedelta(1)
+    ob1 = None
+    ob2 = None
+    if ob.avail_from < from_date:
+        ob1 = SpaceAvailable(
+            space=space, avail_from=ob.avail_from, avail_to=pre_date)
+    if ob.avail_to > to_date:
+        ob2 = SpaceAvailable(space=space. avail_from=post_date, avail_to=ob.avail_to)
+    ob.delete()
+    if ob1:
+        ob1.save()
+    if ob2:
+        ob2.save()
+
+    ######################################       Load dependent date     ###################################
 
 
 def load_flw_from_month(year):
-    month = []
+    month = [("", "------------")]
     today_ = datetime.today()
     this_month = today_.month
     this_year = today_.year
     if year == this_year:
-        month = [(i, month_array[i]) for i in range(this_month, 13)]
+        for i in range(today_.month, 13):
+            month += [(i, month_array[i])]
     else:
-        month = [(i, month_array[i]) for i in range(1, 13)]
+        for i in range(1, 13):
+            month += [(i, month_array[i])]
+
     return month
 
 
 def load_flw_from_day(year, month):
-    day_arr = []
+    day_arr = [("", "------------")]
     lb = 0
     ub = 0
     td = datetime.today()
@@ -105,19 +135,20 @@ def load_flw_from_day(year, month):
         lb = td.day
     else:
         lb = 1
-    day_arr = [(i, str(i)) for i in range(lb, ub+1)]
+    for i in range(lb, ub+1):
+        day_arr += [(i, str(i))]
     return day_arr
 
 
 def load_flw_to_year(from_year):
-    year_choice = []
+    year_choice = [("", "------------")]
     for i in range(from_year, from_year+5):
         year_choice += [(i, str(i))]
     return year_choice
 
 
 def load_flw_to_month(from_year, to_year, from_month):
-    month_choice = []
+    month_choice = [("", "------------")]
     lb = 0
     ub = -1
     if from_year == to_year:
@@ -131,7 +162,7 @@ def load_flw_to_month(from_year, to_year, from_month):
 
 
 def load_flw_to_day(from_year, to_year, from_month, to_month, from_day):
-    days = []
+    days = [("", "------------")]
     lb = 0
     ub = -1
     if from_year == to_year and from_month == to_month:
