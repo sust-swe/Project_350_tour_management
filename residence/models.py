@@ -1,6 +1,6 @@
 from homepage.base import *
 from django.utils.translation import gettext_lazy as _
-from .views_1 import is_space_booked, get_aggregated_avail_space, is_space_available
+from .views_1 import is_space_booked, make_space_unavailable, create_avail_space, is_space_available
 from homepage.models import UserDetail, City, Country, Address, MyChoice, Cart
 
 
@@ -9,15 +9,11 @@ from homepage.models import UserDetail, City, Country, Address, MyChoice, Cart
 class Residence(models.Model):
     user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    city = models.ForeignKey(
-        City, on_delete=models.SET_NULL, null=True, default=None)
-    country = models.ForeignKey(
-        Country, on_delete=models.SET_NULL, null=True, default=None)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, default=None)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, default=None)
     mobile = models.IntegerField(default=None, null=True, blank=True)
-    description = models.CharField(
-        max_length=255, null=True, blank=True, default=None)
-    img = models.ImageField(upload_to='ResidencePhoto',
-                            null=True, blank=True, default=None)
+    description = models.CharField(max_length=255, null=True, blank=True, default=None)
+    img = models.ImageField(upload_to='ResidencePhoto',null=True, blank=True, default=None)
 
     class Meta:
         pass
@@ -26,28 +22,21 @@ class Residence(models.Model):
         return '%s\'s %s at %s' % (self.user_detail.__str__(), self.name, self.city.__str__())
 
 
+class SpaceType(models.Model):
+    residence = models.ForeignKey(Residence, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    person = models.PositiveIntegerField()
+    rent = models.FloatField()
+    pic = models.ImageField(upload_to="SpaceTypePhoto")
+    description = models.CharField(max_length=255, null=True, blank=True, default=None)
+
+
 class Space(models.Model):
     residence = models.ForeignKey(Residence, on_delete=models.CASCADE)
-    space_type_name = models.CharField(max_length=100)
-    description = models.CharField(
-        max_length=255, null=True, blank=True, default=None)
-    rent = models.FloatField()
-    person = models.PositiveIntegerField()
-    shared = models.BooleanField(default=False, choices=[
-                                 (False, 'No'), (True, 'Yes')])
-    img = models.ImageField(upload_to='ResidenceSpacePhoto',
-                            null=True, blank=True, default=None)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['residence', 'space_type_name'], name='residence\'s unique space'),
-            models.CheckConstraint(check=Q(rent__gte=0),
-                                   name='non-negative rent')
-        ]
+    space_type = models.ForeignKey(SpaceType, on_delete=models.CASCADE, default=None, null=True)
 
     def __str__(self):
-        return '%s Space-> %s' % (self.residence.__str__(), self.space_type_name)
+        return '%s Space-> %s' % (self.residence.__str__(), self.space_type)
 
 
 class SpaceAvailable(models.Model):
@@ -56,10 +45,6 @@ class SpaceAvailable(models.Model):
     avail_to = models.DateField()
 
     class Meta:
-        constraints = [
-            models.CheckConstraint(check=Q(avail_from__lte=F(
-                'avail_to')), name='sa valid date span ')
-        ]
         ordering = ['avail_from', '-avail_to']
 
     def __str__(self):
@@ -73,17 +58,10 @@ class SpaceAvailable(models.Model):
             pass
         else:
             if is_space_booked_tricky(self.space, self.avail_from, self.avail_to):
-                raise ValidationError(_("Already Ordered"))
+                raise ValidationError(_("Already Booked"))
             else:
-                (from_date, to_date, msg) = get_aggregated_avail_space(
-                    self.space, self.avail_from, self.avail_to)
-                if from_date and to_date:
-                    self.avail_from = from_date
-                    self.avail_to = to_date
-                    if msg:
-                        print(msg)
-                else:
-                    raise ValidationError(_("Alaready Available for Booking"))
+                create_avail_space(SpaceAvailable,self.space, self.avail_from, self.avail_to)
+
 
 
 class SpaceBooking(models.Model):
@@ -96,14 +74,10 @@ class SpaceBooking(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=['space', 'book_from'], name='SpaceBooking unq from'),
-            models.UniqueConstraint(
-                fields=['space', 'book_to'], name='SpaceBooking unq to'),
-            models.CheckConstraint(check=Q(book_from__lte=F(
-                'book_to')), name='sb unique time span'),
-            models.CheckConstraint(
-                check=Q(total_rent__gte=0), name='sb non-negative total rent')
+            models.UniqueConstraint(fields=['space', 'book_from'], name='SpaceBooking unq from'),
+            models.UniqueConstraint(fields=['space', 'book_to'], name='SpaceBooking unq to'),
+            models.CheckConstraint(check=Q(book_from__lte=F('book_to')), name='sb unique time span'),
+            models.CheckConstraint(check=Q(total_rent__gte=0), name='sb non-negative total rent')
         ]
         ordering = ['-booking_time']
 

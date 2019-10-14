@@ -1,5 +1,6 @@
 *.pyc
 .vscode
+.idea
 testme
 media
 test_django.py
