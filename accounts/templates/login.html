@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+
+{% block content_1 %} <title>login</title> {% endblock %}
+
+{% block content_2 %}
+
+    <form action="/accounts/login/" method="post">
+        {% csrf_token %}
+        <table>
+        <tr><td>Username</td><td><input type="text" name="username" required="required"></td></tr>
+        <tr><td>Password</td><td><input type="password" name="password" required="required"></td></tr>
+        <tr><td></td><td><input type="submit" value="Log In"></td></tr>
+        </table>
+    </form>
+{% endblock %}

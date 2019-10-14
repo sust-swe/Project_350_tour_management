@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+
+{% block content_1 %}
+<title>csa</title>
+{% endblock content_1 %}
+
+
+{% block content_2 %}
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td>{{form.non_field_errors}}</td>
+        </tr>
+        <tr>
+            <td>{{form.number_of_space.label_tag}}</td>
+            <td>{{form.number_of_space}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>{{form.number_of_space.errors}}</td>
+        </tr>
+        <tr>
+            <td>{{form.avail_from.label_tag}}</td>
+            <td>{{form.avail_from}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>{{form.avail_from.errors}}</td>
+        </tr>
+        <tr>
+            <td>{{form.avail_to.label_tag}}</td>
+            <td>{{form.avail_to}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>{{form.avail_to.errors}}</td>
+        </tr>
+        <tr>
+            <td>
+            <td><input type="submit" value="Create"></td>
+            </td>
+        </tr>
+
+    </table>
+</form>
+{% endblock content_2 %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content_1 %}
+<title>Add Residence</title>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+{% endblock %}
+
+{% block content_2 %}
+<h1>Create New Residence</h1>
+<form id="form1" method="post" enctype="multipart/form-data" load-city="/search/ajax/load_city/" novalidate>
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="Add">
+            </td>
+        </tr>
+    </table>
+</form>
+
+<p id="hi"></p>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script>
+    $("#id_country").change(function () {
+
+        url = $("#form1").attr("load-city");
+        country_id = $(this).val();
+        // document.getElementById("hi").innerHTML = url;
+        $.ajax({
+            url: url,
+            data: { 'country': country_id },
+            success: function (hati) {
+                $("#id_city").html(hati);
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% load static %}
+{% static "images" as statimgsrc %}
+<!DOCTYPE>
+<html lang="en">
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/CSS/mystyle.css/">
+    {% block content_1 %} <title>base</title> {% endblock content_1 %}
+</head>
+
+<body bgcolor="#bdb76b">
+
+    <div align="center">
+        {% block content_2 %}
+
+
+        {% endblock content_2 %}
+    </div>
+
+    <br><br>
+
+    <div align="center">
+
+        {% for ms in messages %}
+        <bold>{{ ms }}</bold>
+        {% endfor %}
+
+        <p>
+            <h3>
+                Search
+                <a href="/search/restaurant/">Restaurant</a>
+                <a href="/search/residence/">Residence</a>
+                <a href="/search/guide/">Guide</a>
+            </h3>
+        </p>
+
+        <p>
+            {% if request.user.is_authenticated %}
+            Hi
+            <a href="/profile/">{{ request.user.username }}</a> <br>
+            <a href="/home/">My Home</a> <br>
+            <a href="/accounts/logout/">Logout</a>
+            {% else %}
+            <a href="/accounts/register/">Register</a> OR
+            <a href="/accounts/login/">Login</a>
+            {% endif %}
+        </p>
+
+    </div>
+
+</body>
+
+</html>

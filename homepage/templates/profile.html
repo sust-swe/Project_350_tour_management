@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content_1 %}
+<title>My Profile</title>
+{% endblock %}
+
+{% block content_2 %}
+<div align="center">
+    <h1>{{ user.username }}</h1>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>{{ user.first_name }} {{ user.last_name }}</td>
+        </tr>
+        <tr>
+            <td>Email Address</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <td>Mobile</td>
+            <td>{{ user_detail.mobile }}</td>
+        </tr>
+        <tr>
+
+            {% if user_detail.description %}
+            <td>Description</td>
+            <td>{{ user_detail.description }}</td>
+            {% endif %}
+
+        </tr>
+        <tr>
+
+            {% if user_detail.address %}
+            <td>Address</td>
+            <td>{{ user_detail.address }}</td>
+            {% endif %}
+
+        </tr>
+        <tr>
+
+            {% if user_detail.city %}
+            <td>City</td>
+            <td>{{ user_detail.city }}</td>
+            {% endif %}
+
+
+        </tr>
+    </table>
+    {% if user_detail.img %}
+    <img src="{{ user_detail.img.url }}" height="150" width="200" alt="Add Photo" class="img-responsive">
+    {% endif %}
+    <br><br>
+    {% if request.user.is_authenticated %}
+    <a href="/edit_profile/">Edit Profile </a> <br>
+    <a href="/change_password/">Change Password</a> <br>
+    {% endif %}
+</div>
+{% endblock %}
