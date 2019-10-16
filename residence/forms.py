@@ -1,6 +1,7 @@
 from .models import Residence, Space, SpaceAvailable
 from homepage.base import *
-from .views_1 import load_flw_to_day, load_flw_from_day, load_flw_from_month, load_flw_to_month, load_flw_to_year
+from homepage.models import Country, City
+from .views_1 import load_flw_to_day, load_flw_from_day, load_flw_from_month, load_flw_to_month, load_flw_to_year, load_city_choice
 
 
 class ResidenceForm(forms.ModelForm):
@@ -77,7 +78,11 @@ class DateForm(forms.Form):
                 from_year, to_year, from_month, to_month, from_day))
 
 
-class SpaceBookForm(forms.Form):
+class SpaceSearchForm(forms.Form):
+    space_n = forms.ChoiceField(
+        choices=[(i, str(i)) for i in range(1, 100)], label="Number of Space")
+    person_n = forms.ChoiceField(
+        choices=[(i, str(i)) for i in range(1, 100)], label="Person per Room")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -116,3 +121,19 @@ class SpaceBookForm(forms.Form):
                 choices=load_flw_to_month(from_year, to_year, from_month))
             self.fields['to_day'] = forms.ChoiceField(choices=load_flw_to_day(
                 from_year, to_year, from_month, to_month, from_day))
+
+        country_choice = ["", "------------"]
+        for ob in Country.objects.all():
+            country_choice += [(ob.id, str(ob.name))]
+        self.fields['country'] = forms.ChoiceField(choices=country_choice)
+
+        self.fields['city'] = forms.ChoiceField(choices=[("", "------------")])
+
+        if 'country' in self.data:
+            country = int(self.data.get('country', None))
+            self.fields['city'] = forms.ChoiceField(
+                choices=load_city_choice(City, country))
+
+
+class BookSpaceForm(forms.Form):
+    space_type = forms.ChoiceField(choices=[])

@@ -1,3 +1,4 @@
+from .forms import SpaceSearchForm
 from homepage.base import *
 from homepage.models import UserDetail
 from .models import Space, SpaceAvailable, SpaceBooking, Residence
@@ -331,3 +332,12 @@ class BookSpace(views.View):
                 return render(request, self.template_name, {'form': form})
         else:
             return render(request, self.template_name, {'form': form})
+
+
+class SearchSpace(views.View):
+    template_name = "search_space.html"
+    form_class = SpaceSearchForm
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})

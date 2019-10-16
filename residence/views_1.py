@@ -8,73 +8,66 @@ month_array = ['', 'January', 'February', 'March', 'April', 'May', 'June',
                'July', 'August', 'September', 'Octobor', 'November', 'December']
 
 
-# returns true only if the space is available for the entire time span
-def is_space_available(SpaceAvailable, space, from_date, to_date):
-    qs = SpaceAvailable.objects.filter(
-        space=space, avail_from__lte=from_date, avail_to__gte=to_date).exists()
-
-    if qs.exists():
-        return True
-    return False
-
-
 # makes space unavailable through the entire proposed time span
 def make_space_unavailable(SpaceAvailable, space, from_date, to_date):
-    if from_date > to_date:
-        return
 
-	# proposed time span entirely included into available time span
+    # proposed time span entirely included into available time span
     qs = SpaceAvailable.objects.filter(
         space=space, avail_from__lte=from_date, avail_to__gte=to_date)
 
     if qs.exists():
-	    ob = qs[0]
-	    pre_date = from_date - timedelta(1)
-	    post_date = to_date + timedelta(1)
-	    ob1 = None
-	    ob2 = None
-	    if ob.avail_from < from_date:
-	        ob1 = SpaceAvailable(
-	            space=space, avail_from=ob.avail_from, avail_to=pre_date)
-	    if ob.avail_to > to_date:
-	        ob2 = SpaceAvailable(
-	            space=space, avail_from=post_date, avail_to=ob.avail_to)
-	    ob.delete()
-	    if ob1:
-	        ob1.save()
-	    if ob2:
-	        ob2.save()
-	    return
+        ob = qs[0]
+        pre_date = from_date - timedelta(1)
+        post_date = to_date + timedelta(1)
+        ob1 = None
+        ob2 = None
+        if ob.avail_from < from_date:
+            ob1 = SpaceAvailable(
+                space=space, avail_from=ob.avail_from, avail_to=pre_date)
+        if ob.avail_to > to_date:
+            ob2 = SpaceAvailable(
+                space=space, avail_from=post_date, avail_to=ob.avail_to)
+        ob.delete()
+        if ob1:
+            ob1.save()
+        if ob2:
+            ob2.save()
+        return
 
-	# available time spans entirely included in the proposed time span
-	SpaceAvailable.objects.filter(space=space, avail_from__gte=from_date, avail_to__lte=to_date).delete()
+    # available time spans entirely included in the proposed time span
+    SpaceAvailable.objects.filter(
+        space=space, avail_from__gte=from_date, avail_to__lte=to_date).delete()
 
-	# proposed time span starts in between available time span
-	qs = SpaceAvailable.objects.filter(space=space, avail_from__lte=from_date, avail_to__gte=from_date)
-	if qs.exists():
-		ob = qs[0]
-		pre_date = from_date - timedelta(1)
-		ob_1 = SpaceAvailable(space=space, avail_from=ob.avail_from, avail_to=pre_date)
-		ob.delete()
-		ob_1.save()
+    # proposed time span starts in between available time span
+    qs = SpaceAvailable.objects.filter(
+        space=space, avail_from__lte=from_date, avail_to__gte=from_date)
+    if qs.exists():
+        ob = qs[0]
+        pre_date = from_date - timedelta(1)
+        ob_1 = SpaceAvailable(
+            space=space, avail_from=ob.avail_from, avail_to=pre_date)
+        ob.delete()
+        ob_1.save()
 
-	# proposed time span ends in between avaiable time span
-	qs = SpaceAvailable.objects.filter(space=space, avail_from__lte=to_date, avail_to__gte=to_date)
-	if qs.exists():
-		ob = qs[0]
-		post_date = to_date+timedelta(1)
-		ob_1=SpaceAvailable(space=space, avail_from=post_date, avail_to=ob.avail_to)
-		ob.delete()
-		ob_1.save()
-
+    # proposed time span ends in between avaiable time span
+    qs = SpaceAvailable.objects.filter(
+        space=space, avail_from__lte=to_date, avail_to__gte=to_date)
+    if qs.exists():
+        ob = qs[0]
+        post_date = to_date+timedelta(1)
+        ob_1 = SpaceAvailable(space=space, avail_from=post_date,
+                              avail_to=ob.avail_to)
+        ob.delete()
+        ob_1.save()
 
 
 # returns TRUE even a part of the proposed time span is booked,otherwise returns FALSE
 def is_space_booked(SpaceBooking, space, from_date, to_date):
-	if from_date>to_date:
-		return True
+    if from_date > to_date:
+        return True
     # proposed time span atarts within booked time span
-    dec1 = SpaceBooking.objects.filter(space=space, book_from__lte=from_date, book_to__gte=from_date).exists()
+    dec1 = SpaceBooking.objects.filter(
+        space=space, book_from__lte=from_date, book_to__gte=from_date).exists()
     # proposed time span ends within booked time span
     dec2 = SpaceBooking.objects.filter(
         space=space, book_from__lte=to_date, book_to__gte=to_date).exists()
@@ -86,10 +79,11 @@ def is_space_booked(SpaceBooking, space, from_date, to_date):
     else:
         return False
 
+
 # make a space available which is not booked at all within proposed time span
 def make_space_available_not_booked(SpaceAvailable, space, from_date, to_date):
-	if from_date>to_date:
-		return
+    if from_date > to_date:
+        return
     # proposed time span entirely included in old time span
     if SpaceAvailable.objects.filter(space=space, avail_from__lte=from_date, avail_to__gte=to_date).exists():
         return
@@ -134,46 +128,52 @@ def make_space_available_not_booked(SpaceAvailable, space, from_date, to_date):
     ob.save()
 
 
-
-
 # make space available as much as possible(as much is not booked)
 def create_avail_space(SpaceAvailable, SpaceBooking, space, from_date, to_date):
-    if from_date> to_date:
+
+    # entire proposed time span benn booked
+    if SpaceBooking.objects.filter(space=space, book_from__lte=from_date, book_to__gte=to_date).exists() or from_date > to_date:
         return
-    
-	# entire proposed time span been booked
-	if SpaceBooking.objects.filter(space=space, book_from__lte=from_date, book_to__gte=to_date).exists() or from_date>to_date:
-		return
 
-	# skip the time booked span preceeding the proposed time span
-	qs = SpaceBooking.objects.filter(space=space, book_from__lte=from_date, book_to__gte=from_date)
-	if qs.exists():
-		ob=qs[0]
-		from_date = ob.book_to+timedelta(1)
+    # skip the time booked span preceeding the proposed time span
+    qs = SpaceBooking.objects.filter(
+        space=space, book_from__lte=from_date, book_to__gte=from_date)
+    if qs.exists():
+        ob = qs[0]
+        from_date = ob.book_to+timedelta(1)
 
-	# skip the booked time span following the proposed time span 
-	qs = SpaceBooking.objects.filter(space=space, book_from__lte=to_date, book_to__gte=to_date)
-	if qs.exists():
-		ob=qs[0]
-		to_date=ob.book_from-timedelta(1)
+    # skip the booked time span following the proposed time span
+    qs = SpaceBooking.objects.filter(
+        space=space, book_from__lte=to_date, book_to__gte=to_date)
+    if qs.exists():
+        ob = qs[0]
+        to_date = ob.book_from-timedelta(1)
 
-	if from_date>to_date:
-		return
-	# skip the booked time span entirely included in proposed time span
-	qs = SpaceBooking.objects.filter(space=space, book_from__gte=from_date, book_to__lte=to_date)
-	if qs.exists():
-		make_space_available_not_booked(SpaceAvailable, space, from_date, qs[0].book_from - timedelta(1))
-		i = 0
-		for ob in qs:
-			if i==0:
-				continue
-			else:
-				make_space_available_not_booked(SpaceAvailable, space, qs[i-1].book_to+timedelta(1), qs[i].book_from-timedelta(1))
-			i=i+1
-		make_space_available_not_booked(SpaceAvailable, space, qs[i-1].book_to+timedelta(1), to_date)
+    if from_date > to_date:
+        return
+    # skip the booked time span entirely included in proposed time span
+    qs = SpaceBooking.objects.filter(
+        space=space, book_from__gte=from_date, book_to__lte=to_date)
+    if qs.exists():
+        make_space_available_not_booked(
+            SpaceAvailable, space, from_date, qs[0].book_from - timedelta(1))
+        i = 0
+        for ob in qs:
+            if i == 0:
+                continue
+            else:
+                make_space_available_not_booked(
+                    SpaceAvailable, space, qs[i-1].book_to+timedelta(1), qs[i].book_from-timedelta(1))
+            i = i+1
+        make_space_available_not_booked(
+            SpaceAvailable, space, qs[i-1].book_to+timedelta(1), to_date)
 
 
-
+# returns true if the space is available through the entire propsed time span
+def is_space_available(SpaceAvailable, space, from_date, to_date):
+    if SpaceAvailable.objects.filter(space=space, avail_from__lte=from_date, avail_to__gte=to_date).exists():
+        return True
+    return False
 
 ###########################################       Load dependent date     ###################################################
 
@@ -257,3 +257,12 @@ def load_flw_to_day(from_year, to_year, from_month, to_month, from_day):
     for i in range(lb, ub+1):
         days += [(i, str(i))]
     return days
+
+
+def load_city_choice(City, country_id):
+    city_choice = [("", "------------")]
+
+    for ob in City.objects.filter(country_id=country_id):
+        city_choice += [(ob.id, str(ob.city))]
+
+    return city_choice
