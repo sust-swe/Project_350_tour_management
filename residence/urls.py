@@ -22,5 +22,5 @@ urlpatterns = [
          views.CreateSpaceAvailability.as_view(), name='c_s_a'),
     path("space/<int:space_id>/book/", views.BookSpace.as_view()),
     path("ajax/", include("residence.ajax_handler")),
-    path("space/", views.SearchSpace.as_view()),
+    path("spacesearch/", views.SearchSpace.as_view()),
 ]

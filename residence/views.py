@@ -2,8 +2,8 @@ from .forms import SpaceSearchForm
 from homepage.base import *
 from homepage.models import UserDetail
 from .models import Space, SpaceAvailable, SpaceBooking, Residence
-from .forms import SpaceForm, SpaceAvailabilityForm, ResidenceForm, SpaceBookForm
-from .views_1 import is_space_booked, get_aggregated_avail_space
+from .forms import SpaceForm, SpaceAvailabilityForm, ResidenceForm
+from .views_1 import is_space_booked, create_avail_space
 
 
 # Create your views here.
@@ -11,6 +11,32 @@ from .views_1 import is_space_booked, get_aggregated_avail_space
 
 def register(request):
     return render(request, 'register.html')
+
+# searches spaces available using the parameters
+
+
+def search_space(from_date, to_date, country, city, person_n, space_n, **kwargs):
+    if from_date > to_date:
+        return []
+
+    qs = SpaceAvailable.objects.filter(space__residence__city__id=city, avail_from__lte=from_date,
+                                       avail_to__gte=to_date, space__space_type__person=person_n)
+
+    res_count = {}
+
+    for ob in qs:
+        if res_count.get(ob.space.residence_id, None):
+            res_count[ob.space.residence_id] += 1
+        else:
+            res_count[ob.space.residence_id] = 1
+
+    res_id_list = []
+
+    for kk in res_count:
+        if res_count.get(kk) >= space_n:
+            res_id_list += [kk]
+
+    residence_qs = 0
 
 ##########################################      Residence      #####################################################
 
@@ -292,7 +318,7 @@ class CreateSpaceAvailability(views.View):
 
 class BookSpace(views.View):
     template_name = "book_space.html"
-    form_class = SpaceBookForm
+    form_class = SpaceAvailabilityForm
 
     def get(self, request, space_id):
         date_form = SpaceBookForm()
@@ -340,4 +366,20 @@ class SearchSpace(views.View):
 
     def get(self, request):
         form = self.form_class()
+        print('space search view')
+        # print(form.as_table())
         return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST or None)
+        if form.is_valid():
+            space_n = int(form.cleaned_data['space_n'])
+            person_n = int(form.cleaned_data['person_n'])
+            year = int(form.cleaned_data['from_year'])
+            month = int(form.cleaned_data['from_month'])
+            day = int(form.cleaned_data['from_day'])
+            from_date = date(year, month, day)
+            year = int(form.cleaned_data['to_year'])
+            month = form.cleaned_data['to_month']
+            day = form.cleaned_data['to_day']
+            to_date = date(year, month, day)

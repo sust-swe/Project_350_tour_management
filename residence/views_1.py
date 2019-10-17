@@ -266,3 +266,4 @@ def load_city_choice(City, country_id):
         city_choice += [(ob.id, str(ob.city))]
 
     return city_choice
+

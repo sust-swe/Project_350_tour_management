@@ -83,6 +83,9 @@ class SpaceSearchForm(forms.Form):
         choices=[(i, str(i)) for i in range(1, 100)], label="Number of Space")
     person_n = forms.ChoiceField(
         choices=[(i, str(i)) for i in range(1, 100)], label="Person per Room")
+    max_rent = forms.CharField(label="Maximal Rent", required=False)
+    min_rent = forms.CharField(label="Minimal Rent", required=False)
+    residence_name = forms.CharField(max_length=255, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -122,7 +125,7 @@ class SpaceSearchForm(forms.Form):
             self.fields['to_day'] = forms.ChoiceField(choices=load_flw_to_day(
                 from_year, to_year, from_month, to_month, from_day))
 
-        country_choice = ["", "------------"]
+        country_choice = [("", "------------")]
         for ob in Country.objects.all():
             country_choice += [(ob.id, str(ob.name))]
         self.fields['country'] = forms.ChoiceField(choices=country_choice)
@@ -133,6 +136,7 @@ class SpaceSearchForm(forms.Form):
             country = int(self.data.get('country', None))
             self.fields['city'] = forms.ChoiceField(
                 choices=load_city_choice(City, country))
+        # print('init spacesearch     form')
 
 
 class BookSpaceForm(forms.Form):

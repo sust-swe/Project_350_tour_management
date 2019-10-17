@@ -1,8 +1,8 @@
 *.pyc
 .vscode
 .idea
+venv
 testme
-media
 test_django.py
 test_python.py
 dependency.txt
