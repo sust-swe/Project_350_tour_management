@@ -18,58 +18,65 @@
     {% if space.shared == True %}<tr>
         <td>Shared Space</td>
     </tr>{% endif %}
+    <tr>
+        <td>Type</td>
+        <td><a href="/residence/space_type/{{space.space_type.id}}/">{{space.space_type.name}}</a></td>
+    </tr>
 </table>
 {% if space.img %} <img src="{{ space.img.url }}" height="300" width="450"> {% endif %}
 <br><br><br>
-<div>
-    <a href="/residence/space/{{space.id}}/book/">Book</a>
-</div>
+
+<a href="/residence/{{space.residence.id}}/">From {{space.residence.name}}</a>
+
+
 {% if space.residence.user_detail.user == request.user %}
-<a href="/residence/space/{{ space.id }}/update/"> Update</a> <br>
-<a href="/residence/space/{{ space.id }}/delete/"> Delete</a> <br>
-<a href="/residence/space/{{ space.id }}/avail/"> Create New Availability </a><br>
+<div id="owner_access">
+    <a href="/residence/space/{{ space.id }}/update/"> Update</a> <br>
+    <a href="/residence/space/{{ space.id }}/delete/"> Delete</a> <br>
+    <a href="/residence/space/{{ space.id }}/avail/"> Create New Availability(as much as possible)</a><br>
+    <a href="/residence/space/{{space.id}}/unavail/">Make Unavailable (as much as possible)</a>
+
+    <div id="availables">
+        <table class="spacing-table">
+            <tr>
+                <td>From</td>
+                <td>To</td>
+            </tr>
+            {% for avail in avails %}
+
+            <tr>
+
+                <td>{{avail.avail_from}}</td>
+                <td>{{avail.avail_to}}</td>
+            </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+    <div id="Bookings">
+        <table class="spacing-table">
+            <tr>
+
+                <td>From</td>
+                <td>To</td>
+                <td>By</td>
+                <td>Total Payable</td>
+                <td>Booked at</td>
+            </tr>
+
+            {% for booking in bookings %}
+            <tr>
+
+                <td>{{booking.book_from}}</td>
+                <td>{{booking.book_to}}</td>
+                <td>{{booking.guest}}</td>
+                <td>{{booking.total_rent}}</td>
+                <td>{{booking.booking_time}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+</div>
 {% endif %}
-
-<div id="availables">
-    <table class="spacing-table">
-        <tr>
-            <td>From</td>
-            <td>To</td>
-        </tr>
-        {% for avail in avails %}
-
-        <tr>
-
-            <td>{{avail.avail_from}}</td>
-            <td>{{avail.avail_to}}</td>
-        </tr>
-
-        {% endfor %}
-    </table>
-</div>
-<div id="Bookings">
-    <table class="spacing-table">
-        <tr>
-
-            <td>From</td>
-            <td>To</td>
-            <td>By</td>
-            <td>Total Payable</td>
-            <td>Booked at</td>
-        </tr>
-
-        {% for booking in bookings %}
-        <tr>
-
-            <td>{{booking.book_from}}</td>
-            <td>{{booking.book_to}}</td>
-            <td>{{booking.guest}}</td>
-            <td>{{booking.total_rent}}</td>
-            <td>{{booking.booking_time}}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-</div>
-
 {% endblock %}

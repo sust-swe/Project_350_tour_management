@@ -1,4 +1,4 @@
-from .models import Residence, Space, SpaceAvailable
+from .models import Residence, Space, SpaceAvailable, SpaceType
 from homepage.base import *
 from homepage.models import Country, City
 from .views_1 import load_flw_to_day, load_flw_from_day, load_flw_from_month, load_flw_to_month, load_flw_to_year, load_city_choice
@@ -11,6 +11,7 @@ class ResidenceForm(forms.ModelForm):
         exclude = ['user_detail']
 
     def __init__(self, *args, **kwargs):
+        print("ResidenceForm")
         super(ResidenceForm, self).__init__(*args, **kwargs)
 
         self.fields['country'].queryset = Country.objects.all()
@@ -29,6 +30,19 @@ class SpaceForm(forms.ModelForm):
     class Meta:
         model = Space
         exclude = ['residence']
+
+    def __init__(self, *args, **kwargs):
+        print("SpaceForm")
+        super().__init__(*args, **kwargs)
+        residence_id = None
+        init_dict = {}
+        if kwargs.get('initial', None):
+            init_dict = kwargs.get('initial', None)
+            if init_dict.get('residence', None):
+                residence_id = init_dict.get('residence', None)
+
+        self.fields['space_type'].queryset = SpaceType.objects.filter(
+            residence_id=residence_id)
 
 
 class SpaceAvailabilityForm(forms.ModelForm):
@@ -141,3 +155,10 @@ class SpaceSearchForm(forms.Form):
 
 class BookSpaceForm(forms.Form):
     space_type = forms.ChoiceField(choices=[])
+
+
+class CreateSpaceTypeForm(forms.ModelForm):
+
+    class Meta:
+        model = SpaceType
+        exclude = ['residence']

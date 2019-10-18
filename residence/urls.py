@@ -2,7 +2,7 @@ from homepage.base import *
 from . import views
 
 urlpatterns = [
-    # path('login/', views.login, name='login')
+    # path('login/', login, name='login')
     path('my_residence/', views.MyResidence.as_view(), name='my residence'),
     path('add_residence/', views.AddResidence.as_view(), name='add residence'),
     path('<int:id>/', views.ResidenceDetail.as_view(), name='residence detail'),
@@ -23,4 +23,11 @@ urlpatterns = [
     path("space/<int:space_id>/book/", views.BookSpace.as_view()),
     path("ajax/", include("residence.ajax_handler")),
     path("spacesearch/", views.SearchSpace.as_view()),
+    path("<int:id>/space_type/", views.ShowSpaceTypes.as_view()),
+    path("space_type/<int:space_type_id>/",
+         views.ShowSpaceTypeDetail.as_view()),
+    path("<int:residence_id>/create_space_type/",
+         views.CreateSpaceType.as_view()),
+    path("space_type/<int:space_type_id>/update/", ),
+    path("space_type/<int:space_type_id>/delete/", ),
 ]

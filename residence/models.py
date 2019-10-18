@@ -9,11 +9,15 @@ from homepage.models import UserDetail, City, Country, Address, MyChoice, Cart
 class Residence(models.Model):
     user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, default=None)
-    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, default=None)
+    city = models.ForeignKey(
+        City, on_delete=models.SET_NULL, null=True, default=None)
+    country = models.ForeignKey(
+        Country, on_delete=models.SET_NULL, null=True, default=None)
     mobile = models.IntegerField(default=None, null=True, blank=True)
-    description = models.CharField(max_length=255, null=True, blank=True, default=None)
-    img = models.ImageField(upload_to='ResidencePhoto',null=True, blank=True, default=None)
+    description = models.CharField(
+        max_length=255, null=True, blank=True, default=None)
+    img = models.ImageField(upload_to='ResidencePhoto',
+                            null=True, blank=True, default=None)
 
     class Meta:
         pass
@@ -27,16 +31,43 @@ class SpaceType(models.Model):
     name = models.CharField(max_length=255)
     person = models.PositiveIntegerField()
     rent = models.FloatField()
-    pic = models.ImageField(upload_to="SpaceTypePhoto")
-    description = models.CharField(max_length=255, null=True, blank=True, default=None)
+    pic = models.ImageField(upload_to="SpaceTypePhoto",
+                            null=True, blank=True, default=None)
+    description = models.CharField(
+        max_length=255, null=True, blank=True, default=None)
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
+
+        if exclude and 'residence' in exclude:
+            pass
+        else:
+            if SpaceType.objects.filter(residence=self.residence, name=self.name):
+                raise ValidationError(
+                    "This Residence has alreday a same named space type")
+
+    def __str__(self):
+        return self.name
 
 
 class Space(models.Model):
+    name = models.CharField(max_length=255)
     residence = models.ForeignKey(Residence, on_delete=models.CASCADE)
-    space_type = models.ForeignKey(SpaceType, on_delete=models.CASCADE, default=None, null=True)
+    space_type = models.ForeignKey(
+        SpaceType, on_delete=models.CASCADE, default=None, null=True)
 
     def __str__(self):
         return '%s Space-> %s' % (self.residence.__str__(), self.space_type)
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
+
+        if exclude and 'residence' in exclude:
+            pass
+        else:
+            if Space.objects.filter(residence=self.residence, name=self.name).exists():
+                raise ValidationError(
+                    "This Residence has already a same named space")
 
 
 class SpaceAvailable(models.Model):
@@ -52,16 +83,6 @@ class SpaceAvailable(models.Model):
 
     def clean_fields(self, exclude=None):
         super().clean_fields(exclude=exclude)
-        # print(exclude, type(exclude))
-
-        if exclude and 'space' in exclude:
-            pass
-        else:
-            if is_space_booked_tricky(self.space, self.avail_from, self.avail_to):
-                raise ValidationError(_("Already Booked"))
-            else:
-                create_avail_space(SpaceAvailable,self.space, self.avail_from, self.avail_to)
-
 
 
 class SpaceBooking(models.Model):
@@ -74,10 +95,14 @@ class SpaceBooking(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['space', 'book_from'], name='SpaceBooking unq from'),
-            models.UniqueConstraint(fields=['space', 'book_to'], name='SpaceBooking unq to'),
-            models.CheckConstraint(check=Q(book_from__lte=F('book_to')), name='sb unique time span'),
-            models.CheckConstraint(check=Q(total_rent__gte=0), name='sb non-negative total rent')
+            models.UniqueConstraint(
+                fields=['space', 'book_from'], name='SpaceBooking unq from'),
+            models.UniqueConstraint(
+                fields=['space', 'book_to'], name='SpaceBooking unq to'),
+            models.CheckConstraint(check=Q(book_from__lte=F(
+                'book_to')), name='sb unique time span'),
+            models.CheckConstraint(
+                check=Q(total_rent__gte=0), name='sb non-negative total rent')
         ]
         ordering = ['-booking_time']
 
@@ -91,7 +116,7 @@ class SpaceBooking(models.Model):
 
 
 def is_space_booked_tricky(space, from_date, to_date):
-    is_space_booked(SpaceBooking, space, from_date, to_date)
+    return is_space_booked(SpaceBooking, space, from_date, to_date)
 
 
 # pip install Pillow
