@@ -266,3 +266,28 @@ def load_city_choice(City, country_id):
         city_choice += [(ob.id, str(ob.city))]
 
     return city_choice
+
+
+def load_residence_choice(Residence, city):
+    choice = [("", "------------")]
+
+    if city:
+        city = int(city)
+        qs = Residence.objects.filter(city_id=city)
+        for ob in qs:
+            choice += [(ob.id, ob.name)]
+
+    return choice
+
+
+def load_date_from_DateForm(form):
+    year = int(form.cleaned_data['from_year'])
+    month = int(form.cleaned_data['from_month'])
+    day = int(form.cleaned_data['from_day'])
+    from_date = date(year, month, day)
+    year = int(form.cleaned_data['to_year'])
+    month = int(form.cleaned_data['to_month'])
+    day = int(form.cleaned_data['to_day'])
+    to_date = date(year, month, day)
+
+    return (from_date, to_date)

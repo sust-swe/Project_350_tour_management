@@ -1,6 +1,7 @@
 from homepage.base import *
 from .first_view import load_flw_from_month, load_flw_from_day, load_flw_to_year, load_flw_to_month, load_flw_to_day
 from homepage.models import City
+from residence.models import Residence
 
 
 month_array = ['', 'January', 'February', 'March', 'April', 'May', 'June',
@@ -42,7 +43,7 @@ def load_to_month(request):
     from_year = request.GET.get('from_year', None)
     to_year = request.GET.get('to_year', None)
     from_month = request.GET.get('from_month', None)
-    month_choice = []
+    month_choice = [("", "------------")]
     if from_year and to_year and from_month:
         from_year = int(from_year)
         to_year = int(to_year)
@@ -58,7 +59,7 @@ def load_to_day(request):
     to_month = request.GET.get('to_month', None)
     from_day = request.GET.get('from_day', None)
 
-    days = []
+    days = [("", "------------")]
 
     if from_month and from_year and from_day and to_year and to_month:
         from_day = int(from_day)
@@ -72,12 +73,28 @@ def load_to_day(request):
 
 
 def load_city(request):
-    print('load_city')
-    country_id = int(request.GET.get('country'))
-    print(country_id)
-    cities = City.objects.filter(country_id=country_id)
-    print(cities)
-    return render(request, 'ajax_city.html', {'cities': cities})
+    # print('load_city')
+    country_id = request.GET.get('country', None)
+    city_choice = [("", "------------")]
+    if country_id:
+        country_id = int(country_id)
+        cities = City.objects.filter(country_id=country_id)
+        for ob in cities:
+            city_choice += [(ob.id, ob.city)]
+    # print(cities)
+    return render(request, 'ajax_city.html', {'cities': city_choice})
+
+
+def load_residence(request):
+    print("load_residence", request.GET.get('city', None))
+    city_id = request.GET.get('city', None)
+    residence_choice = [("", "Residences")]
+    if city_id:
+        city_id = int(city_id)
+        residences = Residence.objects.filter(city_id=city_id)
+        for ob in residences:
+            residence_choice += [(ob.id, ob.name)]
+    return render(request, "load_city_residence.html", {'qs': residence_choice})
 
 
 urlpatterns = [
@@ -87,4 +104,5 @@ urlpatterns = [
     path('load_to_year/', load_to_year),
     path('load_to_month/', load_to_month),
     path('load_to_day/', load_to_day),
+    path("load_city_residence/", load_residence),
 ]

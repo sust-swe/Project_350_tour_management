@@ -8,8 +8,11 @@
 
 {% block content_2 %}
 {{space_type.name}}<br>
+${{space_type.rent}} per day<br>
+For {{space_type.person}} Person<br>
+<p>{{space_type.description}}</p>
 {%if space_type.pic %}
-<img src="{{space_type.pic.url}}">
+<img src="{{space_type.pic.url}}" width="400" height="300">
 <br>
 {% endif %}
 By <a href="/residence/{{space_type.residence.id}}/">{{space_type.residence.name}}</a>

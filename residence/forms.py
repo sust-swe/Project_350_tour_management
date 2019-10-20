@@ -32,7 +32,7 @@ class SpaceForm(forms.ModelForm):
         exclude = ['residence']
 
     def __init__(self, *args, **kwargs):
-        print("SpaceForm")
+        # print("SpaceForm")
         super().__init__(*args, **kwargs)
         residence_id = None
         init_dict = {}

@@ -7,9 +7,9 @@
 {% block content_2 %}
 <h1>{{ space.space_type_name }}</h1>
 <table>
-    {% if space.rent %}<tr>
-        <td>Rent</td>
-        <td>{{ space.rent }}</td>
+    {% if space.name %}<tr>
+        <td>Name</td>
+        <td>{{ space.name }}</td>
     </tr>{% endif %}
     {% if space.rent %}<tr>
         <td>For </td>
@@ -26,17 +26,19 @@
 {% if space.img %} <img src="{{ space.img.url }}" height="300" width="450"> {% endif %}
 <br><br><br>
 
-<a href="/residence/{{space.residence.id}}/">From {{space.residence.name}}</a>
+From <a href="/residence/{{space.residence.id}}/">{{space.residence.name}}</a>
 
 
 {% if space.residence.user_detail.user == request.user %}
-<div id="owner_access">
+<p id="owner_access">
     <a href="/residence/space/{{ space.id }}/update/"> Update</a> <br>
     <a href="/residence/space/{{ space.id }}/delete/"> Delete</a> <br>
     <a href="/residence/space/{{ space.id }}/avail/"> Create New Availability(as much as possible)</a><br>
     <a href="/residence/space/{{space.id}}/unavail/">Make Unavailable (as much as possible)</a>
 
-    <div id="availables">
+    <p id="availables">
+        {%if avails.exists %}
+        <h1>Availables</h1>
         <table class="spacing-table">
             <tr>
                 <td>From</td>
@@ -52,8 +54,11 @@
 
             {% endfor %}
         </table>
-    </div>
-    <div id="Bookings">
+        {%endif%}
+    </p>
+    {% if bookings.exists %}
+    <h1>Bookings</h1>
+    <p id="Bookings">
         <table class="spacing-table">
             <tr>
 
@@ -76,7 +81,8 @@
             {% endfor %}
         </table>
 
-    </div>
-</div>
+    </p>
+    {% endif %}
+</p>
 {% endif %}
 {% endblock %}

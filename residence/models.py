@@ -42,9 +42,10 @@ class SpaceType(models.Model):
         if exclude and 'residence' in exclude:
             pass
         else:
-            if SpaceType.objects.filter(residence=self.residence, name=self.name):
-                raise ValidationError(
-                    "This Residence has alreday a same named space type")
+            if SpaceType.objects.filter(residence=self.residence, name=self.name).exists():
+                if SpaceType.objects.get(residence=self.residence, name=self.name).id != self.id:
+                    raise ValidationError(
+                        "This Residence has alreday a same named space type")
 
     def __str__(self):
         return self.name
@@ -66,8 +67,10 @@ class Space(models.Model):
             pass
         else:
             if Space.objects.filter(residence=self.residence, name=self.name).exists():
-                raise ValidationError(
-                    "This Residence has already a same named space")
+                # print(self.id)
+                if Space.objects.get(residence=self.residence, name=self.name).id != self.id:
+                    raise ValidationError(
+                        "This Residence has already a same named space")
 
 
 class SpaceAvailable(models.Model):
