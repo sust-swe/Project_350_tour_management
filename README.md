@@ -1,7 +1,7 @@
-# Project-350 Tour Management
+# Project-350: Tour Management
 
 Contributors:
-Mehedi Hasan(2016831023), Md. Shoaib Tasrif Emon (2016831001)
+Mehedi Hasan(2016831023) and Md. Shoaib Tasrif Emon (2016831001),
 Software Engineering, IICT, SUST.
 
 A tour guide app having four major functionalities
