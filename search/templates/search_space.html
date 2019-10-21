@@ -26,21 +26,30 @@
 
 <p>
     <h1>Results</h1>
-    <ul>
+    <table>
+        <tr>
+            <th>Residence</th>
+            <th>Space Type</th>
+        </tr>
         {% for res in residence_qs %}
-        <li><a href="/residence/{{res.id}}/">{{res.name}}</a>
-            <ul>
-                {% for ri,pk,name,count in space_types_ri_p_n_c %}
-                {% if ri == res.id %}
-                <li>
-                    <a href="/residence/space_type/{{pk}}/">{{name}}</a> <span> 1 Space Available</span>
-                </li>
-                {% endif %}
-                {% endfor %}
-            </ul>
-        </li>
+        <tr>
+            <td><a href="/residence/{{res.id}}/">{{res.name}}</a></td>
+            <td>
+                <ul>
+                    {% for ri,pk,name,count,rent in space_types_ri_p_n_c_r %}
+                    {% if ri == res.id %}
+                    <li>
+                        <a href="/residence/space_type/{{pk}}/">{{name}}</a> {{count}} Space Available at ${{rent}} per
+                        space
+                        </span>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
         {% endfor %}
-    </ul>
+    </table>
 </p>
 {% else %}
 <h1>No Results Found</h1>
