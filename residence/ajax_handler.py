@@ -72,12 +72,17 @@ def load_to_day(request):
 
 
 def load_city(request):
-    print('load_city')
+    print('load_city -> residence')
     country_id = int(request.GET.get('country'))
     print(country_id)
     cities = City.objects.filter(country_id=country_id)
     print(cities)
     return render(request, 'ajax_city.html', {'cities': cities})
+
+
+def book_space(request):
+    print("book space")
+    return HttpResponse('hi')
 
 
 urlpatterns = [
@@ -87,4 +92,5 @@ urlpatterns = [
     path('load_to_year/', load_to_year),
     path('load_to_month/', load_to_month),
     path('load_to_day/', load_to_day),
+    path("book/", book_space),
 ]

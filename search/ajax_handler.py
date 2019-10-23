@@ -86,7 +86,7 @@ def load_city(request):
 
 
 def load_residence(request):
-    print("load_residence", request.GET.get('city', None))
+    # print("search ahjax ** load_residence", request.GET.get('city', None))
     city_id = request.GET.get('city', None)
     residence_choice = [("", "Residences")]
     if city_id:
@@ -97,6 +97,10 @@ def load_residence(request):
     return render(request, "load_city_residence.html", {'qs': residence_choice})
 
 
+def haha(request):
+    return render(request, "tem_test.html", {"name": "shoaib"})
+
+
 urlpatterns = [
     path('load_from_month/', load_from_month),
     path('load_from_day/', load_from_day),
@@ -105,4 +109,5 @@ urlpatterns = [
     path('load_to_month/', load_to_month),
     path('load_to_day/', load_to_day),
     path("load_city_residence/", load_residence),
+    path("book/", haha)
 ]

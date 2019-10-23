@@ -125,3 +125,76 @@ class SearchSpace(views.View):
         else:
             print(form.as_table())
             return render(request, self.template_name, {'form': form})
+
+
+'''
+# whether the space is valid for booking
+def is_booking_space_valid(SpaceBookingDetail, space, space_booking):
+    new_space_booking_detail = SpaceBookingDetail(space=space, space_booking=space_booking)
+    try:
+        new_space_booking_detail.full_clean()
+        return True
+    except ValidationError as ve:
+        return False
+# whether the spaces could be booked
+def book_space(n_space, space_detail, from_date, to_date, request):
+    guest = UserDetail.objects.get(user=request.user)
+    new_space_booking = SpaceBooking(guest=guest, n_space=n_space, space_type=space_type, booked_from=from_date,
+                                    booked_to=to_date, booking_time=datetime.now(),
+                                    rent=space_type.rent*n_space )
+    new_space_booking.full_clean()
+    new_space_booking = new_space_booking.save()
+    flag = True
+    for space in space_array:
+        if not is_booking_space_valid(SpaceBookingDetail, space,  new_space_booking):
+            flag = False
+            break
+    if flag:
+        for space in space_array:
+            ob = SpaceBookingDetail(space=space, space_booking=new_space_booking)
+            ob.save()
+        return True
+    else:
+        new_space_booking.delete()
+        return False
+
+class BookSpace(views.View):
+    def get(self, request):
+        from_date=to_date=n_space=space_type=None
+        avail_space = SpaceAvailable.objects.filter(space__space_type_id=space_type, avail_from__lte=from_date. avail_to__gte=to_date)
+        
+        space_array = []
+        i = 0
+        if avail_space.count()>=n_space:
+            # firstly make space unavailable
+            for ob in avail_space and i<n_space :
+                if is_space_available(SpaceAvailable, ob.space, from_date, to_date):
+                    make_space_unavailable(SpaceAvailable, ob.space, from_date, to_date)
+                    space_array+=[ob.space]
+                    i+=1
+            # if proposed number of space could be made unavailable
+            if i==n_space:
+                # if the spaces could be successfully booked
+                if book_space(n_space, space_type, from_date, to_date, request):
+                    return Httpresponse
+                else:
+                    return response
+            # else make them available again
+            else:
+                for space in space_array:
+                    create_avail_space(SpaceAvailable, space, from_date, to_date)
+                return ("Not Available")
+
+class SpaceBooking(models.Model):
+    guest = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
+    space_type = models.ForeignKey(SpaceType, on_delete=models.CASCADE)
+    n_space = models.IntegerField()
+    booked_from = models.DateField()
+    booked_to = models.DateField()
+    booking_time = models.DateTimeField()
+    rent = models.FloatField()
+
+class SpaceBookingDetail(models.Model):
+    space_booking  = models.ForeignKey(SpaceBooking, on_delete=models.CASCADE)
+    space = models.ForeignKey(Space, on_dalete=models.CASCADE)
+'''

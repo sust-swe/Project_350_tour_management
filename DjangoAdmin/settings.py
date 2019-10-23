@@ -31,12 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'blog.apps.BlogConfig',
-    'accounts.apps.AccountsConfig',
-    'guide.apps.GuideConfig',
-    'homepage.apps.HomepageConfig',
-    'residence.apps.ResidenceConfig',
-    'restaurant.apps.RestaurantConfig',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'search.apps.SearchConfig',
+    'blog.apps.BlogConfig',
+    'accounts.apps.AccountsConfig',
+    'guide.apps.GuideConfig',
+    'homepage.apps.HomepageConfig',
+    'residence.apps.ResidenceConfig',
+    'restaurant.apps.RestaurantConfig',
 ]
 
 MIDDLEWARE = [

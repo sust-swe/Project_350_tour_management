@@ -32,5 +32,4 @@ urlpatterns = [
          views.UpdateSpaceType.as_view()),
     path("space_type/<int:space_type_id>/delete/",
          views.DeleteSpaceType.as_view()),
-    path("spacesearch/", views.SearchSpace.as_view()),
 ]

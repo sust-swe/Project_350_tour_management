@@ -457,88 +457,10 @@ class MakeSpaceUnavailable(views.View):
 
 
 ######################################   SpaceBookings    ####################################
+
+
 class BookSpace(views.View):
-    template_name = "book_space.html"
-    form_class = SpaceAvailabilityForm
-
-    def get(self, request, space_id):
-        date_form = SpaceBookForm()
-        return render(request, self.template_name, {'form': date_form})
-
-    def post(self, request, space_id):
-        form = SpaceBookForm(request.POST or None)
-        print(form.as_table())
-        if form.is_valid():
-            year = int(form.cleaned_data['from_year'])
-            month = int(form.cleaned_data['from_month'])
-            day = int(form.cleaned_data['from_day'])
-            from_date = date(year, month, day)
-            year = int(form.cleaned_data['to_year'])
-            month = int(form.cleaned_data['to_month'])
-            day = int(form.cleaned_data['to_day'])
-            to_date = date(year, month, day)
-
-            space = Space.objects.get(pk=space_id)
-            new_booking = SpaceBooking()
-            new_booking.space = space
-            new_booking.guest = UserDetail.objects.get(user=request.user)
-            new_booking.booking_time = datetime.now()
-            new_booking.total_rent = space.rent
-            new_booking.book_from = from_date
-            new_booking.book_to = to_date
-
-            try:
-                new_booking.full_clean()
-                new_booking.save()
-                return redirect("/residence/{}/".format(space_id))
-            except ValidationError as ve:
-                # adding form error after being valid
-                for kk in ve.message_dict:
-                    print(kk, ve.message_dict[kk])
-                    form.add_error(kk, ve.message_dict.get(kk))
-                return render(request, self.template_name, {'form': form})
-        else:
-            return render(request, self.template_name, {'form': form})
-
-
-class SearchSpace(views.View):
-    template_name = "search_space.html"
-    form_class = SpaceSearchForm
-
-    def get(self, request):
-        form = self.form_class()
-        print('space search view')
-        # print(form.as_table())
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        form = self.form_class(request.POST or None)
-        if form.is_valid():
-            space_n = int(form.cleaned_data['space_n'])
-            person_n = int(form.cleaned_data['person_n'])
-            year = int(form.cleaned_data['from_year'])
-            month = int(form.cleaned_data['from_month'])
-            day = int(form.cleaned_data['from_day'])
-            from_date = date(year, month, day)
-            year = int(form.cleaned_data['to_year'])
-            month = form.cleaned_data['to_month']
-            day = form.cleaned_data['to_day']
-            to_date = date(year, month, day)
-            country = int(form.cleaned_data['country'])
-            city = int(form.cleaned_data['city'])
-            max_rent = min_rent = residence = 0
-            if form.cleaned_data.get('max_rent', None):
-                max_rent = form.cleaned_data['max_rent']
-            if form.cleaned_data.get('min_rent', None):
-                min_rent = form.cleaned_data['min_rent']
-            if form.cleaned_data.get('residence', None):
-                residence_id = int(form.cleaned_data['residence'])
-
-
-            context = search_space(from_date, to_date, city, person_n, space_n, max_rent=max_rent,
-                                   min_rent=min_rent, residence=residence)
-            
-            return render(request, self.template_name, {'context': context})
+    pass
 
 
 '''

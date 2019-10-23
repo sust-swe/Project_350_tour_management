@@ -5,10 +5,8 @@
 <title>SearchSpace</title>
 {% endblock content_1 %}
 
-
-
 {% block content_2 %}
-<p id="test"></p>
+
 <form method="POST">
     {% csrf_token %}
     <table>
@@ -40,19 +38,12 @@
                     {% if ri == res.id %}
                     <li>
                         <a href="/residence/space_type/{{pk}}/">{{name}}</a> {{count}} Space Available at ${{rent}} per
-                        space
-                        </span>
-                    </li>
-                    {% endif %}
-                    {% endfor %}
-                </ul>
+                        space <button class="book" space_type="{{pk}}">Book</button>
+                    </li> {% endif %} {% endfor %} </ul>
             </td>
-        </tr>
-        {% endfor %}
+        </tr> {% endfor %}
     </table>
-</p>
-{% else %}
-<h1>No Results Found</h1>
+</p> {% else %} <h1>No Results Found</h1>
 {% endif %}
 
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
@@ -136,8 +127,6 @@
                 success: function (redata) { $("#id_to_day").html(redata); }
             });
         });
-
-
     </script>
 
 <script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
@@ -155,7 +144,6 @@
                 });
             }
         });
-
     });
 
     $("#id_city").change(function () {
@@ -166,6 +154,51 @@
             success: function (redata) { $("#id_residence").html(redata); }
         });
     });
+
 </script>
 
+<script id="bookyee_space" book_url="/search/ajax/book/">
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $(".book").click(function () {
+        $("#test").html('book space');
+        $.ajax({
+            url: "/search/ajax/book/",
+            type: "POST",
+            data: {
+                "from_month": $("#id_from_month").val()
+            },
+            success: function (redata) {
+                $("#test").html(redata);
+            }
+        });
+    });
+</script>
+<p id="test"></p>
 {% endblock content_2 %}
