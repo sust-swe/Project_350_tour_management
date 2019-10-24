@@ -1,7 +1,7 @@
 
 from homepage.base import *
 from homepage.models import UserDetail
-from .models import Space, SpaceAvailable, SpaceBooking, Residence, SpaceType
+from .models import Space, SpaceAvailable, SpaceBooking, Residence, SpaceType, ResidenceOrder
 from .forms import SpaceForm, SpaceAvailabilityForm, ResidenceForm, CreateSpaceTypeForm, SpaceSearchForm, DateForm
 from .views_1 import is_space_booked, create_avail_space, load_date_from_DateForm, make_space_unavailable
 
@@ -460,15 +460,112 @@ class MakeSpaceUnavailable(views.View):
 
 
 class BookSpace(views.View):
-    pass
+    # whether the space is valid for booking
+    def is_space_valid_for_booking (self, SpaceBooking, space,  new_residence_order, from_date, to_date):
+        print("465")
+        new_space_booking = SpaceBooking(space=space, residence_order=new_residence_order, book_from=from_date, book_to=to_date)
+        print(space.id, new_residence_order, from_date, to_date)
+        try:
+            new_space_booking.full_clean()
+            print("468")
+            return True
+        except ValidationError as ve:
+            print("472")
+            return False
 
-
-'''
-        if request.user.is_authenticated:
-            if request.user == :
+    # whether all the spaces could be booked
+    def book_space(self, n_space, space_type, from_date, to_date, request, space_array):
+        guest = UserDetail.objects.get(user=request.user)
+        new_residence_order = ResidenceOrder(guest=guest, n_space=n_space, space_type=space_type, 
+                                            book_from=from_date, book_to=to_date, 
+                                            booking_time=datetime.now(),bill=space_type.rent*n_space)
+        try:
+            new_residence_order.full_clean()
+            print("482", new_residence_order.n_space)
+            new_residence_order.save()
+            flag = True
             
+            for space in space_array:
+                print("484")
+                if not self.is_space_valid_for_booking (SpaceBooking, space,  new_residence_order, from_date, to_date):
+                    print("486")
+                    flag = False
+                    break
+            print("491")
+            if flag:
+                for space in space_array:
+                    ob = SpaceBooking(space=space, residence_order=new_residence_order, book_from=from_date, book_to=to_date)
+                    ob.save()
+                print("499")
+                return new_residence_order
             else:
-                return redirect("/permission_denied/")
+                new_residence_order.delete()
+                return None
+        except Exception:
+            if new_residence_order.id:
+                new_residence_order.delete()
+            return None
+
+    def extract_data(self, request):
+        from_year=int(request.POST["from_year"])
+        from_month=int(request.POST["from_month"])
+        from_day=int(request.POST["from_day"])
+        to_year=int(request.POST["to_year"])
+        to_month=int(request.POST.get("to_month", None))
+        #print(from_year, from_month, from_day)
+        to_day=int(request.POST["to_day"])
+        from_date=date(from_year, from_month, from_day)
+        to_date=date(to_year, to_month, to_day)
+        space_type_id=int(request.POST["space_type"])
+        n_space=int(request.POST["n_space"])
+        # print(from_date, to_date, space_type_id, n_space)
+        return (from_date, to_date, space_type_id, n_space)
+    
+    def post(self, request):
+        from_date, to_date, space_type_id, n_space=self.extract_data(request)
+        # print(from_date, to_date, space_type_id, n_space)
+        space_type = SpaceType.objects.get(pk=space_type_id)
+        avail_space = SpaceAvailable.objects.filter(space__space_type_id=space_type_id, avail_from__lte=from_date, avail_to__gte=to_date)
+        space_array = []
+        i = 0
+        #print(avail_space)
+        if avail_space.count()>=n_space:
+            print("523")
+            # firstly make space unavailable
+            for ob in avail_space :
+                print("526")
+                if make_space_unavailable(SpaceAvailable, ob.space, from_date, to_date):
+                    print("528")
+                    space_array+=[ob.space]
+                    i+=1
+            # if proposed number of space could be made unavailable
+            if i==n_space:
+                # if the spaces could be successfully booked
+                residence_order=None
+                print("533")
+                residence_order = self.book_space(n_space, space_type, from_date, to_date, request, space_array)
+                if residence_order:
+                    print("548")
+                    return render(request, "response.html", {"response": "Booked"})
+                else:
+                    for space in space_array:
+                        create_avail_space(SpaceAvailable, space, from_date, to_date)
+                    return render(request, "response.html", {"response": "Not Available"})
+            # else make them available again
+            else:
+                for space in space_array:
+                    create_avail_space(SpaceAvailable, space, from_date, to_date)
+                return render(request, "response.html", {"response": "Not Available"})
+
+
+
+class ShowResidenceOrder(views.View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            residence_orders = ResidenceOrder.objects.filter(space_type__residence__user_detail__user=request.user)
+            return render(request, "residence_order_detail.html", {"orders": residence_orders})
         else:
             return redirect("/login_required/")
-'''
+
+
+ 

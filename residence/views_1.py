@@ -8,9 +8,10 @@ month_array = ['', 'January', 'February', 'March', 'April', 'May', 'June',
                'July', 'August', 'September', 'Octobor', 'November', 'December']
 
 
-# makes space unavailable through the entire proposed time span
-def make_space_unavailable(SpaceAvailable, space, from_date, to_date):
-
+def make_space_unavailable_amap(SpaceAvailable, space, from_date, to_date):
+    # makes space unavailable through the entire proposed time span (as much as is available)
+    if from_date > to_date:
+        return
     # proposed time span entirely included into available time span
     qs = SpaceAvailable.objects.filter(
         space=space, avail_from__lte=from_date, avail_to__gte=to_date)
@@ -61,6 +62,18 @@ def make_space_unavailable(SpaceAvailable, space, from_date, to_date):
         ob_1.save()
 
 
+def make_space_unavailable(SpaceAvailable, space, from_date, to_date):
+    # if the space is entirely available through the time span
+    # then makes it unavailable and returns True else False
+    if from_date > to_date:
+        return False
+    if SpaceAvailable.objects.filter(space=space, avail_from__lte=from_date, avail_to__gte=to_date).exists():
+        make_space_unavailable_amap(SpaceAvailable, space, from_date, to_date)
+        return True
+    else:
+        return False
+
+
 # returns TRUE even a part of the proposed time span is booked,otherwise returns FALSE
 def is_space_booked(SpaceBooking, space, from_date, to_date):
     if from_date > to_date:
@@ -80,7 +93,7 @@ def is_space_booked(SpaceBooking, space, from_date, to_date):
         return False
 
 
-# make a space available which is not booked at all within proposed time span
+# make a space available which is not booked at all within proposed time span, returns None
 def make_space_available_not_booked(SpaceAvailable, space, from_date, to_date):
     if from_date > to_date:
         return
@@ -135,7 +148,7 @@ def create_avail_space(SpaceAvailable, SpaceBooking, space, from_date, to_date):
     if SpaceBooking.objects.filter(space=space, book_from__lte=from_date, book_to__gte=to_date).exists() or from_date > to_date:
         return
 
-    # skip the time booked span preceeding the proposed time span
+    # skip the time span,booked, preceeding the proposed time span
     qs = SpaceBooking.objects.filter(
         space=space, book_from__lte=from_date, book_to__gte=from_date)
     if qs.exists():
@@ -160,6 +173,7 @@ def create_avail_space(SpaceAvailable, SpaceBooking, space, from_date, to_date):
         i = 0
         for ob in qs:
             if i == 0:
+                i += 1
                 continue
             else:
                 make_space_available_not_booked(

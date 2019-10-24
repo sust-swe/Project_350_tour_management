@@ -22,6 +22,15 @@ class Residence(models.Model):
     class Meta:
         pass
 
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
+
+        if not (exclude and "user_detail" in exclude):
+            if Residence.objects.filter(user_detail=self.user_detail, name=self.name).exists():
+                if Residence.objects.get(user_detail=self.user_detail, name=self.name).id != self.id:
+                    raise ValidationError(
+                        "You have already a residence of that name -_-")
+
     def __str__(self):
         return '%s\'s %s at %s' % (self.user_detail.__str__(), self.name, self.city.__str__())
 
@@ -45,7 +54,7 @@ class SpaceType(models.Model):
             if SpaceType.objects.filter(residence=self.residence, name=self.name).exists():
                 if SpaceType.objects.get(residence=self.residence, name=self.name).id != self.id:
                     raise ValidationError(
-                        "This Residence has alreday a same named space type")
+                        "This Residence has alreday a TYPE of the same name -_-")
 
     def __str__(self):
         return self.name
@@ -79,7 +88,7 @@ class SpaceAvailable(models.Model):
     avail_to = models.DateField()
 
     class Meta:
-        ordering = ['avail_from', '-avail_to']
+        ordering = ["space", "avail_from"]
 
     def __str__(self):
         return '%s from %s to %s' % (self.space.__str__(), str(self.avail_from), str(self.avail_to))
@@ -88,34 +97,27 @@ class SpaceAvailable(models.Model):
         super().clean_fields(exclude=exclude)
 
 
-class SpaceBooking(models.Model):
-    space = models.ForeignKey(Space, on_delete=models.CASCADE)
+class ResidenceOrder(models.Model):
     guest = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
+    space_type = models.ForeignKey(SpaceType, on_delete=models.CASCADE)
+    n_space = models.IntegerField()
+    book_from = models.DateField()
+    book_to = models.DateField()
     booking_time = models.DateTimeField()
-    total_rent = models.FloatField()
+    bill = models.FloatField()
+
+
+class SpaceBooking(models.Model):
+    # while saving object of this model firstly the space is made unavailable
+    residence_order = models.ForeignKey(
+        ResidenceOrder, on_delete=models.CASCADE, related_name="space_booking", null=True)
+    space = models.ForeignKey(
+        Space, on_delete=models.CASCADE, related_name="space_booking")
     book_from = models.DateField()
     book_to = models.DateField()
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['space', 'book_from'], name='SpaceBooking unq from'),
-            models.UniqueConstraint(
-                fields=['space', 'book_to'], name='SpaceBooking unq to'),
-            models.CheckConstraint(check=Q(book_from__lte=F(
-                'book_to')), name='sb unique time span'),
-            models.CheckConstraint(
-                check=Q(total_rent__gte=0), name='sb non-negative total rent')
-        ]
-        ordering = ['-booking_time']
-
-    def __str__(self):
-        return '%s by %s from %s to %s' % (self.space.__str__(), self.guest.__str__(), str(self.book_from),
-                                           str(self.book_to))
-
-    def clean(self):
-        if not is_space_available(SpaceAvailable, self.space, self.book_from, self.book_to):
-            raise ValidationError(_("Not Available"))
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
 
 
 def is_space_booked_tricky(space, from_date, to_date):

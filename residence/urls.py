@@ -32,4 +32,6 @@ urlpatterns = [
          views.UpdateSpaceType.as_view()),
     path("space_type/<int:space_type_id>/delete/",
          views.DeleteSpaceType.as_view()),
+    path("book/", views.BookSpace.as_view()),
+    path("order/", views.ShowResidenceOrder.as_view()),
 ]

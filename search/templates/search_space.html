@@ -38,7 +38,8 @@
                     {% if ri == res.id %}
                     <li>
                         <a href="/residence/space_type/{{pk}}/">{{name}}</a> {{count}} Space Available at ${{rent}} per
-                        space <button class="book" space_type="{{pk}}">Book</button>
+                        space
+                        <button class="book" space_type="{{pk}}" id="space_type_id_{{pk}}">Book</button>
                     </li> {% endif %} {% endfor %} </ul>
             </td>
         </tr> {% endfor %}
@@ -109,6 +110,7 @@
                     'from_day': $("#id_from_day").val(),
                     'to_year': $("#id_to_year").val(),
                     'to_month': $("#id_to_month").val(),
+                    "space_type": $(this).attr("")
                 },
                 success: function (redata) { $("#id_to_day").html(redata); }
             });
@@ -186,18 +188,52 @@
             }
         }
     });
+
     $(".book").click(function () {
-        $("#test").html('book space');
+        //$("#test").html($(this).attr("space_type"));
+        /*effective -O- */
+        //$(this).hide();
+        //alert(this);
         $.ajax({
-            url: "/search/ajax/book/",
+            url: "/residence/book/",
             type: "POST",
             data: {
-                "from_month": $("#id_from_month").val()
+                "from_year": $("#id_from_year").val(),
+                "from_month": $("#id_from_month").val(),
+                "from_day": $("#id_from_day").val(),
+                "to_year": $("#id_to_year").val(),
+                "to_month": $("#id_to_month").val(),
+                "to_day": $("#id_to_day").val(),
+                "space_type": $(this).attr("space_type"),
+                "n_space": $("#id_space_n").val()
             },
-            success: function (redata) {
-                $("#test").html(redata);
+            success: function (response) {
+                alert(response);
+
             }
         });
+        $(this).hide();
+        /*
+        var jqxhr = $.post("", function () {
+            alert("success");
+        })
+            .done(function () {
+                alert("Booked");
+            })
+            .fail(function () {
+                alert("Not Available");
+            })
+            .always(function () {
+                alert("finished");
+            });
+
+        // Perform other work here ...
+
+        // Set another completion function for the request above
+        jqxhr.always(function () {
+            alert("second finished");
+        });
+        */
     });
 </script>
 <p id="test"></p>
