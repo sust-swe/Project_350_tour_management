@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+
+{% block content_1 %}
+<title>Residence Order Detail</title>
+{% endblock content_1 %}
+
+
+{% block content_2 %}
+<h1>Residence Order</h1>
+<table class="spacing-table">
+    <tr>
+        <th>Order ID</th>
+        <th>Residence</th>
+        <th>Space Type</th>
+        <th>No of Space</th>
+        <th>From</th>
+        <th>To</th>
+    </tr>
+
+    {% for order in orders %}
+    <tr>
+        <td>{{order.id}}</td>
+        <td>{{order.space_type.residence.name}}</td>
+        <td>{{order.space_type.name}}</td>
+        <td>{{order.n_space}}</td>
+        <td>{{order.from_date}}</td>
+        <td>{{order.to_date}}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+{% endblock content_2 %}

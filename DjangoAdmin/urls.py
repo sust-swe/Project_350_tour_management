@@ -27,8 +27,6 @@ urlpatterns = [
     path('restaurant/', include('restaurant.urls')),
     path('guide/', include('guide.urls')),
     path('blog/', include('blog.urls')),
-    path('testme/', include('testme.urls')),
-    path('dd/', include('testme.dependentSelection')),
     path('search/', include('search.urls')),
     path('permission_denied/', PermissionDenied.as_view(),
          name='permission denied'),

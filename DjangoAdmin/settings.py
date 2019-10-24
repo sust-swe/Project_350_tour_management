@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'testme.apps.TestmeConfig',
     'search.apps.SearchConfig',
 ]
 
@@ -86,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'project_350',
         'USER': 'postgres',
-        'PASSWORD': '1234',
+        'PASSWORD': 'isthisyou',
         'HOST': 'localhost'
     }
 }

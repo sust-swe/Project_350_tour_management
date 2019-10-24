@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+
+{% block content_1 %}
+<title>SearchSpace</title>
+{% endblock content_1 %}
+
+{% block content_2 %}
+
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        {{form.as_table}}
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="Search">
+            </td>
+        </tr>
+    </table>
+</form>
+
+{% if residence_qs.exists %}
+
+<p>
+    <h1>Results</h1>
+    <table>
+        <tr>
+            <th>Residence</th>
+            <th>Space Type</th>
+        </tr>
+        {% for res in residence_qs %}
+        <tr>
+            <td><a href="/residence/{{res.id}}/">{{res.name}}</a></td>
+            <td>
+                <ul>
+                    {% for ri,pk,name,count,rent in space_types_ri_p_n_c_r %}
+                    {% if ri == res.id %}
+                    <li>
+                        <a href="/residence/space_type/{{pk}}/">{{name}}</a> {{count}} Space Available at ${{rent}} per
+                        space
+                        <button class="book" space_type="{{pk}}" id="space_type_id_{{pk}}">Book</button>
+                    </li> {% endif %} {% endfor %} </ul>
+            </td>
+        </tr> {% endfor %}
+    </table>
+</p> {% else %} <h1>No Results Found</h1>
+{% endif %}
+
+<script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
+    load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
+    load_from_day="/search/ajax/load_from_day/">
+
+        $("#b1").click(function () { $("#test").show(); });
+        $("#b1").dblclick(function () { $("#test").hide(); });
+
+
+        $("#id_from_year").change(function () {
+            // $("#test").html('changed');
+            var year = $(this).val();
+            var url = $("#date_ajax").attr("load_from_month");
+            // $("#test").html(url);
+
+            $.ajax({
+                url: url,
+                data: { 'year': year },
+                success: function (shoaib) { $("#id_from_month").html(shoaib); }
+            });
+
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_year"),
+                data: { 'year': year },
+                success: function (redata) { $("#id_to_year").html(redata) }
+            });
+        });
+
+        $("#id_from_month").change(function () {
+            var year = $("#id_from_year").val();
+            var month = $("#id_from_month").val();
+            var url = $("#date_ajax").attr("load_from_day");
+            // $("#test").html('ok');
+            $.ajax({
+                url: url,
+                data: { 'year': year, 'month': month },
+                success: function (tasrif) { $("#id_from_day").html(tasrif); }
+            });
+
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_month"),
+                data: { 'from_year': $("#id_from_year").val(), 'to_year': $("#id_to_year").val(), 'from_month': $("#id_from_month").val() },
+                success: function (redata) { $("#id_to_month").html(redata); }
+            });
+        });
+
+        $("#id_to_year").change(function () {
+            // $("#test").html('ok');
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_month"),
+                data: { 'from_year': $("#id_from_year").val(), 'to_year': $("#id_to_year").val(), 'from_month': $("#id_from_month").val() },
+                success: function (redata) { $("#id_to_month").html(redata); }
+            });
+        });
+
+        $("#id_to_month").change(function () {
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_day"),
+                data: {
+                    'from_year': $("#id_from_year").val(),
+                    'from_month': $("#id_from_month").val(),
+                    'from_day': $("#id_from_day").val(),
+                    'to_year': $("#id_to_year").val(),
+                    'to_month': $("#id_to_month").val(),
+                    "space_type": $(this).attr("")
+                },
+                success: function (redata) { $("#id_to_day").html(redata); }
+            });
+        });
+
+        $("#id_from_day").change(function () {
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_day"),
+                data: {
+                    'from_year': $("#id_from_year").val(),
+                    'from_month': $("#id_from_month").val(),
+                    'from_day': $("#id_from_day").val(),
+                    'to_year': $("#id_to_year").val(),
+                    'to_month': $("#id_to_month").val(),
+                },
+                success: function (redata) { $("#id_to_day").html(redata); }
+            });
+        });
+    </script>
+
+<script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
+
+    $("#id_country").change(function () {
+        $.ajax({
+            url: $("#load_city_ajax").attr("load_city"),
+            data: { 'country': $("#id_country").val() },
+            success: function (redata) {
+                $("#id_city").html(redata);
+                $.ajax({
+                    url: $("#load_city_ajax").attr("load_residence"),
+                    data: { 'city': $("#id_city").val() },
+                    success: function (redata) { $("#id_residence").html(redata); }
+                });
+            }
+        });
+    });
+
+    $("#id_city").change(function () {
+        // $("#test").html("load_residence");
+        $.ajax({
+            url: $("#load_city_ajax").attr("load_residence"),
+            data: { 'city': $("#id_city").val() },
+            success: function (redata) { $("#id_residence").html(redata); }
+        });
+    });
+
+</script>
+
+<script id="bookyee_space" book_url="/search/ajax/book/">
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    $(".book").click(function () {
+        //$("#test").html($(this).attr("space_type"));
+        /*effective -O- */
+        //$(this).hide();
+        //alert(this);
+        $.ajax({
+            url: "/residence/book/",
+            type: "POST",
+            data: {
+                "from_year": $("#id_from_year").val(),
+                "from_month": $("#id_from_month").val(),
+                "from_day": $("#id_from_day").val(),
+                "to_year": $("#id_to_year").val(),
+                "to_month": $("#id_to_month").val(),
+                "to_day": $("#id_to_day").val(),
+                "space_type": $(this).attr("space_type"),
+                "n_space": $("#id_space_n").val()
+            },
+            success: function (response) {
+                alert(response);
+
+            }
+        });
+        $(this).hide();
+        /*
+        var jqxhr = $.post("", function () {
+            alert("success");
+        })
+            .done(function () {
+                alert("Booked");
+            })
+            .fail(function () {
+                alert("Not Available");
+            })
+            .always(function () {
+                alert("finished");
+            });
+
+        // Perform other work here ...
+
+        // Set another completion function for the request above
+        jqxhr.always(function () {
+            alert("second finished");
+        });
+        */
+    });
+</script>
+<p id="test"></p>
+{% endblock content_2 %}

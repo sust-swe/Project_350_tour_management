@@ -7,6 +7,11 @@ from django.db.models import Q
 class Country(models.Model):
     name = models.CharField(max_length=50)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['name'], name="Unique Country")
+        ]
+
     def __str__(self):
         return self.name
 
