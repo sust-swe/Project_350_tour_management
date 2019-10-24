@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+
+{% block content_1 %}
+<title>Space Type Detail</title>
+{% endblock content_1 %}
+
+
+{% block content_2 %}
+{{space_type.name}}<br>
+${{space_type.rent}} per day<br>
+For {{space_type.person}} Person<br>
+<p>{{space_type.description}}</p>
+{%if space_type.pic %}
+<img src="{{space_type.pic.url}}" width="400" height="300">
+<br>
+{% endif %}
+By <a href="/residence/{{space_type.residence.id}}/">{{space_type.residence.name}}</a>
+
+{% if space_type.residence.user_detail.user == request.user %}
+<br>
+<a href="update/">Update</a> <br>
+<a href="delete/">Delete</a> <br>
+{% endif %}
+
+
+{% endblock content_2 %}

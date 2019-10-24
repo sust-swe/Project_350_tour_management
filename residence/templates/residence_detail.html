@@ -26,11 +26,14 @@
 </table>
 {% if ob.img %} <img src="{{ ob.img.url }}" /> {% endif %}
 <br><br>
-<a href="space/">Browse Spaces</a>
+<a href="space_type/">Space Types</a><br>
+
+
 <br><br>
 {% if request.user == ob.user_detail.user %}
-<a href="/residence/{{ ob.id }}/update/">Update</a><br>
-<a href="/residence/{{ ob.id }}/delete/">Delete</a><br>
+<a href="space/">Spaces</a><br>
+<a href="update/">Update</a><br>
+<a href="delete/">Delete</a><br>
 
 {% endif %}
 {% endblock %}

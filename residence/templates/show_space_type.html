@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+
+{% block content_1 %}
+<title>Space Types</title>
+{% endblock content_1 %}
+
+
+{% block content_2 %}
+
+<table>
+
+    {% for i in space_types %}
+    <tr>
+        <td><a href="/residence/space_type/{{i.id}}/">{{i.name}}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+{% if residence.user_detail.user == request.user %}
+<p id="owner_access">
+    <a href="/residence/{{residence.id}}/create_space_type/">Create New Space Type</a>
+</p>
+{%endif%}
+
+<p>From <a href="/residence/{{residence.id}}/">{{residence.name}}</a></p>
+
+
+{% endblock content_2 %}

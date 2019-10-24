@@ -1,5 +1,6 @@
 from homepage.base import *
 from .views_1 import load_flw_from_month, load_flw_from_day, load_flw_to_year, load_flw_to_month, load_flw_to_day
+from homepage.models import City
 
 
 month_array = ['', 'January', 'February', 'March', 'April', 'May', 'June',
@@ -13,7 +14,7 @@ def load_from_month(request):
     if year:
         year = int(year)
         month = load_flw_from_month(year)
-    return render(request, 'load_month.html', {'month': month})
+    return render(request, 'load_from_month.html', {'month': month})
 
 
 def load_from_day(request):
@@ -25,7 +26,7 @@ def load_from_day(request):
         year = int(year)
         month = int(month)
         day_arr = load_flw_from_day(year, month)
-    return render(request, 'load_day.html', {'day_arr': day_arr})
+    return render(request, 'load_from_day.html', {'day_arr': day_arr})
 
 
 def load_to_year(request):
@@ -71,12 +72,17 @@ def load_to_day(request):
 
 
 def load_city(request):
-    print('load_city')
+    print('load_city -> residence')
     country_id = int(request.GET.get('country'))
     print(country_id)
     cities = City.objects.filter(country_id=country_id)
     print(cities)
     return render(request, 'ajax_city.html', {'cities': cities})
+
+
+def book_space(request):
+    print("book space")
+    return HttpResponse('hi')
 
 
 urlpatterns = [
@@ -86,4 +92,5 @@ urlpatterns = [
     path('load_to_year/', load_to_year),
     path('load_to_month/', load_to_month),
     path('load_to_day/', load_to_day),
+    path("book/", book_space),
 ]
