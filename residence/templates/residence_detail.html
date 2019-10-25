@@ -24,7 +24,9 @@
         <td>{{ ob.description }}</td>
     </tr>{% endif %}
 </table>
-{% if ob.img %} <img src="{{ ob.img.url }}" /> {% endif %}
+{% if ob.img %} <img src="{{ ob.img.url }}" width="400" height="250" /> {% endif %}
+<br>
+Owned By <a href="/accounts/profile/{{ob.user_detail.user.id}}/">{{ob.user_detail.user.username}}</a>
 <br><br>
 <a href="space_type/">Space Types</a><br>
 

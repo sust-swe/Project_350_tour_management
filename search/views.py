@@ -73,12 +73,12 @@ class SearchSpace(views.View):
         return qs
 
     # searches by form's mandatory fields
-    def search_by_essentials(self, form):
+    def search_by_essentials(self, form, user):
         person_n = int(form.cleaned_data['person_n'])
         from_date, to_date = load_date_from_DateForm(form)
         city = int(form.cleaned_data['city'])
         qs = SpaceAvailable.objects.filter(space__residence__city__id=city, avail_from__lte=from_date,
-                                           avail_to__gte=to_date, space__space_type__person=person_n)
+                                           avail_to__gte=to_date, space__space_type__person=person_n).exclude(space__residence__user_detail__user=user)
         return qs
 
     def process_context(self, avail_space_qs, space_n):
@@ -115,7 +115,7 @@ class SearchSpace(views.View):
         form = self.form_class(request.POST or None)
         if form.is_valid():
             # print("search space valid")
-            space_avail_qs = self.search_by_essentials(form)
+            space_avail_qs = self.search_by_essentials(form, request.user)
             space_avail_qs = self.search_by_optionals(form, space_avail_qs)
             space_n = int(form.cleaned_data['space_n'])
             context = self.process_context(space_avail_qs, space_n)

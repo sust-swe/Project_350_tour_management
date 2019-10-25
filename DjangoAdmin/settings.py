@@ -145,3 +145,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # config settings database
 # python manage.py collectstatic
 # pip install psycopg2
+# validation message

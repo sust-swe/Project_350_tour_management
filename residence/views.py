@@ -3,7 +3,7 @@ from homepage.base import *
 from homepage.models import UserDetail
 from .models import Space, SpaceAvailable, SpaceBooking, Residence, SpaceType, ResidenceOrder
 from .forms import SpaceForm, SpaceAvailabilityForm, ResidenceForm, CreateSpaceTypeForm, SpaceSearchForm, DateForm
-from .views_1 import is_space_booked, create_avail_space, load_date_from_DateForm, make_space_unavailable
+from .views_1 import is_space_booked, create_avail_space, load_date_from_DateForm, make_space_unavailable, make_space_unavailable_amap
 
 
 # Create your views here.
@@ -52,8 +52,9 @@ class AddResidence(views.View):
                     ob.save()
                     return redirect('/residence/my_residence/')
                 except ValidationError as e:
-                    nfe = e.message_dict[NON_FIELD_ERRORS]
-                    return render(request, self.template_name, {'form': form, 'nfe': nfe})
+                    for kk in e.message_dict:
+                        form.add_error(kk, e.message_dict[kk])
+                    return render(request, self.template_name, {'form': form})
             else:
                 messages.info(request, 'Invalid Credentials')
                 return render(request, self.template_name, {'form': form})
@@ -77,6 +78,7 @@ class UpdateResidence(views.View):
     form_class = ResidenceForm
 
     def get(self, request, id):
+        # print("urp")
         if request.user.is_authenticated:
             residence = Residence.objects.get(pk=id)
             if residence.user_detail.user == request.user:
@@ -93,8 +95,10 @@ class UpdateResidence(views.View):
         if request.user.is_authenticated:
             instance = Residence.objects.get(pk=id)
             if instance.user_detail.user == request.user:
+                
                 form = self.form_class(
                     request.POST, request.FILES, instance=instance)
+                
                 if form.is_valid():
                     ob = form.save(commit=False)
                     try:
@@ -102,14 +106,14 @@ class UpdateResidence(views.View):
                         ob.save()
                         return redirect('/residence/my_residence/')
                     except ValidationError as e:
-                        nfe = e.message_dict[NON_FIELD_ERRORS]
-                        return (request, self.template_name, {'form': form, 'nfe': nfe})
+                        for kk in e.message_dict:
+                            form.add_error(kk, e.message_dict[kk])
+                        # print(form.as_table())
+                        return render(request, self.template_name, {'form': form})
                 else:
-                    messages.info('Invalid Credentials')
                     return render(request, self.template_name, {'form': form})
             else:
-                messages.info(request, 'Permission denied')
-                return redirect('/homepage/underground/')
+                return redirect("/permission_denied/")
         else:
             messages.info(request, 'Log in First')
             return redirect('/')
@@ -330,10 +334,10 @@ class UpdateSpace(views.View):
             space = Space.objects.get(pk=space_id)
             if space.residence.user_detail.user == request.user:
                 form = self.form_class(instance=space)
+                # print(form.as_table())
                 return render(request, self.template_name, {'form': form})
             else:
-                messages.info(request, 'Permission denied')
-                return redirect('/homepage/underground/')
+                return redirect("/permission_denied/")
         else:
             messages.info(request, 'Log in First')
             return redirect('/')
@@ -344,6 +348,7 @@ class UpdateSpace(views.View):
             if space.residence.user_detail.user == request.user:
                 form = self.form_class(
                     request.POST, request.FILES, instance=space)
+                # print("349")
                 if form.is_valid():
                     ob = form.save(commit=False)
                     # print('Update space post')
@@ -404,19 +409,8 @@ class CreateSpaceAvailability(views.View):
             if form.is_valid():
                 from_date, to_date = load_date_from_DateForm(form)
                 # print("createspaceavailability", from_date, to_date)
-                space_available = SpaceAvailable(
-                    space=space, avail_from=from_date, avail_to=to_date)
-                try:
-                    space_available.full_clean()
-                    space_available.save()
-                    return redirect('/residence/space/{}/'.format(space.id))
-                except ValidationError as ve:
-                    # print(ve.message_dict)
-                    for k in ve.message_dict:
-                        # form error filled by ve
-                        form.add_error(k, ve.message_dict.get(k, None))
-                    # print(form.as_table())
-                    return render(request, self.template_name, {'form': form})
+                create_avail_space(SpaceAvailable, SpaceBooking, space, from_date, to_date)
+                return redirect('/residence/space/{}/'.format(space.id))
             else:
                 return render(request, self.template_name, {'form': form})
         else:
@@ -445,7 +439,7 @@ class MakeSpaceUnavailable(views.View):
                 form = self.form_class(request.POST)
                 if form.is_valid():
                     from_date, to_date = load_date_from_DateForm(form)
-                    unavails = make_space_unavailable(
+                    unavails = make_space_unavailable_amap(
                         SpaceAvailable, space, from_date, to_date)
                     return redirect("/residence/space/{}/".format(space_id))
                 else:
@@ -522,43 +516,45 @@ class BookSpace(views.View):
         return (from_date, to_date, space_type_id, n_space)
     
     def post(self, request):
-        from_date, to_date, space_type_id, n_space=self.extract_data(request)
-        # print(from_date, to_date, space_type_id, n_space)
-        space_type = SpaceType.objects.get(pk=space_type_id)
-        avail_space = SpaceAvailable.objects.filter(space__space_type_id=space_type_id, avail_from__lte=from_date, avail_to__gte=to_date)
-        space_array = []
-        i = 0
-        #print(avail_space)
-        if avail_space.count()>=n_space:
-            print("523")
-            # firstly make space unavailable
-            for ob in avail_space :
-                print("526")
-                if make_space_unavailable(SpaceAvailable, ob.space, from_date, to_date):
-                    print("528")
-                    space_array+=[ob.space]
-                    i+=1
-            # if proposed number of space could be made unavailable
-            if i==n_space:
-                # if the spaces could be successfully booked
-                residence_order=None
-                print("533")
-                residence_order = self.book_space(n_space, space_type, from_date, to_date, request, space_array)
-                if residence_order:
-                    print("548")
-                    return render(request, "response.html", {"response": "Booked"})
+        if request.user.is_authenticated:
+            from_date, to_date, space_type_id, n_space=self.extract_data(request)
+            # print(from_date, to_date, space_type_id, n_space)
+            space_type = SpaceType.objects.get(pk=space_type_id)
+            avail_space = SpaceAvailable.objects.filter(space__space_type_id=space_type_id, avail_from__lte=from_date, avail_to__gte=to_date)
+            space_array = []
+            i = 0
+            #print(avail_space)
+            if avail_space.count()>=n_space:
+                print("523")
+                # firstly make space unavailable
+                for ob in avail_space :
+                    print("526")
+                    if make_space_unavailable(SpaceAvailable, ob.space, from_date, to_date):
+                        print("528")
+                        space_array+=[ob.space]
+                        i+=1
+                # if proposed number of space could be made unavailable
+                if i==n_space:
+                    # if the spaces could be successfully booked
+                    residence_order=None
+                    print("533")
+                    residence_order = self.book_space(n_space, space_type, from_date, to_date, request, space_array)
+                    if residence_order:
+                        print("548")
+                        return render(request, "response.html", {"response": "Booked"})
+                    else:
+                        for space in space_array:
+                            create_avail_space(SpaceAvailable, space, from_date, to_date)
+                        return render(request, "response.html", {"response": "Not Available"})
+                # else make them available again
                 else:
                     for space in space_array:
                         create_avail_space(SpaceAvailable, space, from_date, to_date)
                     return render(request, "response.html", {"response": "Not Available"})
-            # else make them available again
-            else:
-                for space in space_array:
-                    create_avail_space(SpaceAvailable, space, from_date, to_date)
-                return render(request, "response.html", {"response": "Not Available"})
+        else:
+            return render(request, "response.html", {"response": "Login First"})
 
-
-
+# Recieved Orders
 class ShowResidenceOrder(views.View):
     def get(self, request):
         if request.user.is_authenticated:
@@ -567,5 +563,10 @@ class ShowResidenceOrder(views.View):
         else:
             return redirect("/login_required/")
 
-
- 
+class ShowPlacedOrder(views.View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            residence_orders = ResidenceOrder.objects.filter(guest__user=request.user)
+            return render(request, "residence_placed_order_detail.html", {"orders": residence_orders})
+        else:
+            return redirect("/login_required/")

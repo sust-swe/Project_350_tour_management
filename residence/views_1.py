@@ -122,17 +122,17 @@ def make_space_available_not_booked(SpaceAvailable, space, from_date, to_date):
         to_date = ob2.avail_to
         ob2.delete()
 
-    pre_date = ob.from_date - timedelta(1)
-    post_date = ob.to_date + timedelta(1)
+    pre_date = from_date - timedelta(1)
+    post_date = to_date + timedelta(1)
 
     # adjacent time span preceeding proposed time span be unified
-    qs4 = SpaceAvailable.objects.filter(space, avail_to=pre_date)
+    qs4 = SpaceAvailable.objects.filter(space=space, avail_to=pre_date)
     if qs4.exists():
         from_date = qs4[0].avail_from
         qs4[0].delete()
 
     # adjacent time span following proposed time span be unified
-    qs5 = SpaceAvailable(space=space, avail_from=post_date)
+    qs5 = SpaceAvailable.objects.filter(space=space, avail_from=post_date)
     if qs5.exists():
         to_date = qs5[0].avail_to
         qs5[0].delete()
@@ -164,6 +164,7 @@ def create_avail_space(SpaceAvailable, SpaceBooking, space, from_date, to_date):
 
     if from_date > to_date:
         return
+    print("create avail space", from_date, to_date)
     # skip the booked time span entirely included in proposed time span
     qs = SpaceBooking.objects.filter(
         space=space, book_from__gte=from_date, book_to__lte=to_date)
@@ -181,6 +182,9 @@ def create_avail_space(SpaceAvailable, SpaceBooking, space, from_date, to_date):
             i = i+1
         make_space_available_not_booked(
             SpaceAvailable, space, qs[i-1].book_to+timedelta(1), to_date)
+    else:
+        make_space_available_not_booked(
+            SpaceAvailable, space, from_date, to_date)
 
 
 # returns true if the space is available through the entire propsed time span

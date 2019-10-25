@@ -6,3 +6,8 @@
     width: 80%;
     border-spacing: 0 5px; /* this is the ultimate fix */
 }
+
+.image_ste{
+    width: "300";
+    height: "250";
+}

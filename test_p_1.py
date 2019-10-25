@@ -1,2 +1,2 @@
-class MyClass:
-    name = 'testp1'
+if None == 1:
+    print("hihi")

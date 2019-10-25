@@ -1,3 +1,4 @@
+from django import views
 from homepage.models import UserDetail
 from django.contrib import messages, auth
 from django.contrib.auth import login, authenticate, logout
@@ -21,8 +22,8 @@ def my_register(request):
         form2 = UserDetailForm()
 
         if request.method == 'POST':
-            user_form = UserForm(request.POST)
-            user_detail_form = UserDetailForm(request.POST)
+            user_form = UserForm(request.POST, request.FILES)
+            user_detail_form = UserDetailForm(request.POST, request.FILES)
 
             if user_form.is_valid() and user_detail_form.is_valid():
                 username = user_form.cleaned_data['username']
@@ -62,7 +63,8 @@ def my_login(request):
         if request.method == 'POST':
             username = request.POST['username']
             password = request.POST['password']
-            current_user = authenticate(request, username=username, password=password)
+            current_user = authenticate(
+                request, username=username, password=password)
             print(type(current_user))
             if current_user is None:
                 messages.info(request, 'Invalid username or password')
@@ -86,3 +88,10 @@ def my_logout(request):
 # messages.info(request, '4')
 # return HttpResponse('hi') replaces current html content
 # render(request, 'base.html', {'a': b} process base with the json data
+
+
+class ShowProfileDetail(views.View):
+    def get(self, request, user_id):
+        user_detail = UserDetail.objects.get(pk=user_id)
+        user = User.objects.get(userdetail=user_detail)
+        return render(request, "profile.html", {'user': user, 'user_detail': user_detail})

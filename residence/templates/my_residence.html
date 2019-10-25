@@ -1,16 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-    <title>My Residence</title>
+<title>My Residence</title>
 {% endblock %}
 
 {% block content_2 %}
-    <h1>My Residences</h1>
-    <table>
-    <tr><th></th><th></th><th></th><th></th></tr>
+<h1>My Residences</h1>
+<table>
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
     {% for res in qs %}
-        <tr><td>  <a href="/residence/{{ res.id }}/">{{ res.name }}</a>  </td></tr>
+    <tr>
+        <td> <a href="/residence/{{ res.id }}/">{{ res.name }}</a> </td>
+    </tr>
     {% endfor %}
-    </table><br>
-    <a href="/residence/add_residence/">Add New Residence</a>
+</table><br>
+<a href="/residence/add_residence/">Add New Residence</a>
+<p>
+    <a href="/residence/received_order/">My Received Orders</a><br>
+    <a href="/residence/placed_order/">My Placed Orders</a>
+</p>
 {% endblock %}

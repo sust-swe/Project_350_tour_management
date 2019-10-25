@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q
 from homepage.models import City, UserDetail, Address, MyChoice, Country
+from homepage.base import *
 
 # Create your models here.
 
@@ -20,14 +21,18 @@ class Restaurant(models.Model):
         Country, on_delete=models.CASCADE, null=True, default=None)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user_detail', 'name'], name='user\'s unique restaurant')
-        ]
         ordering = ['user_detail']
 
     def __str__(self):
         return self.name
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields()
+        if not (exclude and "user_detail" in exclude):
+            if Restaurant.objects.filter(user_detail=self.user_detail, name=self.name).exists():
+                if Restaurant.objects.get(user_detail=self.user_detail, name=self.name).id != self.id:
+                    raise ValidationError(
+                        "You have already a restaurant of the same name")
 
 
 class Food(models.Model):
@@ -41,16 +46,20 @@ class Food(models.Model):
         max_length=1, choices=MyChoice.Eating_time)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['restaurant', 'name'], name='unique food in restaurant'),
-            models.CheckConstraint(check=Q(price__gte=0),
-                                   name='non-negative food price')
-        ]
+        pass
         ordering = ['restaurant']
 
     def __str__(self):
         return '%s serves %s' % (self.restaurant.__str__(), self.name)
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields()
+        if Food.objects.filter(restaurant=self.restaurant, name=self.name).exists():
+            if Food.objects.get(restaurant=self.restaurant, name=self.name).id != self.id:
+                raise ValidationError(
+                    "You have already a restaurant of the same name")
+
+        if
 
 
 class Orders(models.Model):
