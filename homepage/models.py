@@ -78,7 +78,8 @@ class MyChoice:
     ]
 
     Eating_time = [
-        ('b', 'Breakfast'), ('l', 'Lunch'), ('d', 'Dinner'), ('a', 'all time')
+        ('Breakfast', 'Breakfast'), ('Lunch',
+                                     'Lunch'), ('Dinner', 'Dinner'), ('All Time', 'All Time')
     ]
 
     months = [

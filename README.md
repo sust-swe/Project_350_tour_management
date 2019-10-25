@@ -1,7 +1,10 @@
 # Project-350: Tour Management
 
-Contributors:
-Mehedi Hasan(2016831023) and Md. Shoaib Tasrif Emon (2016831001),
+Contributors
+
+1. Mehedi Hasan(2016831023)
+2. Md. Shoaib Tasrif Emon (2016831001)
+
 Software Engineering, IICT, SUST.
 
 A tour guide app having four major functionalities
@@ -15,7 +18,11 @@ A tour guide app having four major functionalities
 4. Blog
    - A user can write article, search for articles according to their needs.
 
-Development Tools:
-    1. Backend - Django Web Framework
-    2. Database - Postgresql
-    3. Frontend - HTML, CSS, Javascript(jQuery), Django Template Language
+Development Tools
+
+    1. Backend 
+        - Django Web Framework
+    2. Database 
+        - Postgresql
+    3. Frontend 
+        - HTML, CSS, Javascript(jQuery), Django Template Language

@@ -93,7 +93,8 @@ class UpdateRestaurant(views.View):
         if request.user.is_authenticated:
             restaurant = Restaurant.objects.get(pk=id)
             if restaurant.user_detail.user == request.user:
-                form = self.form_class(request.POST, request.FILES, instance=restaurant)
+                form = self.form_class(
+                    request.POST, request.FILES, instance=restaurant)
                 # print(form.as_table())
                 if form.is_valid():
                     ob = form.save(commit=False)
@@ -133,7 +134,9 @@ class DeleteRestaurant(views.View):
             redirect('/')
 
 
-############################################################################################################
+###########################################        Food               ########################################
+
+
 class Menu(views.View):
     template_name = 'menu.html'
 
@@ -154,10 +157,8 @@ class AddFood(views.View):
                 form = self.form_class()
                 return render(request, self.template_name, {'form': form})
             else:
-                messages.info(request, 'Permission Denied')
-                return HttpResponse('/homepage/underground/')
+                return redirect("/permission_denied/")
         else:
-            messages.info(request, 'You must login first')
             redirect('/')
 
     def post(self, request, id):
@@ -173,14 +174,13 @@ class AddFood(views.View):
                         food.save()
                         return redirect('/restaurant/{}/menu/'.format(id))
                     except ValidationError as e:
-                        nfe = e.message_dict[NON_FIELD_ERRORS]
-                        return render(request, self.template_name, {'form': form, 'nfe': nfe})
+                        for kk in e.message_dict:
+                            form.add_error(kk, e.message_dict[kk])
+                        return render(request, self.template_name, {'form': form})
                 else:
-                    messages.info(request, 'Invalid Credentials')
                     return render(request, self.template_name, {'form': form})
             else:
-                messages.info(request, 'Permission Denied')
-                return HttpResponse('/homepage/underground/')
+                return redirect("/permission_denied/")
         else:
             messages.info(request, 'You must login first')
             redirect('/')
@@ -208,7 +208,8 @@ class UpdateFood(views.View):
         if request.user.is_authenticated:
             food = Food.objects.get(pk=food_id)
             if food.restaurant.user_detail.user == request.user:
-                form = self.form_class(request.POST, request.FILES, instance=food)
+                form = self.form_class(
+                    request.POST, request.FILES, instance=food)
 
                 if form.is_valid():
                     ob = form.save(commit=False)

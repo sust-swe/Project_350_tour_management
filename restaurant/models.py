@@ -43,7 +43,9 @@ class Food(models.Model):
     price = models.FloatField()
     person = models.PositiveIntegerField(default=1, blank=True)
     available_at_time = models.CharField(
-        max_length=1, choices=MyChoice.Eating_time)
+        max_length=255, choices=MyChoice.Eating_time)
+    description = models.CharField(
+        max_length=255, blank=True, null=True, default=None)
 
     class Meta:
         pass
@@ -53,13 +55,18 @@ class Food(models.Model):
         return '%s serves %s' % (self.restaurant.__str__(), self.name)
 
     def clean_fields(self, exclude=None):
-        super().clean_fields()
-        if Food.objects.filter(restaurant=self.restaurant, name=self.name).exists():
-            if Food.objects.get(restaurant=self.restaurant, name=self.name).id != self.id:
-                raise ValidationError(
-                    "You have already a restaurant of the same name")
+        super().clean_fields(exclude=exclude)
 
-        if
+        if not (exclude and "restaurant" in exclude):
+            if Food.objects.filter(restaurant=self.restaurant, name=self.name).exists():
+                if Food.objects.get(restaurant=self.restaurant, name=self.name).id != self.id:
+                    raise ValidationError(
+                        "You have already a restaurant of the same name")
+
+        if self.price < 0:
+            raise ValidationError({
+                "price": "Price cannot be negative"
+            })
 
 
 class Orders(models.Model):
