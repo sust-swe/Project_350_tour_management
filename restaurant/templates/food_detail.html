@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+
+{% block content_1 %}
+<title>Food Detail</title>
+{% endblock content_1 %}
+
+
+{% block content_2 %}
+<h1>{{food.name}}</h1>
+<table>
+    <tr>
+        <td>Price</td>
+        <td>{{food.price}}</td>
+    </tr>
+</table>
+
+{% if food.img %}
+<img src="{{food.img.url}}" alt="{{food.name}}" width="300" height="200">
+{% endif %}
+
+<p>
+    <button class="AddToCart" myval="{{food.id}}">Add to Cart</button><br>
+    By <a href="/restaurant/{{food.restaurant.id}}/">{{food.restaurant.name}}</a>
+</p>
+
+<script>
+    $(".AddToCart").click(function () {
+        $.ajax({
+            url: "/restaurant/addtocart/",
+            data: { "item_id": $(this).attr("myval") },
+            success: function (redata) {
+                alert(redata);
+            }
+        });
+    });
+</script>
+
+{% endblock content_2 %}

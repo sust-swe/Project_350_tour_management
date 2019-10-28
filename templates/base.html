@@ -36,10 +36,12 @@
 
         <p>
             {% if request.user.is_authenticated %}
+            <p><a href="/restaurant/gotocart/">Go to Foodcart</a></p>
             Hi
-            <a href="/profile/">{{ request.user.username }}</a> <br>
-            <a href="/home/">My Home</a> <br>
-            <a href="/accounts/logout/">Logout</a>
+            <a href="/profile/">{{ request.user.username }}</a><br>
+            <a href="/home/">My Home</a><br>
+            <a href="/accounts/logout/">Logout</a><br>
+
             {% else %}
             <a href="/accounts/register/">Register</a> OR
             <a href="/accounts/login/">Login</a>

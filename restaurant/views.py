@@ -3,10 +3,11 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from .forms import RestaurantForm, FoodForm
-from .models import Restaurant, Food
+from .models import Restaurant, Food, Cart, CartDetail, Order, OrderDetail
 from homepage.models import UserDetail
 from django import views
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from homepage.base import *
 
 
 # Create your views here.
@@ -133,8 +134,7 @@ class DeleteRestaurant(views.View):
             messages.info(request, 'You must login first')
             redirect('/')
 
-
-###########################################        Food               ########################################
+###########################################        Food               ######################################################
 
 
 class Menu(views.View):
@@ -182,8 +182,15 @@ class AddFood(views.View):
             else:
                 return redirect("/permission_denied/")
         else:
-            messages.info(request, 'You must login first')
-            redirect('/')
+            return redirect("/login_required/")
+
+
+class ShowFoodDetail(views.View):
+    template_name = "food_detail.html"
+
+    def get(self, request, food_id):
+        food = Food.objects.get(pk=food_id)
+        return render(request, self.template_name, {"food": food})
 
 
 class UpdateFood(views.View):
@@ -254,13 +261,126 @@ class ShowAllRestaurant(views.View):
         return render(request, 'my_restaurant.html', {'qs': qs})
 
 
-'''
-if request.user.is_authenticated:
-    if request.method == 'GET':
-        pass
+############################       Cart         ###################################################
+
+
+def getCart(request):
+    cart = None
+    if not Cart.objects.filter(owner=request.user).exists():
+        # print("getCart of not having")
+        cart = Cart(owner=request.user, restaurant=None, bill=0)
+        cart.save()
     else:
-        pass    
-else:
-    messages.info(request, 'You must login first')
-    return redirect('/')
-'''
+        cart = Cart.objects.get(owner=request.user)
+    return cart
+
+
+def fix_cart(cart_detail):
+    if cart_detail.cart.restaurant == cart_detail.food.restaurant:
+        if CartDetail.objects.filter(cart=cart_detail.cart, food=cart_detail.food).exists():
+            return CartDetail.objects.get(cart=cart_detail.cart, food=cart_detail.food)
+        else:
+            return cart_detail
+    else:
+        cart = cart_detail.cart
+        cart.restaurant = cart_detail.food.restaurant
+        CartDetail.objects.filter(cart=cart_detail.cart).delete()
+        cart.bill = 0
+        cart.save()
+        return cart_detail
+
+
+class AddToCart(views.View):
+
+    def get(self, request):
+        cart = getCart(request)
+        # print("280", cart.restaurant)
+        food_id = int(request.GET.get("item_id"))
+        food = Food.objects.get(id=food_id)
+        cart_detail = CartDetail(cart=cart, food=food, quantity=0)
+        cart_detail = fix_cart(cart_detail)
+        cart_detail.quantity += 1
+        cart.bill += food.price
+        try:
+            cart_detail.full_clean()
+            cart_detail.save()
+            cart.full_clean()
+            cart.save()
+            # print("287", cart_detail.cart.restaurant)
+            return render(request, "response.html", {"response": "ADDED"})
+        except:
+            return render(request, "response.html", {"response": "Failed"})
+
+
+class DelFromCart(views.View):
+    
+    def get(self, request):
+        cart=getCart(request)
+        food_id=int(request.GET.get("item_id"))
+        food = Food.objects.get(id=food_id)
+        cart_detail = CartDetail.objects.get(cart=cart, food=food)
+        
+        if cart_detail.quantity == 1:
+            if CartDetail.objects.filter(cart__owner=request.user).count() == 1:
+                cart.restaurant = None
+                cart.bill = 0
+                cart.save()
+            cart_detail.delete()
+            
+            return render(request, "response.html", {"response": "Deleted"})
+        cart.bill-=food.price
+        cart_detail.quantity -= 1
+        try:
+            cart_detail.full_clean()
+            cart_detail.save()
+            cart.full_clean()
+            cart.save()
+            return render(request, "response.html", {"response": "Deleted"})
+        except:
+            return render(request, "response.html", {"response": "Failed"})
+
+
+class GoToCart(views.View):
+    template_name = "cart.html"
+
+    def get(self, request):
+        cart = getCart(request)
+        cart_detail = CartDetail.objects.filter(cart__owner=request.user)
+        print(cart.bill)
+        return render(request, self.template_name, {"cart_detail": cart_detail, "cart": cart})
+    
+#############################################      Order       #########################################################
+
+
+class PlaceOrder(views.View):
+    
+    def get(self, request):
+        cart = Cart.objects.get(owner=request.user)
+        new_order = Order(customer=request.user, restaurant=cart.restaurant, bill=cart.bill, order_time=datetime.now())
+        new_order.save()
+        cart_details = CartDetail.objects.filter(cart__owner=request.user)
+        for item in cart_details:
+            order_detail = OrderDetail(order=new_order, food=item.food, quantity=item.quantity)
+            order_detail.save()
+            item.delete()
+        cart.restaurant = None
+        cart.bill = 0
+        return redirect("/restaurant/my_food_orders/")
+    
+
+class MyPlacedFoodOrder(views.View):
+    
+    def get(self, request):
+        orders = Order.objects.filter(customer=request.user)
+        return render(request, "my_food_order.html", {"orders": orders})
+    
+    
+class ShowOrderDetail(views.View):
+    template_name="order_detail.html"
+    
+    def get(self, request, order_id):
+        order = Order.objects.get(pk=order_id)
+        order_details = OrderDetail.objects.filter(order=order)
+        return render(request, self.template_name, {"order": order, "order_details": order_details})
+
+        
