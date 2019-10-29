@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import UserDetailForm, UserForm
 import os
+from django import views
 import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bravo1.settings")
 django.setup()
@@ -62,7 +63,8 @@ def my_login(request):
         if request.method == 'POST':
             username = request.POST['username']
             password = request.POST['password']
-            current_user = authenticate(request, username=username, password=password)
+            current_user = authenticate(
+                request, username=username, password=password)
             print(type(current_user))
             if current_user is None:
                 messages.info(request, 'Invalid username or password')
@@ -81,6 +83,13 @@ def my_logout(request):
         return redirect('/')
     else:
         return redirect('/')
+
+
+class ShowProfileDetail(views.View):
+    def get(self, request, user_id):
+        user_detail = UserDetail.objects.get(pk=user_id)
+        user = User.objects.get(userdetail=user_detail)
+        return render(request, "profile.html", {'user': user, 'user_detail': user_detail})
 
 
 # messages.info(request, '4')

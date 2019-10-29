@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
-from .models import Post
+from .models import Post, Comment
+from homepage.models import UserDetail
 from . import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 from django import views
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -24,12 +25,12 @@ def new_post(request):
     # post = get_object_or_404(Post, pk=pk)
     if request.user.is_authenticated:
         user = request.user
-        user_detail = UserDetail.objects.get(user=request.user)
+        user_detail = UserDetail.objects.get(user=user)
         if request.method == 'POST':
             form = PostForm(request.POST)
             if form.is_valid():
                 instance = form.save(commit=False)
-                instance.author = user_detail
+                instance.user_detail = user_detail
                 instance.save()
                 return redirect('bloglist')
         else:
@@ -38,6 +39,7 @@ def new_post(request):
     else:
         messages.info(request, 'Log in first')
         return redirect('/login/')
+
 
 def PostList(request):
     postlist = Post.objects.filter(status=1).order_by('-created_on')
@@ -59,3 +61,33 @@ def PostDetail(request, pk):
         'detail': detail
     }
     return render(request, 'post_detail.html', context)
+
+
+@login_required
+def addComment(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = CommentForm()
+    return render(request, 'comment_form.html', {'form': form})
+
+
+@login_required
+def comment_approve(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    comment.approve()
+    return redirect('post_detail', pk=comment.post.pk)
+
+
+@login_required
+def comment_remove(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    post_pk = comment.post.pk
+    comment.delete()
+    return redirect('post_detail', pk=post_pk)

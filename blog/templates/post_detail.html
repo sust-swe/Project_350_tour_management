@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% block content_1 %}
+
+<div class="container">
+    <div class="row">
+        <div class=" justify-content-center col-md-12 card mb-4  mt-3 left  top">
+            <div class="card-body">
+                <!-- {{post_detail}} -->
+                <h1>{% block title %} {{ detail.title }} {% endblock title %}</h1>
+                <p class=" text-muted">{{ detail.user_detail.user }} | {{ detail.created_on }}</p>
+                <p class="card-text ">{{ detail.content }}</p>
+                <a href="{% url 'addComment' pk=post.pk %}">Add Comment</a>
+            </div>
+            {% for comment in post.comments.all %}
+            <br>
+            {% if user.is_authenticated or comment.approve_comment %}
+            {{comment.created_on}}
+            {% if not comment.approve_comment %}
+            <a href="{% url 'comment_approve' pk=comment.pk %}">Approve Comment</a>
+            <a href="{% url 'comment_remove' pk=comment.pk %}">Remove Comment</a>
+            {% endif %}
+            <p>{{ comment.text }}</p>
+            <p>By: {{comment.user_detail.user}}</p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content_1 %}
