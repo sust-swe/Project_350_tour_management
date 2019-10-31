@@ -9,6 +9,7 @@ class ResidenceForm(forms.ModelForm):
     class Meta:
         model = Residence
         exclude = ['user_detail']
+        labels = {"img": "Photo"}
 
     def __init__(self, *args, **kwargs):
 
@@ -166,7 +167,8 @@ class BookSpaceForm(forms.Form):
 
 
 class CreateSpaceTypeForm(forms.ModelForm):
-
+    
     class Meta:
         model = SpaceType
         exclude = ['residence']
+        labels = {"pic": "Photo", "person": "Person per Space"}

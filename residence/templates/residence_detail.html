@@ -4,38 +4,60 @@
 <title>Residence Detail</title>
 {% endblock %}
 
+{% block header %}
+    {{ ob.name }}
+{% endblock %}
+
 {% block content_2 %}
-<h1>{{ ob.name }}</h1>
-<table>
-    {% if ob.address %}<tr>
+
+    {% if ob.img %} <img src="{{ ob.img.url }}" class="image_ste"/> {% endif %}
+
+    <table class="body_table">
+    {% if ob.address %}
+        <tr>
         <td>Address</td>
         <td>{{ ob.address }}</td>
-    </tr>{% endif %}
-    {% if ob.city %}<tr>
+        </tr>
+    {% endif %}
+
+    {% if ob.city %}
+        <tr>
         <td>City</td>
         <td>{{ ob.city }}</td>
-    </tr>{% endif %}
-    {% if ob.mobile %}<tr>
+        </tr>
+    {% endif %}
+
+    {% if ob.mobile %}
+        <tr>
         <td>Mobile</td>
         <td>{{ ob.mobile }}</td>
-    </tr>{% endif %}
-    {% if ob.description %}<tr>
+        </tr>
+    {% endif %}
+
+    {% if ob.description %}
+        <tr>
         <td>Description</td>
         <td>{{ ob.description }}</td>
-    </tr>{% endif %}
-</table>
-{% if ob.img %} <img src="{{ ob.img.url }}" width="400" height="250" /> {% endif %}
-<br>
-Owned By <a href="/accounts/profile/{{ob.user_detail.user.id}}/">{{ob.user_detail.user.username}}</a>
-<br><br>
-<a href="space_type/">Space Types</a><br>
+        </tr>
+    {% endif %}
+    </table>
 
 
-<br><br>
+
+
+
+
+
+
+{% endblock %}
+
+{% block body_op %}
+    <a href="space_type/"><button class="body_op_button_class">Space Types</button></a>
+    <a href="/accounts/profile/{{ob.user_detail.user.id}}/"><button class="body_op_button_class">{{ob.user_detail.user.username}}</button></a>
 {% if request.user == ob.user_detail.user %}
-<a href="space/">Spaces</a><br>
-<a href="update/">Update</a><br>
-<a href="delete/">Delete</a><br>
-
+    <a href="space/"><button class="body_op_button_class">Spaces</button></a>
+    <a href="update/"><button class="body_op_button_class">Update</button></a>
+    <a href="delete/"><button class="body_op_button_class">Delete</button></a>
+    <a href="/residence/{{ ob.id }}/orders"><button class="body_op_button_class">Orders</button></a>
 {% endif %}
 {% endblock %}

@@ -15,6 +15,7 @@ urlpatterns = [
     path('<int:id>/delete/', views.DeleteRestaurant.as_view(),
          name='delete restaurant'),
     path('<int:id>/menu/', views.Menu.as_view(), name='menu'),
+    path("<int:restaurant_id>/orders/", views.ShowRestaurantOrders.as_view()),
     path('all/', views.ShowAllRestaurant.as_view(), name='show all restaurant'),
     path('<int:id>/menu/add_item/', views.AddFood.as_view(), name='add menu item'),
     path('food/<int:food_id>/update/',
@@ -27,6 +28,6 @@ urlpatterns = [
     path("delfromcart/", views.DelFromCart.as_view()),
     path("place_order/", views.PlaceOrder.as_view()),
     path("my_food_orders/", views.MyPlacedFoodOrder.as_view()),
-    path("order/<int:order_id>/", views.ShowOrderDetail.as_view()),
-    #path("food_order_detail/"),
+    path("orders/<int:order_id>/", views.ShowRestaurantOrderDetail.as_view()),
+    
 ]

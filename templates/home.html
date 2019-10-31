@@ -2,11 +2,36 @@
 
 {% block content_1 %}
     <title>my home page</title>
+    <style>
+    .home_comp_class{
+        background-color: #898989;
+        color: black;
+        width: 100%;
+        height: 20%;
+        font-size: 35px;
+        vertical-align: center;
+        border-style: none;
+    }
+    .home_comp_class:hover{
+        background-color: #474747;
+        color: #b0b0b0;
+        width: 100%;
+        height: 20%;
+        font-size: 35px;
+        vertical-align: center;
+        border-style: none;
+    }
+    </style>
+{% endblock %}
+
+{% block header %}
+    HOME
 {% endblock %}
 
 {% block content_2 %}
-    <a href="/restaurant/my_restaurant/">My Restaurant</a> <br>
-    <a href="/residence/my_residence/">My Residence</a> <br>
-    <a href="/guide/my_guide/">My Guides</a> <br>
-    <a href="/blog/my_blog/">My Blog</a> <br>
+    <a href="/restaurant/my_restaurant/"><button class="home_comp_class">My Restaurant</button></a>
+    <a href="/residence/my_residence/"><button class="home_comp_class">My Residence</button></a>
+    <a href="/guide/my_guide/"><button class="home_comp_class">My Guide</button></a>
+    <a href="/blog/my_blog/"><button class="home_comp_class">My Blog</button></a>
+    <a href="/homepage/orders/"><button class="home_comp_class">My Orders</button></a>
 {% endblock %}

@@ -4,24 +4,30 @@
     <title>Restaurant Detail</title>
 {% endblock %}
 
-{% block content_2 %}
-    <table>
-    {% if restaurant.name %}<tr><td>Name</td><td>{{ restaurant.name }}</td></tr>{% endif %}
-    {% if restaurant.city %}<tr><td>City</td><td>{{ restaurant.city }}</td></tr>{% endif %}
-    {% if restaurant.address %}<tr><td>Address</td><td>{{ restaurant.address }}</td></tr>{% endif %}
-    {% if restaurant.description %}<tr><td>Description</td><td>{{ restaurant.description }}</td></tr>{% endif %}
-    {% if restaurant.mobile %}<tr><td>Mobile</td><td>{{ restaurant.mobile }}</td></tr>{% endif %}
-    </table>
-    {% if restaurant.img %}
-        <img src="{{ restaurant.img.url }}" height="200" width="350">
-    {% endif %}
+{% block header %}
+    <span>{{ restaurant.name }}</span>
+{% endblock %}
 
-<p>
-    <a href="menu/">Menu</a> <br>
-    {% if request.user == restaurant.user_detail.user %}
-        <a href="update/">Update</a><br>
-        <a href="delete/">Delete</a><br>
+{% block content_2 %}
+
+    {% if restaurant.img %}
+        <img src="{{ restaurant.img.url }}" class="image_ste"><br>
     {% endif %}
-    <a href="/restaurant/my_restaurant/">BACK</a>
-</p>
+    <table class="body_table"><tr><td>City</td><td>{{ restaurant.city }}</td></tr>
+    <tr>
+        <td>Address</td>
+        <td>{{ restaurant.address }} </td>
+    </tr>
+    </table>
+
+
+{% endblock %}
+
+{% block body_op %}
+<a href="menu/"><button class="body_op_button_class">Menu</button></a>
+    {% if request.user == restaurant.user_detail.user %}
+        <a href="update/"><button class="body_op_button_class">Update</button></a>
+        <a href="delete/"><button class="body_op_button_class">Delete</button></a>
+        <a href="orders/"><button class="body_op_button_class">Orders</button></a>
+    {% endif %}
 {% endblock %}

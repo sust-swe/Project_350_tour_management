@@ -4,13 +4,23 @@
 <title>Residence Space</title>
 {% endblock %}
 
+{% block header %}
+    Spaces
+{% endblock %}
+
 {% block content_2 %}
 
-{% for space in spaces %}
-<a href="/residence/space/{{ space.id }}/">{{ space.name }}</a><br>
-{% endfor %}
-<br>
-<p><a href="add_space/">Add New Space</a></p>
-<p>By <a href="/residence/{{residence.id}}/">{{residence.name}}</a></p>
+    {% for space in spaces %}
+    <a href="/residence/space/{{ space.id }}/"><button class="body_button_class">{{ space.name }}</button></a><br>
+    {% endfor %}
 
+{% endblock %}
+
+{% block body_op %}
+
+    {% if request.user == residence.user_detail.user %}
+        <a href="add_space/"><button class="body_op_button_class">Add New Space</button></a>
+    {% endif %}
+
+<a href="/residence/{{residence.id}}/"><button class="body_op_button_class">{{residence.name}}</button></a>
 {% endblock %}

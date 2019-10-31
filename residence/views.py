@@ -83,7 +83,7 @@ class UpdateResidence(views.View):
             residence = Residence.objects.get(pk=id)
             if residence.user_detail.user == request.user:
                 form = self.form_class(instance=residence)
-                return render(request, self.template_name, {'form': form})
+                return render(request, self.template_name, {'form': form, "residence": residence})
             else:
                 messages.info(request, 'Permission denied')
                 return redirect('/homepage/underground/')
@@ -93,11 +93,11 @@ class UpdateResidence(views.View):
 
     def post(self, request, id):
         if request.user.is_authenticated:
-            instance = Residence.objects.get(pk=id)
-            if instance.user_detail.user == request.user:
+            residence = Residence.objects.get(pk=id)
+            if residence.user_detail.user == request.user:
                 
                 form = self.form_class(
-                    request.POST, request.FILES, instance=instance)
+                    request.POST, request.FILES, instance=residence)
                 
                 if form.is_valid():
                     ob = form.save(commit=False)
@@ -109,9 +109,9 @@ class UpdateResidence(views.View):
                         for kk in e.message_dict:
                             form.add_error(kk, e.message_dict[kk])
                         # print(form.as_table())
-                        return render(request, self.template_name, {'form': form})
+                        return render(request, self.template_name, {'form': form, "residence": residence})
                 else:
-                    return render(request, self.template_name, {'form': form})
+                    return render(request, self.template_name, {'form': form, "residence": residence})
             else:
                 return redirect("/permission_denied/")
         else:
@@ -173,7 +173,7 @@ class CreateSpaceType(views.View):
             residence = Residence.objects.get(pk=residence_id)
             if request.user == residence.user_detail.user:
                 form = self.form_class()
-                return render(request, self.template_name, {'form': form})
+                return render(request, self.template_name, {'form': form, "residence": residence})
             else:
                 return redirect("/permission_denied/")
         else:
@@ -195,10 +195,10 @@ class CreateSpaceType(views.View):
                     except ValidationError as ve:
                         for kk in ve.message_dict:
                             form.add_error(kk, ve.message_dict[kk])
-                        return render(request, self.template_name, {'form': form})
+                        return render(request, self.template_name, {'form': form, "residence": residence})
                 else:
                     print(form.as_table())
-                    return render(request, self.template_name, {'form': form})
+                    return render(request, self.template_name, {'form': form, "residence": residence})
             else:
                 return redirect("/permission_denied/")
         else:
@@ -228,7 +228,7 @@ class DeleteSpaceType(views.View):
 
 
 class UpdateSpaceType(views.View):
-    template_name = "create_update_space_type.html"
+    template_name = "update_space_type.html"
     form_class = CreateSpaceTypeForm
 
     def get(self, request, space_type_id):
@@ -236,7 +236,7 @@ class UpdateSpaceType(views.View):
             space_type = SpaceType.objects.get(pk=space_type_id)
             if request.user == space_type.residence.user_detail.user:
                 form = self.form_class(instance=space_type)
-                return render(request, self.template_name, {'form': form})
+                return render(request, self.template_name, {'form': form, "space_type": space_type})
             else:
                 return redirect("/permission_denied")
         else:
@@ -257,9 +257,9 @@ class UpdateSpaceType(views.View):
                     except ValidationError as ve:
                         for kk in ve.message_dict:
                             form.add_error(kk, ve.message_dict[kk])
-                        return render(request, self.template_name, {'form': form})
+                        return render(request, self.template_name, {'form': form, "space_type": space_type})
                 else:
-                    return render(request, self.template_name, {'form': form})
+                    return render(request, self.template_name, {'form': form, "space_type": space_type})
             else:
                 return redirect("/permission_denied/")
         else:
@@ -279,7 +279,7 @@ class AddSpace(views.View):
 
                 form = self.form_class(initial={'residence': id})
                 # print("AddSpace", id)
-                return render(request, self.template_name, {'form': form})
+                return render(request, self.template_name, {'form': form , "residence": residence})
             else:
                 messages.info(request, 'Permission denied')
                 redirect('/homepage/underground/')
@@ -320,9 +320,7 @@ class SpaceDetail(views.View):
 
     def get(self, request, space_id):
         space = Space.objects.get(pk=space_id)
-        avail = SpaceAvailable.objects.filter(
-            space_id=space_id).order_by('avail_from')
-        return render(request, self.template_name, {'space': space, 'avails': avail})
+        return render(request, self.template_name, {'space': space})
 
 
 class UpdateSpace(views.View):
@@ -450,6 +448,16 @@ class MakeSpaceUnavailable(views.View):
             return redirect("/login_required/")
 
 
+class ShowSpaceAvailability(views.View):
+    template_name = "space_availability.html"
+    
+    def get(self, request, space_id):
+        if request.user.is_authenticated:
+            space = Space.objects.get(pk=space_id)
+            avail = SpaceAvailable.objects.filter(space_id=space_id).order_by('avail_from')
+            return render(request, self.template_name, {"space": space, "avail": avail})
+            
+    
 ######################################   SpaceBookings    ####################################
 
 
@@ -523,21 +531,21 @@ class BookSpace(views.View):
             avail_space = SpaceAvailable.objects.filter(space__space_type_id=space_type_id, avail_from__lte=from_date, avail_to__gte=to_date)
             space_array = []
             i = 0
-            #print(avail_space)
-            if avail_space.count()>=n_space:
+            # print(avail_space)
+            if avail_space.count() >= n_space:
                 print("523")
                 # firstly make space unavailable
-                for ob in avail_space :
+                for ob in avail_space:
                     print("526")
                     if make_space_unavailable(SpaceAvailable, ob.space, from_date, to_date):
                         print("528")
                         space_array+=[ob.space]
-                        i+=1
+                        i += 1
                 # if proposed number of space could be made unavailable
-                if i==n_space:
+                if i == n_space:
                     # if the spaces could be successfully booked
-                    residence_order=None
-                    print("533")
+                    residence_order = None
+                    # print("533")
                     residence_order = self.book_space(n_space, space_type, from_date, to_date, request, space_array)
                     if residence_order:
                         print("548")
@@ -555,13 +563,23 @@ class BookSpace(views.View):
             return render(request, "response.html", {"response": "Login First"})
 
 # Recieved Orders
-class ShowResidenceOrder(views.View):
-    def get(self, request):
+
+
+# *********************************************    Orders    ***********************************************************
+
+class ShowReceivedResidenceOrder(views.View):
+    
+    def get(self, request, residence_id):
         if request.user.is_authenticated:
-            residence_orders = ResidenceOrder.objects.filter(space_type__residence__user_detail__user=request.user)
-            return render(request, "residence_order_detail.html", {"orders": residence_orders})
+            residence = Residence.objects.get(pk=residence_id)
+            if residence.user_detail.user == request.user:
+                orders = ResidenceOrder.objects.filter(space_type__residence=residence)
+                return render(request, "residence_orders.html", {"orders": orders, "residence": residence})
+            else:
+                return redirect("/permission_denied/")
         else:
             return redirect("/login_required/")
+
 
 class ShowPlacedOrder(views.View):
     def get(self, request):
@@ -570,3 +588,7 @@ class ShowPlacedOrder(views.View):
             return render(request, "residence_placed_order_detail.html", {"orders": residence_orders})
         else:
             return redirect("/login_required/")
+      
+        
+class ShowResidenceOrder(views.View):
+    pass

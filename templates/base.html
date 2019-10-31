@@ -9,47 +9,46 @@
     {% block content_1 %} <title>base</title> {% endblock content_1 %}
 </head>
 
-<body bgcolor="#bdb76b">
+<body>
 
-    <div align="center">
+    <div class="navigation_class" align="center">
+        <a href="/search/restaurant/"><button class="navigation_button_class">Restaurant</button></a>
+        <a href="/search/space/"><button class="navigation_button_class">Residence</button></a>
+        <a href="/search/guide/"><button class="navigation_button_class">Guide</button></a>
+        <a href="/search/blog/"><button class="navigation_button_class">Blog</button></a>
+    </div>
+
+    <div class="header_class">
+        {% block header %}
+
+        {% endblock %}
+    </div>
+
+    <div align="center" class="body_class">
         {% block content_2 %}
 
         {% endblock content_2 %}
-    </div>
-
     <br><br>
-
-    <div align="center">
-
-        {% for ms in messages %}
-        <bold>{{ ms }}</bold>
-        {% endfor %}
-
-        <p>
-            <h3>
-                Search
-                <a href="/search/restaurant/">Restaurant</a>
-                <a href="/search/space/">Residence</a>
-                <a href="/search/guide/">Guide</a>
-            </h3>
-        </p>
-
-        <p>
-            {% if request.user.is_authenticated %}
-            <p><a href="/restaurant/gotocart/">Go to Foodcart</a></p>
-            Hi
-            <a href="/profile/">{{ request.user.username }}</a><br>
-            <a href="/home/">My Home</a><br>
-            <a href="/accounts/logout/">Logout</a><br>
-
-            {% else %}
-            <a href="/accounts/register/">Register</a> OR
-            <a href="/accounts/login/">Login</a>
-            {% endif %}
-        </p>
-
     </div>
 
-</body>
+    <div class="body_options">
+        {% block body_op %}
 
+        {% endblock %}
+    </div>
+
+    <div class="footer_class" align="center">
+        {% block footer %}
+        {% endblock %}
+        {% if request.user.is_authenticated %}
+        <a href="/restaurant/gotocart/"><button class="footer_button_class">Food Cart</button></a>
+        <a href="/profile/"><button class="footer_button_class">My Profile</button></a>
+        <a href="/home/"><button class="footer_button_class">My Home</button></a>
+        <a href="/accounts/logout/"><button class="footer_button_class">Logout</button></a>
+        {% else %}
+        <a href="/accounts/register/"><button class="footer_button_class">Register</button></a>
+        <a href="/accounts/login/"><button class="footer_button_class">Login</button></a>
+        {% endif %}
+    </div>
+</body>
 </html>

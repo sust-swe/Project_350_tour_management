@@ -7,7 +7,7 @@ from .first_view import load_city_choice, load_flw_from_day, load_flw_to_day, lo
 
 ##########################################   non-class views        ##########################
 
-###########################################   class based views     ###########################
+#######################################        class based views          ################################################################
 
 
 class SearchRestaurant(views.View):

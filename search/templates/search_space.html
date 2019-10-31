@@ -5,25 +5,25 @@
 <title>SearchSpace</title>
 {% endblock content_1 %}
 
+{% block header %}
+    Search For Residence
+{% endblock %}
+
 {% block content_2 %}
 
 <form method="POST">
     {% csrf_token %}
-    <table>
+    <table class="form_table">
         {{form.as_table}}
-        <tr>
-            <td></td>
-            <td>
-                <input type="submit" value="Search">
-            </td>
-        </tr>
     </table>
+    <button type="submit" class="body_button_class">Search</button>
 </form>
 
 {% if residence_qs.exists %}
 
 <p>
-    <h1>Results</h1>
+    <div class="body_header">Results</div>
+
     <table>
         <tr>
             <th>Residence</th>
@@ -44,7 +44,8 @@
             </td>
         </tr> {% endfor %}
     </table>
-</p> {% else %} <h1>No Results Found</h1>
+
+</p>{% else %}
 {% endif %}
 
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
@@ -212,28 +213,7 @@
 
             }
         });
-        $(this).hide();
-        /*
-        var jqxhr = $.post("", function () {
-            alert("success");
-        })
-            .done(function () {
-                alert("Booked");
-            })
-            .fail(function () {
-                alert("Not Available");
-            })
-            .always(function () {
-                alert("finished");
-            });
-
-        // Perform other work here ...
-
-        // Set another completion function for the request above
-        jqxhr.always(function () {
-            alert("second finished");
-        });
-        */
+        $(this).hide()
     });
 </script>
 <p id="test"></p>

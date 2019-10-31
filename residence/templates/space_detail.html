@@ -4,37 +4,26 @@
 <title>Space Detail</title>
 {% endblock %}
 
-{% block content_2 %}
-<h1>{{ space.space_type_name }}</h1>
-<table>
-    {% if space.name %}<tr>
-        <td>Name</td>
-        <td>{{ space.name }}</td>
-    </tr>{% endif %}
-    {% if space.rent %}<tr>
-        <td>For </td>
-        <td>{{ space.person }} person</td>
-    </tr>{% endif %}
-    {% if space.shared == True %}<tr>
-        <td>Shared Space</td>
-    </tr>{% endif %}
-    <tr>
-        <td>Type</td>
-        <td><a href="/residence/space_type/{{space.space_type.id}}/">{{space.space_type.name}}</a></td>
-    </tr>
-</table>
-{% if space.img %} <img src="{{ space.img.url }}" height="300" width="450"> {% endif %}
-<br><br><br>
+{% block header %}
+    {{ space.name }}
+{% endblock %}
 
-From <a href="/residence/{{space.residence.id}}/">{{space.residence.name}}</a>
+{% block content_2 %}
+{% if space.space_type.pic %} <img src="{{ space.space_type.pic.url }}" class="image_ste"> {% endif %}<br>
+
+
+    <a href="/residence/space_type/{{space.space_type.id}}/">
+        <button class="body_button_class">{{space.space_type.name}}</button>
+    </a><br>
+
+    <table class="body_table">
+    <tr><td>For {{ space.space_type.person }} person</td></tr>
+    </table>
 
 
 {% if space.residence.user_detail.user == request.user %}
 <p id="owner_access">
-    <a href="/residence/space/{{ space.id }}/update/"> Update</a> <br>
-    <a href="/residence/space/{{ space.id }}/delete/"> Delete</a> <br>
-    <a href="/residence/space/{{ space.id }}/avail/"> Create New Availability(as much as possible)</a><br>
-    <a href="/residence/space/{{space.id}}/unavail/">Make Unavailable (as much as possible)</a>
+
 
     <p id="availables">
         {%if avails.exists %}
@@ -85,4 +74,12 @@ From <a href="/residence/{{space.residence.id}}/">{{space.residence.name}}</a>
     {% endif %}
 </p>
 {% endif %}
+{% endblock %}
+
+{% block body_op %}
+    <a href="/residence/{{space.residence.id}}/"><button class="body_op_button_class">{{space.residence.name}}</button></a>
+    {% if space.residence.user_detail.user == request.user %}
+    <a href="/residence/space/{{ space.id }}/update/"><button class="body_op_button_class">Update</button></a>
+    <a href="/residence/space/{{ space.id }}/delete/"><button class="body_op_button_class">Delete</button></a><a href="/residence/space/{{ space.id }}/availability/"><button class="body_op_button_class">Availability</button></a>
+    {% endif %}
 {% endblock %}

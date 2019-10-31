@@ -4,10 +4,17 @@
 <title>My Profile</title>
 {% endblock %}
 
+{% block header %}
+    {{ user.username }}
+{% endblock %}
+
 {% block content_2 %}
 <div align="center">
-    <h1>{{ user.username }}</h1>
-    <table>
+    {% if user_detail.img %}
+    <img src="{{ user_detail.img.url }}" class="image_ste">
+    {% endif %}
+
+    <table class="body_table">
         <tr>
             <td>Name</td>
             <td>{{ user.first_name }} {{ user.last_name }}</td>
@@ -46,13 +53,14 @@
 
         </tr>
     </table>
-    {% if user_detail.img %}
-    <img src="{{ user_detail.img.url }}" height="150" width="200" alt="Add Photo">
-    {% endif %}
     <br><br>
-    {% if request.user.is_authenticated %}
-    <a href="/edit_profile/">Edit Profile </a> <br>
-    <a href="/change_password/">Change Password</a> <br>
-    {% endif %}
+
 </div>
+{% endblock %}
+
+{% block body_op %}
+    {% if request.user.is_authenticated %}
+    <a href="/edit_profile/"><button class="body_op_button_class">Edit Profile</button></a>
+    <a href="/change_password/"><button class="body_op_button_class">Change Password</button></a>
+    {% endif %}
 {% endblock %}

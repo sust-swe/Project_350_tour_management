@@ -203,13 +203,11 @@ class UpdateFood(views.View):
             food = Food.objects.get(pk=food_id)
             if food.restaurant.user_detail.user == request.user:
                 form = self.form_class(instance=food)
-                return render(request, self.template_name, {'form': form})
+                return render(request, self.template_name, {'form': form, "food": food})
             else:
-                messages.info(request, 'Permission denied')
-                return redirect('/homepage/underground/')
+                return redirect('/permission_denied/')
         else:
-            messages.info(request, 'You must login first')
-            redirect('/')
+            redirect('/login_required/')
 
     def post(self, request, food_id):
         if request.user.is_authenticated:
@@ -223,7 +221,7 @@ class UpdateFood(views.View):
                     try:
                         ob.full_clean()
                         ob.save()
-                        return redirect('/restaurant/{}/menu/'.format(food.restaurant.id))
+                        return redirect('/restaurant/food/{}/'.format(food_id))
                     except ValidationError as e:
                         nfe = e.message_dict[NON_FIELD_ERRORS]
                         return render(request, self.template_name, {'form': form, 'nfe': nfe})
@@ -247,11 +245,9 @@ class DeleteFood(views.View):
                 food.delete()
                 return redirect('/restaurant/{}/menu/'.format(food.restaurant.id))
             else:
-                messages.info(request, 'Permission denied')
-                return redirect('/homepage/underground/')
+                return redirect('/permission_denied/')
         else:
-            messages.info(request, 'You must login first')
-            redirect('/')
+            return redirect('/login_required/')
 
 
 class ShowAllRestaurant(views.View):
@@ -383,4 +379,33 @@ class ShowOrderDetail(views.View):
         order_details = OrderDetail.objects.filter(order=order)
         return render(request, self.template_name, {"order": order, "order_details": order_details})
 
-        
+
+class ShowRestaurantOrders(views.View):
+    template_name = "restaurant_orders.html"
+    
+    def get(self, request, restaurant_id):
+        if request.user.is_authenticated:
+            restaurant = Restaurant.objects.get(pk=restaurant_id)
+            if request.user == restaurant.user_detail.user:
+                
+                orders = Order.objects.filter(restaurant=restaurant).order_by("order_time")
+                return render(request, self.template_name, {"orders": orders, "restaurant": restaurant})
+            else:
+                return redirect("/permission_denied/")
+        else:
+            return redirect("login_required")
+            
+            
+class ShowRestaurantOrderDetail(views.View):
+    template_name = "restaurant_order_detail.html"
+    
+    def get(self, request, order_id):
+        if request.user.is_authenticated:
+            order = Order.objects.get(pk=order_id)
+            if request.user == order.customer or request.user == order.restaurant.user_detail.user:
+                order_details = OrderDetail.objects.filter(order=order)
+                return render(request, self.template_name, {"order": order, "order_details": order_details})
+            else:
+                return redirect("/permission_denied/")
+        else:
+            return redirect("/login_required/")

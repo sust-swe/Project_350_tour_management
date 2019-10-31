@@ -67,6 +67,7 @@ class Order(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     bill = models.FloatField()
     order_time = models.DateTimeField()
+    status = models.CharField(max_length=255, null=True)
 
     class Meta:
         ordering = ['-order_time']
