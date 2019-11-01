@@ -3,6 +3,21 @@
 
 {% block content_1 %}
 <title>SearchSpace</title>
+    <style>
+        .body_table{
+            background-color: #9a9ff1;
+        color: black;
+        overflow-y: auto;
+        width: 800px;
+        }
+    .body_header{
+    background-color: #37375b;
+    color: #e6d8dd;
+    font-size: 35px;
+    overflow: hidden;
+    width: 800px;
+}
+    </style>
 {% endblock content_1 %}
 
 {% block header %}
@@ -20,41 +35,34 @@
 </form>
 
 {% if residence_qs.exists %}
-
-<p>
     <div class="body_header">Results</div>
-
-    <table>
+    <table class="body_table">
         <tr>
             <th>Residence</th>
             <th>Space Type</th>
+            <th>Details</th>
         </tr>
         {% for res in residence_qs %}
-        <tr>
-            <td><a href="/residence/{{res.id}}/">{{res.name}}</a></td>
-            <td>
-                <ul>
-                    {% for ri,pk,name,count,rent in space_types_ri_p_n_c_r %}
-                    {% if ri == res.id %}
-                    <li>
-                        <a href="/residence/space_type/{{pk}}/">{{name}}</a> {{count}} Space Available at ${{rent}} per
-                        space
-                        <button class="book" space_type="{{pk}}" id="space_type_id_{{pk}}">Book</button>
-                    </li> {% endif %} {% endfor %} </ul>
-            </td>
-        </tr> {% endfor %}
+            {% for ri,pk,name,count,rent in space_types_ri_p_n_c_r %}
+            {% if ri == res.id %}
+                <tr>
+                <td><a href="/residence/{{res.id}}/"><button class="body_table_data_button">{{res.name}}</button></a></td>
+                <td><a href="/residence/space_type/{{pk}}/"><button class="body_table_data_button">{{name}}</button></a></td>
+                <td>{{count}} Space Available at ${{rent}} per space</td>
+                <td><button class="book body_table_data_button" space_type="{{pk}}" id="space_type_id_{{pk}}">Book</button></td>
+                </tr>
+            {% endif %}
+            {% endfor %}
+        {% endfor %}
     </table>
-
-</p>{% else %}
+{% else %}
+    <div class="body_header">No Results Found</div>
 {% endif %}
 
-<script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
-    load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
-    load_from_day="/search/ajax/load_from_day/">
+<script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/" load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/" load_from_day="/search/ajax/load_from_day/">
 
-        $("#b1").click(function () { $("#test").show(); });
-        $("#b1").dblclick(function () { $("#test").hide(); });
-
+        //$("#b1").click(function () { $("#test").show(); });
+        //$("#b1").dblclick(function () { $("#test").hide(); });
 
         $("#id_from_year").change(function () {
             // $("#test").html('changed');
@@ -130,7 +138,7 @@
                 success: function (redata) { $("#id_to_day").html(redata); }
             });
         });
-    </script>
+</script>
 
 <script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
 
@@ -148,7 +156,6 @@
             }
         });
     });
-
     $("#id_city").change(function () {
         // $("#test").html("load_residence");
         $.ajax({
@@ -157,11 +164,8 @@
             success: function (redata) { $("#id_residence").html(redata); }
         });
     });
-
 </script>
-
 <script id="bookyee_space" book_url="/search/ajax/book/">
-
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -189,12 +193,8 @@
             }
         }
     });
-
     $(".book").click(function () {
-        //$("#test").html($(this).attr("space_type"));
-        /*effective -O- */
-        //$(this).hide();
-        //alert(this);
+
         $.ajax({
             url: "/residence/book/",
             type: "POST",
@@ -210,10 +210,9 @@
             },
             success: function (response) {
                 alert(response);
-
+                $(".book").hide();
             }
         });
-        $(this).hide()
     });
 </script>
 <p id="test"></p>

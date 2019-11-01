@@ -1,5 +1,5 @@
 from homepage.base import *
-from .forms import SearchRestaurantForm, SpaceSearchForm
+from .forms import SearchRestaurantForm, SpaceSearchForm, SearchGuideForm
 from homepage.models import City
 from restaurant.models import Restaurant
 from residence.models import SpaceAvailable, SpaceType, Residence
@@ -54,7 +54,7 @@ class SearchSpace(views.View):
 
     def get(self, request):
         form = self.form_class()
-        #print('space search view')
+        # print('space search view')
         # print(form.as_table())
         return render(request, self.template_name, {'form': form})
 
@@ -125,3 +125,15 @@ class SearchSpace(views.View):
         else:
             print(form.as_table())
             return render(request, self.template_name, {'form': form})
+
+
+class SearchGuide(views.View):
+    template_name = "search_guide.html"
+    form_class = SearchGuideForm
+    
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
+    
+
+        

@@ -2,11 +2,11 @@
 
 
 {% block content_1 %}
-<title>csa</title>
+<title>create availability</title>
 {% endblock content_1 %}
 
 {% block header %}
-    {{ space.name }}
+{{ space.name }}
 {% endblock %}
 
 {% block content_2 %}
@@ -15,8 +15,9 @@
     <table class="form_table">
         {{form.as_table}}
     </table>
-<button class="body_button_class" type="submit">Submit</button>
+<button type="submit" class="body_button_class">Create Availability</button>
 </form>
+
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
     load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
     load_from_day="/search/ajax/load_from_day/">
@@ -98,6 +99,8 @@
                 success: function (redata) { $("#id_to_day").html(redata); }
             });
         });
+
+
     </script>
 {% endblock content_2 %}
 

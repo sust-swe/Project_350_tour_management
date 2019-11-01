@@ -287,6 +287,7 @@ def load_city_choice(City, country_id):
 
 
 def load_date_from_DateForm(form):
+    
     year = int(form.cleaned_data['from_year'])
     month = int(form.cleaned_data['from_month'])
     day = int(form.cleaned_data['from_day'])
@@ -295,5 +296,4 @@ def load_date_from_DateForm(form):
     month = int(form.cleaned_data['to_month'])
     day = int(form.cleaned_data['to_day'])
     to_date = date(year, month, day)
-
-    return (from_date, to_date)
+    return from_date, to_date

@@ -25,6 +25,8 @@
 
 {% block body_op %}
 <a href="menu/"><button class="body_op_button_class">Menu</button></a>
+    <a href="/accounts/profile/{{ restaurant.user_detail.user }}"><button class="body_op_button_class">
+        {{restaurant.user_detail.user.username}}</button></a>
     {% if request.user == restaurant.user_detail.user %}
         <a href="update/"><button class="body_op_button_class">Update</button></a>
         <a href="delete/"><button class="body_op_button_class">Delete</button></a>

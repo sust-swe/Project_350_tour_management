@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content_1 %}
+    <title>guide available</title>
+{% endblock %}
+
+{% block header %}
+    Availabilities
+{% endblock %}
+
+{% block content_2 %}
+{%if avails.exists %}
+        <table class="body_table">
+            <tr>
+                <td>From</td>
+                <td>To</td>
+            </tr>
+            {% for avail in avails %}
+
+            <tr>
+
+                <td>{{avail.avail_from}}</td>
+                <td>{{avail.avail_to}}</td>
+            </tr>
+
+            {% endfor %}
+        </table>
+{%endif%}
+{% endblock %}
+
+{% block body_op %}
+ {% if guide.user_detail.user == request.user %}
+    <a href="/guide/{{ guide.id }}/avail/"><button class="body_op_button_class">Create Availability</button></a>
+    <a href="/guide/{{ guide.id }}/unavail/"><button class="body_op_button_class"> Make Unavailable</button></a>
+    {% endif %}
+{% endblock %}

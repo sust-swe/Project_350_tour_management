@@ -4,13 +4,20 @@
     <title>Update Guide</title>
 {% endblock %}
 
-{% block content_2 %}
+{% block header %}
+    {{ guide.name }}
+{% endblock %}
 
+{% block content_2 %}
     <form method="post" enctype="multipart/form-data" >
     {% csrf_token %}
-    <table>
+    <table class="form_table">
         {{ form.as_table }}
-        <tr><td></td><td> <input type="submit" value="Update">  </td></tr>
     </table>
+    <button class="body_button_class" type="submit">Update</button>
     </form>
+{% endblock %}
+
+{% block body_op %}
+    <a href="/guide/{{ guide.id }}/"><button class="body_op_button_class">{{ guide.name }}</button> </a>
 {% endblock %}

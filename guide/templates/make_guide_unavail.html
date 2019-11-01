@@ -6,17 +6,18 @@
 {% endblock content_1 %}
 
 {% block header %}
-    {{ space.name }}
+    {{ guide.name }}
 {% endblock %}
 
 {% block content_2 %}
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <table class="form_table">
         {{form.as_table}}
     </table>
 <button class="body_button_class" type="submit">Submit</button>
 </form>
+
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
     load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
     load_from_day="/search/ajax/load_from_day/">
@@ -102,5 +103,5 @@
 {% endblock content_2 %}
 
 {% block body_op %}
-    <a href="/residence/space/{{ space.id }}/"><button class="body_op_button_class">{{ space.name }}</button></a>
+    <a href="/guide/{{ guide.id }}/"><button class="body_op_button_class">{{ guide.name }}</button></a>
 {% endblock %}

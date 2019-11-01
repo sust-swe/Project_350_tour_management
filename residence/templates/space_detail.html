@@ -26,24 +26,7 @@
 
 
     <p id="availables">
-        {%if avails.exists %}
-        <h1>Availables</h1>
-        <table class="spacing-table">
-            <tr>
-                <td>From</td>
-                <td>To</td>
-            </tr>
-            {% for avail in avails %}
 
-            <tr>
-
-                <td>{{avail.avail_from}}</td>
-                <td>{{avail.avail_to}}</td>
-            </tr>
-
-            {% endfor %}
-        </table>
-        {%endif%}
     </p>
     {% if bookings.exists %}
     <h1>Bookings</h1>

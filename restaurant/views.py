@@ -42,16 +42,14 @@ class AddRestaurant(views.View):
                     ob.full_clean()
                     ob.save()
                     return redirect('/restaurant/my_restaurant/')
-                except ValidationError as e:
-                    nfe = e.message_dict[NON_FIELD_ERRORS]
-                    return render(request, self.template_name, {'form': form, 'nfe': nfe})
+                except ValidationError as ve:
+                    for kk in ve.message_dict:
+                        form.add_error(kk, ve.message_dict[kk])
+                    return render(request, self.template_name, {'form': form})
             else:
-                # print(form.as_table())
-                messages.info(request, 'Invalid Credentials')
                 return render(request, self.template_name, {'form': form})
         else:
-            messages.info(request, 'You must log in to continue')
-            return redirect('/')
+            return redirect("/login_required/")
 
     def get(self, request):
         if request.user.is_authenticated:
@@ -59,8 +57,7 @@ class AddRestaurant(views.View):
             form = self.form_class()
             return render(request, self.template_name, {'form': form})
         else:
-            messages.info(request, 'You must log in to continue')
-            return redirect('/')
+            return redirect('/login_required/')
 
 
 class RestaurantDetail(views.View):
@@ -75,20 +72,18 @@ class RestaurantDetail(views.View):
 
 class UpdateRestaurant(views.View):
     form_class = RestaurantForm
-    template_name = 'update_residence.html'
+    template_name = 'update_restaurant.html'
 
     def get(self, request, id):
         if request.user.is_authenticated:
             restaurant = Restaurant.objects.get(pk=id)
             if restaurant.user_detail.user == request.user:
                 form = self.form_class(instance=restaurant)
-                return render(request, self.template_name, {'form': form})
+                return render(request, self.template_name, {'form': form, "restaurant": restaurant})
             else:
-                messages.info('Permission denied')
-                return redirect('/homepage/underground/')
+                return redirect("/permission_denied/")
         else:
-            messages.info(request, 'You must login first')
-            return redirect('/')
+            return redirect('/login_required/')
 
     def post(self, request, id):
         if request.user.is_authenticated:
@@ -105,18 +100,16 @@ class UpdateRestaurant(views.View):
                         ob.full_clean()
                         ob.save()
                         return redirect('/restaurant/{}/'.format(id))
-                    except ValidationError as e:
-                        nfe = e.message_dict[NON_FIELD_ERRORS]
-                        return render(request, self.template_name, {'form': form, 'nfe': nfe})
+                    except ValidationError as ve:
+                        for kk in ve.message_dict:
+                            form.add_error(kk, ve.message_dict[kk])
+                        return render(request, self.template_name, {'form': form, "restaurant": restaurant})
                 else:
-                    messages.info(request, 'Invalid Credentials')
-                    return render(request, self.template_name, {'form': form})
+                    return render(request, self.template_name, {'form': form, "restaurant": restaurant})
             else:
-                messages.info(request, 'Permission denied')
-                return redirect('/homepage/underground/')
+                return redirect('/permission_denied/')
         else:
-            messages.info(request, 'You must login first')
-            return redirect('/')
+            return redirect('/login_required/')
 
 
 class DeleteRestaurant(views.View):
@@ -128,12 +121,9 @@ class DeleteRestaurant(views.View):
                 restaurant.delete()
                 return redirect('/restaurant/my_restaurant/')
             else:
-                messages.info(request, 'Permission Denied')
-                return HttpResponse('/homepage/underground/')
+                return redirect("/permission_denied/")
         else:
-            messages.info(request, 'You must login first')
-            redirect('/')
-
+            return redirect("/login_required/")
 ###########################################        Food               ######################################################
 
 
@@ -155,11 +145,11 @@ class AddFood(views.View):
             restaurant = Restaurant.objects.get(pk=id)
             if restaurant.user_detail.user == request.user:
                 form = self.form_class()
-                return render(request, self.template_name, {'form': form})
+                return render(request, self.template_name, {'form': form, "restaurant": restaurant})
             else:
                 return redirect("/permission_denied/")
         else:
-            redirect('/')
+            return redirect('/login_required/')
 
     def post(self, request, id):
         if request.user.is_authenticated:
@@ -176,9 +166,9 @@ class AddFood(views.View):
                     except ValidationError as e:
                         for kk in e.message_dict:
                             form.add_error(kk, e.message_dict[kk])
-                        return render(request, self.template_name, {'form': form})
+                        return render(request, self.template_name, {'form': form, "restaurant": restaurant})
                 else:
-                    return render(request, self.template_name, {'form': form})
+                    return render(request, self.template_name, {'form': form, "restaurant": restaurant})
             else:
                 return redirect("/permission_denied/")
         else:
@@ -198,7 +188,6 @@ class UpdateFood(views.View):
     template_name = 'update_menu_item.html'
 
     def get(self, request, food_id):
-        print('update menu item get')
         if request.user.is_authenticated:
             food = Food.objects.get(pk=food_id)
             if food.restaurant.user_detail.user == request.user:
@@ -207,7 +196,7 @@ class UpdateFood(views.View):
             else:
                 return redirect('/permission_denied/')
         else:
-            redirect('/login_required/')
+            return redirect('/login_required/')
 
     def post(self, request, food_id):
         if request.user.is_authenticated:
@@ -222,18 +211,16 @@ class UpdateFood(views.View):
                         ob.full_clean()
                         ob.save()
                         return redirect('/restaurant/food/{}/'.format(food_id))
-                    except ValidationError as e:
-                        nfe = e.message_dict[NON_FIELD_ERRORS]
-                        return render(request, self.template_name, {'form': form, 'nfe': nfe})
+                    except ValidationError as ve:
+                        for kk in ve.message_dict:
+                            form.add_error(kk, ve.message_dict[kk])
+                        return render(request, self.template_name, {'form': form})
                 else:
-                    messages.info(request, 'Invalid Credentials')
                     return render(request, self.template_name, {'form': form})
             else:
-                messages.info(request, 'Permission denied')
-                return redirect('/homepage/underground/')
+                return redirect("/permission_denied/")
         else:
-            messages.info(request, 'You must login first')
-            redirect('/')
+            return redirect("/login_required/")
 
 
 class DeleteFood(views.View):
@@ -324,7 +311,7 @@ class DelFromCart(views.View):
             cart_detail.delete()
             
             return render(request, "response.html", {"response": "Deleted"})
-        cart.bill-=food.price
+        cart.bill -= food.price
         cart_detail.quantity -= 1
         try:
             cart_detail.full_clean()
@@ -393,7 +380,7 @@ class ShowRestaurantOrders(views.View):
             else:
                 return redirect("/permission_denied/")
         else:
-            return redirect("login_required")
+            return redirect("/login_required/")
             
             
 class ShowRestaurantOrderDetail(views.View):

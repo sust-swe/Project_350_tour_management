@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block header %}
-    Add New Item
+    {{restaurant.name}}
 {% endblock %}
 
 {% block content_2 %}
@@ -15,7 +15,7 @@
     <table>
         {{ form.as_table }}
     </table>
-    <button type="submit" class="body_button_class">Add</button>
+    <button type="submit" class="body_button_class">Add Menu Item</button>
 </form>
 
 

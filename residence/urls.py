@@ -37,5 +37,4 @@ urlpatterns = [
     path("book/", views.BookSpace.as_view()),
     path("received_order/", views.ShowResidenceOrder.as_view()),
     path("placed_order/", views.ShowPlacedOrder.as_view()),
-
 ]

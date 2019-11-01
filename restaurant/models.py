@@ -27,12 +27,11 @@ class Restaurant(models.Model):
         return self.name
 
     def clean_fields(self, exclude=None):
-        super().clean_fields()
+        super().clean_fields(exclude=exclude)
         if not (exclude and "user_detail" in exclude):
             if Restaurant.objects.filter(user_detail=self.user_detail, name=self.name).exists():
                 if Restaurant.objects.get(user_detail=self.user_detail, name=self.name).id != self.id:
-                    raise ValidationError(
-                        "You have already a restaurant of the same name")
+                    raise ValidationError("You have already a restaurant of the same name")
 
 
 class Food(models.Model):

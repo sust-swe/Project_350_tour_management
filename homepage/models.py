@@ -30,7 +30,7 @@ class City(models.Model):
         ]
 
     def __str__(self):
-        return '%s, %s' % (self.city, self.country)
+        return self.city
 
 
 class Address(models.Model):
