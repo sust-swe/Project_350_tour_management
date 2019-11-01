@@ -27,6 +27,7 @@ class Post(models.Model):
 
     def approve_comments(self):
         return self.comments.filter(approve_comment=True)
+        # return self.comments.filter(approve_comment=True)
 
     def get_absolute_url(self):
         return reverse('post_detail', kwargs={'pk': self.pk})
@@ -36,7 +37,8 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name='comments')
     user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
     text = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
@@ -50,7 +52,7 @@ class Comment(models.Model):
         self.save()
 
     def get_absolute_url(self):
-        return reverse('post_detail', kwargs={'pk': self.pk})
+        return reverse('post_list')
 
 
 class TestP(models.Model):

@@ -15,4 +15,5 @@ urlpatterns = [
         views.comment_approve, name='comment_approve'),
     url(r'^comment/(?P<pk>[0-9]+)/remove/$',
         views.comment_remove, name='comment_remove'),
+    
 ]
