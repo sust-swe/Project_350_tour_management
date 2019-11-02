@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content_1 %}
+<title>Purchased Space Bookings</title>
+{% endblock content_1 %}
+
+{% block header %}
+    Purchased Space Bookings
+{% endblock %}
+
+{% block content_2 %}
+    {% for order in orders %}
+    <a href="/residence/order/{{ order.id }}/">
+        <button class="body_button_class">In {{ order.space_type.residence.name }} at {{ order.booking_time }}</button>
+    </a><br>
+    {% endfor %}
+{% endblock content_2 %}
+
+{% block body_op %}
+    <a href="/my_orders/"><button class="body_op_button_class">My Orders</button></a>
+{% endblock %}

@@ -10,30 +10,33 @@ from homepage.base import *
 class Gender(models.Model):
     name = models.CharField(max_length=20)
     
+    def __str__(self):
+        return self.name
+    
 
 class Guide(models.Model):
     user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
-    code_name = models.CharField(max_length=255, null=True, default=None)
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=255, null=True, default=None)
     gender = models.ForeignKey(Gender, on_delete=models.CASCADE, null=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="guide", null=True, default=None)
     city = models.ForeignKey(City, on_delete=models.CASCADE, related_name="guide", null=True, default=None)
     mobile = models.IntegerField()
     img = models.ImageField(upload_to='GuidePhoto', default=None, null=True, blank=True)
     description = models.CharField(max_length=255, default=None, null=True, blank=True)
+    rent = models.FloatField(null=True)
     
     def clean_fields(self, exclude=None):
         super().clean_fields(exclude=exclude)
         if not (exclude and "user_detail" in exclude):
-            if Guide.objects.filter(user_detail=self.user_detail, code_name=self.code_name).exists():
-                if Guide.objects.get(user_detail=self.user_detail, code_name=self.code_name).id != self.id:
-                    raise ValidationError("You have already a guide of the same code_name")
+            if Guide.objects.filter(user_detail=self.user_detail, name=self.name).exists():
+                if Guide.objects.get(user_detail=self.user_detail, name=self.name).id != self.id:
+                    raise ValidationError("You have already a guide of the same name")
         if Guide.objects.filter(mobile=self.mobile).exists():
-            if Guide.objects.get(mobile=self.mobile).id!=self.id:
+            if Guide.objects.get(mobile=self.mobile).id != self.id:
                 raise ValidationError("This mobile number is already used")
             
     def __str__(self):
-        return '%s from %s' % (self.name, self.user_detail)
+        return self.name
 
 
 class GuideAvailable(models.Model):

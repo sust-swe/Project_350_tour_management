@@ -6,12 +6,10 @@ from django.shortcuts import redirect, render, HttpResponse
 class PermissionDenied(views.View):
 
     def get(self, request):
-        messages.info(request, 'Permission Denied')
-        return redirect('/')
+        return render(request, "index.html", {"error": "Permission DENIED !"})
 
 
 class LoginRequired(views.View):
 
     def get(self, request):
-        messages.info(request, 'Login Required')
-        return redirect('/')
+        return render(request, "index.html", {"error": "Login REQUIRED !"})

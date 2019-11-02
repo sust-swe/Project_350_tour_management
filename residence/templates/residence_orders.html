@@ -11,6 +11,19 @@
 
 {% block content_2 %}
     {% for order in orders %}
-        <a href="/residence/order/{{ order.id }}/"><button class="body_button_class">{{ guest.username }} at {{ booking_time }}</button></a>
+        <a href="/residence/order/{{ order.id }}/">
+            <button class="body_button_class">{{ order.guest.user.username }} at {{ order.booking_time }}</button>
+        </a>
+        <br>
     {% endfor %}
 {% endblock %}
+
+{% block body_op %}
+    {% if residence.user_detail.user == request.user %}
+    <a href="/residence/{{ residence.id }}/">
+    <button class="body_op_button_class">Back</button>
+    </a>
+    {% endif %}
+{% endblock %}
+
+orders, residence

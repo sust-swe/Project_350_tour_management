@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content_1 %}
+    guide order
+{% endblock %}
+
+{% block header %}
+{{ guide.name  }}
+{% endblock %}
+
+{% block content_2 %}
+    {% for booking in bookings %}
+        <a href="/guide/order/{{ booking.id }}/"><button class="body_button_class">
+            By {{ booking.cudstomer.user.username }} at {{ booking.booking_time }}
+        </button> </a>
+        <br>
+    {% endfor %}
+{% endblock %}

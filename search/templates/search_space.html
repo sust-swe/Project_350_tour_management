@@ -59,10 +59,8 @@
     <div class="body_header">No Results Found</div>
 {% endif %}
 
-<script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/" load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/" load_from_day="/search/ajax/load_from_day/">
 
-        //$("#b1").click(function () { $("#test").show(); });
-        //$("#b1").dblclick(function () { $("#test").hide(); });
+<script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/" load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/" load_from_day="/search/ajax/load_from_day/">
 
         $("#id_from_year").change(function () {
             // $("#test").html('changed');
@@ -141,7 +139,6 @@
 </script>
 
 <script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
-
     $("#id_country").change(function () {
         $.ajax({
             url: $("#load_city_ajax").attr("load_city"),
@@ -165,6 +162,7 @@
         });
     });
 </script>
+
 <script id="bookyee_space" book_url="/search/ajax/book/">
     function getCookie(name) {
         var cookieValue = null;
@@ -193,8 +191,7 @@
             }
         }
     });
-    $(".book").click(function () {
-
+     $(".book").click(function () {
         $.ajax({
             url: "/residence/book/",
             type: "POST",
@@ -215,5 +212,5 @@
         });
     });
 </script>
-<p id="test"></p>
+
 {% endblock content_2 %}

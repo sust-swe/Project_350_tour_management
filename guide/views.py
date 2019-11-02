@@ -223,3 +223,71 @@ class GuideBookings(views.View):
                 return redirect("/permission_denied/")
         else:
             return redirect("/login_required/")
+        
+        
+class BookGuide(views.View):
+    
+    def extract_data(self, request):
+        from_year=int(request.POST["from_year"])
+        from_month=int(request.POST["from_month"])
+        from_day=int(request.POST["from_day"])
+        to_year=int(request.POST["to_year"])
+        to_month=int(request.POST.get("to_month", None))
+        # print(from_year, from_month, from_day)
+        to_day=int(request.POST["to_day"])
+        from_date=date(from_year, from_month, from_day)
+        to_date=date(to_year, to_month, to_day)
+        guide_id=int(request.POST["guide"])
+        return from_date, to_date, guide_id
+    
+    def post(self, request):
+        from_date, to_date, guide_id = self.extract_data(request)
+        guide = Guide.objects.get(pk=guide_id)
+        if GuideAvailable.objects.filter(guide_id=guide_id, avail_from__lte=from_date, avail_to__gte=to_date).exists():
+            make_guide_unavailable_amap(GuideAvailable, guide, from_date, to_date)
+            ob = GuideBooking(guide=guide, customer=UserDetail.objects.get(user=request.user), book_from=from_date, book_to=to_date, total_rent=guide.rent, booking_time=datetime.now())
+            ob.save()
+            return render(request, "response.html", {"response": "Booked"})
+        else:
+            return render(request, "response.html", {"response": "Not Available"})
+        
+        
+class ShowPurchasedOrder(views.View):
+    template_name = "purchased_guide_order.html"
+    
+    def get(self, request):
+        if request.user.is_authenticated:
+            orders = GuideBooking.objects.filter(customer__user=request.user).order_by("-booking_time")
+            return render(request, self.template_name, {"orders": orders})
+        else:
+            return redirect("/login_required/")
+    
+    
+class ShowGuideOrder(views.View):
+    template_name = "guide_order.html"
+    
+    def get(self, request, guide_id):
+        if request.user.is_authenticated:
+            guide = Guide.objects.get(pk=guide_id)
+            if guide.user_detail.user == request.user:
+                bookings = GuideBooking.objects.filter(guide=guide).order_by("-booking_time")
+                return render(request, self.template_name, {"bookings": bookings, "guide": guide})
+            else:
+                return redirect("/permission_denied/")
+        else:
+            return redirect("/login_required/")
+        
+        
+class ShowGuideBookingDetail(views.View):
+    template_name = "guide_booking_detail.html"
+    
+    def get(self, request, booking_id):
+        if request.user.is_authenticated:
+            booking = GuideBooking.objects.get(pk=booking_id)
+            if booking.guide.user_detail.user == request.user or booking.customer.user == request.user:
+                return render(request, self.template_name, {"booking": booking})
+            else:
+                return redirect("/permission_denied/")
+        else:
+            return redirect("/login_required/")
+        

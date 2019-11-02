@@ -162,10 +162,6 @@ class SpaceSearchForm(forms.Form):
         # print('init spacesearch     form')
 
 
-class BookSpaceForm(forms.Form):
-    space_type = forms.ChoiceField(choices=[])
-
-
 class CreateSpaceTypeForm(forms.ModelForm):
     
     class Meta:

@@ -348,14 +348,15 @@ class PlaceOrder(views.View):
             item.delete()
         cart.restaurant = None
         cart.bill = 0
-        return redirect("/restaurant/my_food_orders/")
+        return redirect("/restaurant/purchased_order/")
     
 
 class MyPlacedFoodOrder(views.View):
+    template_name = "purchased_food_order.html"
     
     def get(self, request):
         orders = Order.objects.filter(customer=request.user)
-        return render(request, "my_food_order.html", {"orders": orders})
+        return render(request, self.template_name, {"orders": orders})
     
     
 class ShowOrderDetail(views.View):

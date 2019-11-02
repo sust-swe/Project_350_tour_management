@@ -16,6 +16,9 @@ urlpatterns = [
     path("<int:guide_id>/avail/", views.CreateGuideAvailability.as_view()),
     path("<int:guide_id>/unavail/", views.MakeGuideUnavailable.as_view()),
     path("<int:guide_id>/bookings/", views.GuideBookings.as_view()),
+    path("book/", views.BookGuide.as_view()),
+    path("purchased_order/", views.ShowPurchasedOrder.as_view()),
+    path("order/<int:booking_id>/", views.ShowGuideBookingDetail.as_view())
 ]
 
 # urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

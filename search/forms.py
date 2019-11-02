@@ -94,7 +94,9 @@ class SpaceSearchForm(forms.Form):
 
 
 class SearchGuideForm(forms.Form):
-
+    max_rent = forms.CharField(label="Maximal Rent", required=False)
+    min_rent = forms.CharField(label="Minimal Rent", required=False)
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["gender"] = forms.ChoiceField(choices=[(1, "Male"), (2, "female")])

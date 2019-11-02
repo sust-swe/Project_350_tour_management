@@ -11,14 +11,11 @@ class Restaurant(models.Model):
     user_detail = models.ForeignKey(
         UserDetail, on_delete=models.CASCADE, default=100)
     name = models.CharField(max_length=255)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, default=None)
+    city = models.ForeignKey(City, on_delete=models.CASCADE, null=True, default=None)
     mobile = models.IntegerField(default=None, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)
-    img = models.ImageField(upload_to='RestaurantPhoto',
-                            null=True, blank=True, default=None)
-    city = models.ForeignKey(
-        City, on_delete=models.CASCADE, null=True, default=None)
-    country = models.ForeignKey(
-        Country, on_delete=models.CASCADE, null=True, default=None)
+    img = models.ImageField(upload_to='RestaurantPhoto', null=True, blank=True, default=None)
 
     class Meta:
         ordering = ['user_detail']

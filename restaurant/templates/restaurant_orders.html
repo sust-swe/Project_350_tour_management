@@ -12,7 +12,7 @@
 
 {% block content_2 %}
     {% for order in orders %}
-        <a href="/restaurant/orders/{{ order.id }}/"><button class="body_button_class">{{ order.customer.username }} at {{ order.order_time }}</button> </a><br>
+        <a href="/restaurant/order/{{ order.id }}/"><button class="body_button_class">{{ order.customer.username }} at {{ order.order_time }}</button> </a><br>
 {% endfor %}
 {% endblock %}
 

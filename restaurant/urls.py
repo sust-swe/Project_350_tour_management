@@ -27,7 +27,7 @@ urlpatterns = [
     path("gotocart/", views.GoToCart.as_view()),
     path("delfromcart/", views.DelFromCart.as_view()),
     path("place_order/", views.PlaceOrder.as_view()),
-    path("my_food_orders/", views.MyPlacedFoodOrder.as_view()),
-    path("orders/<int:order_id>/", views.ShowRestaurantOrderDetail.as_view()),
+    path("purchased_order/", views.MyPlacedFoodOrder.as_view()),
+    path("order/<int:order_id>/", views.ShowRestaurantOrderDetail.as_view()),
     
 ]

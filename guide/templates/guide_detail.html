@@ -13,6 +13,12 @@
     <table class="body_table">
     {% if guide.mobile %}<tr><td>Mobile</td><td>{{ guide.mobile }}</td></tr>{% endif %}
     {% if guide.description %}<tr><td>Description</td><td>{{ guide.description }}</td></tr>{% endif %}
+    <tr>
+        <td>City</td> <td>{{ guide.city.city }}</td>
+    </tr>
+    <tr>
+        <td>Gender</td> <td>{{ guide.gender.name }}</td>
+    </tr>
     </table>
 {% endblock %}
 

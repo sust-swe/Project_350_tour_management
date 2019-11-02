@@ -10,10 +10,17 @@
 
 {% block content_2 %}
     <table class="body_table">
+    <tr>
+        <td>Item</td>
+        <td>Quantity</td>
+        <td>Price</td>
+    </tr>
     {% for order_detail in order_details %}
         <tr>
         <td>
+            <a href="/restaurant/food/{{ order_detail.food.id }}/"><button class="body_table_data_button">
             {{ order_detail.food.name }}
+            </button> </a>
         </td>
         <td>
             {{ order_detail.quantity }}
@@ -28,10 +35,24 @@
         <td></td>
         <td>$ {{ order.bill }}</td>
     </tr>
+    <tr>
+        <td>Ordered From</td>
+        <td></td>
+        <td><a href="/restaurant/{{ order.restaurant.id }}/">
+            <button class="body_table_data_button">{{ order.restaurant.name }}</button>
+        </a></td>
+    </tr>
+    <tr>
+        <td>Ordered By</td>
+        <td></td>
+        <td><a href="/accounts/profile/{{ order.customer.id }}/">
+                <button class="body_table_data_button">{{ order.customer.username }}</button>
+            </a></td>
+    </tr>
     </table>
 {% endblock %}
 
 {% block body_op %}
-    <a href="/restaurant/{{ order.restaurant.id }}/"><button class="body_op_button_class">{{ order.restaurant.name }}</button></a>
-    <a href="/accounts/profile/{{ order.customer.id }}/"><button class="body_op_button_class">{{ order.customer.username }}</button></a>
+    <a href="/restaurant/purchased_order/">
+        <button class="body_op_button_class">My Food Order</button></a>
 {% endblock %}
