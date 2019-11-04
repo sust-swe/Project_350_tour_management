@@ -5,11 +5,19 @@ my order
 {% endblock %}
 
 {% block header %}
-    My Orders
+My Orders
 {% endblock %}
 
 {% block content_2 %}
-    <a href="/residence/purchased_order/"><button class="body_button_class">Space Bookings</button> </a><br>
-    <a href="/restaurant/purchased_order/"><button class="body_button_class">Food Orders</button> </a><br>
-    <a href="/guide/purchased_order/"><button class="body_button_class">Guide Bookings</button> </a>
+<table>
+    <tr>
+        <td><a href="/residence/purchased_order/"><button class="body_button_class">Space Bookings</button></a></td>
+    </tr>
+    <tr>
+        <td><a href="/restaurant/purchased_order/"><button class="body_button_class">Food Orders</button></a></td>
+    </tr>
+    <tr>
+        <td><a href="/guide/purchased_order/"><button class="body_button_class">Guide Bookings</button></a></td>
+    </tr>
+</table>
 {% endblock %}

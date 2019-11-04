@@ -6,7 +6,7 @@
 {% endblock content_1 %}
 
 {% block header %}
-    Search Restaurant
+Search Restaurant
 {% endblock %}
 
 {% block content_2 %}
@@ -16,7 +16,7 @@
     <table class="form_table">
         {{ form.as_table }}
     </table>
-<button class="body_button_class" type="submit">Search</button>
+    <button class="body_button_class" type="submit">Search</button>
 </form>
 
 
@@ -42,24 +42,24 @@
 
 
 
-
+<table class="body_table">
     {% if restaurants.exists %}
-    <div class="body_header">Results</div>
-    <table class="body_table">
-        <tr>
-            <th>Restaurant</th>
-        </tr>
-        {% for restaurant in restaurants %}
-        <tr>
+    <tr>
+        <th colspan="2">Results</th>
+    </tr>
+    {% for restaurant in restaurants %}
+    <tr>
         <td>
             <a href="/restaurant/{{restaurant.id}}/">
                 <button class="body_table_data_button">{{restaurant.name}}</button>
             </a>
         </td>
-        </tr>
-        {% endfor %}
-    </table>
+    </tr>
+    {% endfor %}
     {% else %}
-    <div class="body_header">No Results Found</div>
+    <tr>
+        <th colspan="2">No Results Found</th>
+    </tr>
     {% endif %}
+</table>
 {% endblock content_2 %}

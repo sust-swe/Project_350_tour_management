@@ -5,17 +5,21 @@
 {% endblock %}
 
 {% block header %}
-    My Residence
+My Residence
 {% endblock %}
 
 {% block content_2 %}
-<div class="body_components">
+<table>
     {% for res in qs %}
-         <a href="/residence/{{ res.id }}/"> <button class="body_button_class"> {{ res.name }}</button></a><br>
+    <tr>
+        <td>
+            <a href="/residence/{{ res.id }}/"> <button class="body_button_class"> {{ res.name }}</button></a>
+        </td>
+    </tr>
     {% endfor %}
-</div>
+</table>
 {% endblock %}
 
 {% block body_op %}
-    <a href="/residence/add_residence/"><button class="body_op_button_class"> Add New Residence</button></a>
+<a href="/residence/add_residence/"><button class="body_op_button_class"> Add New Residence</button></a>
 {% endblock %}

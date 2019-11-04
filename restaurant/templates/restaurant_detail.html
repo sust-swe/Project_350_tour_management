@@ -1,35 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-    <title>Restaurant Detail</title>
+<title>Restaurant Detail</title>
 {% endblock %}
 
 {% block header %}
-    <span>{{ restaurant.name }}</span>
+<span>{{ restaurant.name }}</span>
 {% endblock %}
 
 {% block content_2 %}
 
-    {% if restaurant.img %}
-        <img src="{{ restaurant.img.url }}" class="image_ste"><br>
-    {% endif %}
-    <table class="body_table"><tr><td>City</td><td>{{ restaurant.city }}</td></tr>
+<table class="body_table">
+    <tr>
+        <td>
+            {% if restaurant.img %}
+            <img src="{{ restaurant.img.url }}" class="image_ste">
+            {% endif %}
+        </td>
+    </tr>
+</table>
+
+<table class="body_table">
+    <tr>
+        <td>City</td>
+        <td>{{ restaurant.city }}</td>
+    </tr>
     <tr>
         <td>Address</td>
         <td>{{ restaurant.address }} </td>
     </tr>
-    </table>
+    <tr>
+        <td>Owner</td>
+        <td>
+            <a href="/accounts/profile/{{ restaurant.user_detail.user.id }}"><button class="body_table_data_button">
+                    {{restaurant.user_detail.user.username}}</button></a>
+        </td>
+    </tr>
+</table>
 
 
 {% endblock %}
 
 {% block body_op %}
 <a href="menu/"><button class="body_op_button_class">Menu</button></a>
-    <a href="/accounts/profile/{{ restaurant.user_detail.user.id }}"><button class="body_op_button_class">
-        {{restaurant.user_detail.user.username}}</button></a>
-    {% if request.user == restaurant.user_detail.user %}
-        <a href="update/"><button class="body_op_button_class">Update</button></a>
-        <a href="delete/"><button class="body_op_button_class">Delete</button></a>
-        <a href="orders/"><button class="body_op_button_class">Orders</button></a>
-    {% endif %}
+{% if request.user == restaurant.user_detail.user %}
+<a href="update/"><button class="body_op_button_class">Update</button></a>
+<a href="delete/"><button class="body_op_button_class">Delete</button></a>
+<a href="orders/"><button class="body_op_button_class">Orders</button></a>
+{% endif %}
 {% endblock %}

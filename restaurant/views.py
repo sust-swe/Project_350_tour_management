@@ -296,20 +296,20 @@ class AddToCart(views.View):
 
 
 class DelFromCart(views.View):
-    
+
     def get(self, request):
-        cart=getCart(request)
-        food_id=int(request.GET.get("item_id"))
+        cart = getCart(request)
+        food_id = int(request.GET.get("item_id"))
         food = Food.objects.get(id=food_id)
         cart_detail = CartDetail.objects.get(cart=cart, food=food)
-        
+
         if cart_detail.quantity == 1:
             if CartDetail.objects.filter(cart__owner=request.user).count() == 1:
                 cart.restaurant = None
                 cart.bill = 0
                 cart.save()
             cart_detail.delete()
-            
+
             return render(request, "response.html", {"response": "Deleted"})
         cart.bill -= food.price
         cart_detail.quantity -= 1
@@ -331,37 +331,41 @@ class GoToCart(views.View):
         cart_detail = CartDetail.objects.filter(cart__owner=request.user)
         print(cart.bill)
         return render(request, self.template_name, {"cart_detail": cart_detail, "cart": cart})
-    
+
 #############################################      Order       #########################################################
 
 
 class PlaceOrder(views.View):
-    
+
     def get(self, request):
         cart = Cart.objects.get(owner=request.user)
-        new_order = Order(customer=request.user, restaurant=cart.restaurant, bill=cart.bill, order_time=datetime.now())
+        new_order = Order(customer=request.user, restaurant=cart.restaurant,
+                          bill=cart.bill, order_time=datetime.now())
         new_order.save()
         cart_details = CartDetail.objects.filter(cart__owner=request.user)
         for item in cart_details:
-            order_detail = OrderDetail(order=new_order, food=item.food, quantity=item.quantity)
+            order_detail = OrderDetail(
+                order=new_order, food=item.food, quantity=item.quantity)
             order_detail.save()
+        for item in cart_details:
             item.delete()
         cart.restaurant = None
         cart.bill = 0
+        cart.save()
         return redirect("/restaurant/purchased_order/")
-    
+
 
 class MyPlacedFoodOrder(views.View):
     template_name = "purchased_food_order.html"
-    
+
     def get(self, request):
         orders = Order.objects.filter(customer=request.user)
         return render(request, self.template_name, {"orders": orders})
-    
-    
+
+
 class ShowOrderDetail(views.View):
-    template_name="order_detail.html"
-    
+    template_name = "order_detail.html"
+
     def get(self, request, order_id):
         order = Order.objects.get(pk=order_id)
         order_details = OrderDetail.objects.filter(order=order)
@@ -370,23 +374,24 @@ class ShowOrderDetail(views.View):
 
 class ShowRestaurantOrders(views.View):
     template_name = "restaurant_orders.html"
-    
+
     def get(self, request, restaurant_id):
         if request.user.is_authenticated:
             restaurant = Restaurant.objects.get(pk=restaurant_id)
             if request.user == restaurant.user_detail.user:
-                
-                orders = Order.objects.filter(restaurant=restaurant).order_by("order_time")
+
+                orders = Order.objects.filter(
+                    restaurant=restaurant).order_by("order_time")
                 return render(request, self.template_name, {"orders": orders, "restaurant": restaurant})
             else:
                 return redirect("/permission_denied/")
         else:
             return redirect("/login_required/")
-            
-            
+
+
 class ShowRestaurantOrderDetail(views.View):
     template_name = "restaurant_order_detail.html"
-    
+
     def get(self, request, order_id):
         if request.user.is_authenticated:
             order = Order.objects.get(pk=order_id)

@@ -586,7 +586,7 @@ class ShowReceivedResidenceOrder(views.View):
 		if request.user.is_authenticated:
 			residence = Residence.objects.get(pk=residence_id)
 			if residence.user_detail.user == request.user:
-				orders = ResidenceOrder.objects.filter(space_type__residence=residence)
+				orders = ResidenceOrder.objects.filter(space_type__residence=residence).order_by("-booking_time")
 				return render(request, "residence_orders.html", {"orders": orders, "residence": residence})
 			else:
 				return redirect("/permission_denied/")
@@ -597,7 +597,7 @@ class ShowReceivedResidenceOrder(views.View):
 class ShowPurchasedOrder(views.View):
 	def get(self, request):
 		if request.user.is_authenticated:
-			residence_orders = ResidenceOrder.objects.filter(guest__user=request.user)
+			residence_orders = ResidenceOrder.objects.filter(guest__user=request.user).order_by("-booking_time")
 			return render(request, "residence_placed_order.html", {"orders": residence_orders})
 		else:
 			return redirect("/login_required/")

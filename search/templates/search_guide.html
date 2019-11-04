@@ -1,41 +1,47 @@
 {% extends "base.html" %}
 
 {% block content_1 %}
-    <title>search guide</title>
+<title>search guide</title>
 {% endblock %}
 
 {% block header %}
-    Search Guide
+Search Guide
 {% endblock %}
 
 {% block content_2 %}
-    <form method="post">
+<form method="post">
     {% csrf_token %}
     <table class="form_table">
         {{ form.as_table }}
     </table>
     <button type="submit" class="body_button_class">Search</button>
-    </form>
-
+</form>
+<table class="body_table">
     {% if avails.exists %}
-    <div class="body_header">Results</div>
-    <table class="body_table">
-        <tr>
-            <th>Guide</th>
-            <th></th>
-        </tr>
-        {% for avail in avails %}
-                <tr>
-                <td><a href="/guide/{{avail.guide.id}}/"><button class="body_table_data_button">{{avail.guide.name}}</button></a></td>
-                <td><button class="book body_table_data_button" guide="{{avail.guide.id}}" >Book</button></td>
-                </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <div class="body_header">No Results Found</div>
-{% endif %}
+    <tr>
+        <th colspan="2">Results</th>
+    </tr>
+    <tr>
+        <th>Guide</th>
+        <th></th>
+    </tr>
+    {% for avail in avails %}
+    <tr>
+        <td><a href="/guide/{{avail.guide.id}}/"><button
+                    class="body_table_data_button">{{avail.guide.name}}</button></a></td>
+        <td><button class="book body_table_data_button" guide="{{avail.guide.id}}">Book</button></td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <th colspan="2">No Results Found</th>
+    </tr>
+    {% endif %}
+</table>
 
-    <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/" load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/" load_from_day="/search/ajax/load_from_day/">
+<script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
+    load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
+    load_from_day="/search/ajax/load_from_day/">
 
         $("#id_from_year").change(function () {
             var year = $(this).val();
@@ -110,7 +116,7 @@
         });
     </script>
 
-    <script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
+<script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
 
     $("#id_country").change(function () {
         $.ajax({
@@ -169,6 +175,6 @@
             }
         });
     });
-    </script>
+</script>
 
 {% endblock %}

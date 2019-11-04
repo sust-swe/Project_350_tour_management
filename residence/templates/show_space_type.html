@@ -6,27 +6,27 @@
 {% endblock content_1 %}
 
 {% block header %}
-    Space Types
+Space Types
 {% endblock %}
 
 {% block content_2 %}
-
-
-
+<table>
     {% for i in space_types %}
-
-        <a href="/residence/space_type/{{i.id}}/">  <button class="body_button_class">{{i.name}}</button></a><br>
-
+    <tr>
+        <td>
+            <a href="/residence/space_type/{{i.id}}/"> <button class="body_button_class">{{i.name}}</button></a>
+        </td>
+    </tr>
     {% endfor %}
-
-
+</table>
 {% endblock content_2 %}
 
 
+
 {% block body_op %}
-    <a href="/residence/{{residence.id}}/"><button class="body_op_button_class">{{residence.name}}</button></a>
-    {% if residence.user_detail.user == request.user %}
-        <a href="/residence/{{residence.id}}/create_space_type/">
-        <button class="body_op_button_class">Create New Space Type</button></a>
-    {%endif%}
+<a href="/residence/{{residence.id}}/"><button class="body_op_button_class">{{residence.name}}</button></a>
+{% if residence.user_detail.user == request.user %}
+<a href="/residence/{{residence.id}}/create_space_type/">
+    <button class="body_op_button_class">Create New Space Type</button></a>
+{%endif%}
 {% endblock %}

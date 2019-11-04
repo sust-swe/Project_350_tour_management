@@ -9,11 +9,9 @@
 {% endblock %}
 
 {% block content_2 %}
-<div align="center">
-    {% if user_detail.img %}
-    <img src="{{ user_detail.img.url }}" class="image_ste">
+    {% if user_detail.img %}<table class="body_table"><tr><td>
+    <img src="{{ user_detail.img.url }}" class="image_ste"></td></tr></table>
     {% endif %}
-
     <table class="body_table">
         <tr>
             <td>Name</td>
@@ -28,34 +26,24 @@
             <td>{{ user_detail.mobile }}</td>
         </tr>
         <tr>
-
             {% if user_detail.description %}
             <td>Description</td>
             <td>{{ user_detail.description }}</td>
             {% endif %}
-
         </tr>
         <tr>
-
             {% if user_detail.address %}
             <td>Address</td>
             <td>{{ user_detail.address }}</td>
             {% endif %}
-
         </tr>
         <tr>
-
             {% if user_detail.city %}
             <td>City</td>
             <td>{{ user_detail.city }}</td>
             {% endif %}
-
-
         </tr>
     </table>
-    <br><br>
-
-</div>
 {% endblock %}
 
 {% block body_op %}

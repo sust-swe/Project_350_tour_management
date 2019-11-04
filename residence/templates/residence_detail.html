@@ -5,59 +5,62 @@
 {% endblock %}
 
 {% block header %}
-    {{ ob.name }}
+{{ ob.name }}
 {% endblock %}
 
 {% block content_2 %}
 
-    {% if ob.img %} <img src="{{ ob.img.url }}" class="image_ste"/> {% endif %}
+{% if ob.img %}
+<table>
+    <tr>
+        <td><img src="{{ ob.img.url }}" class="image_ste" /></td>
+    </tr>
+</table>
+{% endif %}
 
-    <table class="body_table">
+<table class="body_table">
     {% if ob.address %}
-        <tr>
+    <tr>
         <td>Address</td>
         <td>{{ ob.address }}</td>
-        </tr>
+    </tr>
     {% endif %}
 
     {% if ob.city %}
-        <tr>
+    <tr>
         <td>City</td>
         <td>{{ ob.city }}</td>
-        </tr>
+    </tr>
     {% endif %}
 
     {% if ob.mobile %}
-        <tr>
+    <tr>
         <td>Mobile</td>
         <td>{{ ob.mobile }}</td>
-        </tr>
+    </tr>
     {% endif %}
-
     {% if ob.description %}
-        <tr>
+    <tr>
         <td>Description</td>
         <td>{{ ob.description }}</td>
-        </tr>
+    </tr>
     {% endif %}
-    </table>
-
-
-
-
-
-
-
-
+    <tr>
+        <td>Owner</td>
+        <td>
+            <a href="/accounts/profile/{{ob.user_detail.user.id}}/"><button
+                    class="body_table_data_button">{{ob.user_detail.user.username}}</button></a>
+        </td>
+    </tr>
+</table>
 {% endblock %}
 
 {% block body_op %}
-    <a href="space_type/"><button class="body_op_button_class">Space Types</button></a>
-    <a href="/accounts/profile/{{ob.user_detail.user.id}}/"><button class="body_op_button_class">{{ob.user_detail.user.username}}</button></a>
+<a href="space_type/"><button class="body_op_button_class">Space Types</button></a>
 {% if request.user == ob.user_detail.user %}
-    <a href="space/"><button class="body_op_button_class">Spaces</button></a>
-    <a href="update/"><button class="body_op_button_class">Update</button></a>
-    <a href="delete/"><button class="body_op_button_class">Delete</button></a>
-    <a href="/residence/{{ ob.id }}/orders"><button class="body_op_button_class">Orders</button></a>
+<a href="space/"><button class="body_op_button_class">Spaces</button></a>
+<a href="update/"><button class="body_op_button_class">Update</button></a>
+<a href="delete/"><button class="body_op_button_class">Delete</button></a>
+<a href="/residence/{{ ob.id }}/orders"><button class="body_op_button_class">Bookings</button></a>
 {% endif %}
 {% endblock %}

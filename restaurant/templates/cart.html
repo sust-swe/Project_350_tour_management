@@ -1,43 +1,45 @@
 {% extends 'base.html' %}
 
-
 {% block content_1 %}
 <title>Cart</title>
 {% endblock content_1 %}
 
 {% block header %}
-    Food Cart
+Food Cart
 {% endblock %}
 
 {% block content_2 %}
 
-    {% if cart_detail.exists %}
-        <table class="body_table">
-            {% for item in cart_detail %}
-            <tr>
-                <td>{{ item.food.name }}</td>
-                <td>{{ item.quantity }} pcs</td>
-                <td>$ {{ item.food.price }} X {{ item.quantity }}</td>
-            </tr>
-        {% endfor %}
-            <tr>
-                <td>Bill</td>
-                <td></td>
-                <td>{{ cart.bill }}</td>
-            </tr>
-        </table>
-        <a href="/restaurant/place_order/"><button class="body_button_class">Place Order</button></a>
-        {% else %}
-        <div class="body_header">Empty</div>
-    {% endif %}
+{% if cart_detail.exists %}
+<table class="body_table">
+    {% for item in cart_detail %}
+    <tr>
+        <td> <a href="/restaurant/food/{{item.food.id}}/">
+                <button class="body_table_data_button"> {{ item.food.name }}</button>
+            </a></td>
+        <td>{{ item.quantity }} pcs</td>
+        <td>$ {{ item.food.price }} X {{ item.quantity }}</td>
+        <td><button class="plus body_table_data_button" myval="{{ item.food.id }}">+</button></td>
+        <td><button class="minus body_table_data_button" myval="{{ item.food.id }}">-</button></td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td>Bill</td>
+        <td></td>
+        <td>{{ cart.bill }}</td>
+    </tr>
+</table>
+<a href="/restaurant/place_order/"><button class="body_button_class">Place Order</button></a>
+{% else %}
+<div class="body_header">Empty</div>
+{% endif %}
 
 <script>
-    $(".plus").click(function(){
+    $(".plus").click(function () {
         $.ajax({
             url: "/restaurant/addtocart/",
             data: { "item_id": $(this).attr("myval") },
             success: function (redata) {
-                alert(redata);
                 location.reload();
             }
         });
@@ -45,9 +47,8 @@
     $(".minus").click(function () {
         $.ajax({
             url: "/restaurant/delfromcart/",
-            data: {"item_id": $(this).attr("myval")},
+            data: { "item_id": $(this).attr("myval") },
             success: function (redata) {
-                alert(redata);
                 location.reload();
 
             }
@@ -58,5 +59,8 @@
 {% endblock content_2 %}
 
 {% block body_op %}
-    <a href="/restaurant/{{ cart.restaurant.id }}/"><button class="body_op_button_class">{{ cart.restaurant.name }}</button></a>
+{% if cart.restaurant.name %}
+<a href="/restaurant/{{ cart.restaurant.id }}/"><button
+        class="body_op_button_class">{{ cart.restaurant.name }}</button></a>
+{% endif %}
 {% endblock %}

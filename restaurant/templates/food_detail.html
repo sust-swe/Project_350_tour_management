@@ -6,15 +6,19 @@
 {% endblock content_1 %}
 
 {% block header %}
-    {{ food.name }}
+{{ food.name }}
 {% endblock %}
 
 {% block content_2 %}
-
+<table class="body_table">
     {% if food.img %}
-    <img src="{{food.img.url}}" class="image_ste">
+    <tr>
+        <td>
+            <img src="{{food.img.url}}" class="image_ste">
+        </td>
+    </tr>
     {% endif %}
-
+</table>
 <table class="body_table">
     <tr>
         <td>Price</td>
@@ -24,19 +28,19 @@
 
 {% endblock content_2 %}
 
-    {% block body_op %}
-        <a href="/restaurant/{{food.restaurant.id}}/">
-            <button class="body_op_button_class">{{food.restaurant.name}}</button>
-        </a>
+{% block body_op %}
+<a href="/restaurant/{{food.restaurant.id}}/">
+    <button class="body_op_button_class">{{food.restaurant.name}}</button>
+</a>
 
-        {% if food.restaurant.user_detail.user == request.user %}{% else %}
-            <button class="AddToCart body_op_button_class" myval="{{food.id}}">Add to Cart</button>
-        {% endif %}
+{% if food.restaurant.user_detail.user == request.user %}{% else %}
+<button class="AddToCart body_op_button_class" myval="{{food.id}}">Add to Cart</button>
+{% endif %}
 
-        <a href="/restaurant/food/{{ food.id }}/update/"><button class="body_op_button_class">Update</button></a>
-        <a href="/restaurant/food/{{ food.id }}/delete/"><button class="body_op_button_class">Delete</button></a>
+<a href="/restaurant/food/{{ food.id }}/update/"><button class="body_op_button_class">Update</button></a>
+<a href="/restaurant/food/{{ food.id }}/delete/"><button class="body_op_button_class">Delete</button></a>
 
-        <script>
+<script>
     $(".AddToCart").click(function () {
 
         $.ajax({
@@ -49,5 +53,4 @@
     });
 </script>
 
-    {% endblock %}
-
+{% endblock %}

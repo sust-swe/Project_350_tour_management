@@ -30,19 +30,22 @@ class SearchRestaurant(views.View):
             # print(Restaurant.objects.all())
 
             restaurants = Restaurant.objects.all()
-
+            # print(restaurants)
+            restaurants = restaurants.exclude(user_detail__user=request.user)
+            # print(restaurants)
             if country_id:
-                restaurants = Restaurant.objects.filter(
+                restaurants = restaurants.filter(
                     country_id=country_id)
             # print(restaurants)
+            print(restaurants)
             if city_id:
                 restaurants = restaurants.filter(city_id=int(city_id))
             # print(restaurants)
+
             if restaurant_name:
                 restaurants = restaurants.filter(
                     name__contains=restaurant_name)
             # print(restaurants)
-
             return render(request, self.template_name, {'restaurants': restaurants, 'form': form})
         else:
             # print(form.as_table())
@@ -95,13 +98,16 @@ class SearchSpace(views.View):
             if space_type_id_count[k] >= space_n:
                 space_type_id += [int(k)]
 
-        space_type_qs = SpaceType.objects.filter(id__in=space_type_id).order_by('residence')
-        residence_qs = Residence.objects.filter(spacetype__id__in=space_type_id)
+        space_type_qs = SpaceType.objects.filter(
+            id__in=space_type_id).order_by('residence')
+        residence_qs = Residence.objects.filter(
+            spacetype__id__in=space_type_id)
 
         # stores SpaceType residence_id, pk, name, count accordingly
         space_types_ri_p_n_c_r = []
         for i in space_type_qs:
-            space_types_ri_p_n_c_r += [(i.residence.id, i.id, i.name, space_type_id_count[i.id], i.rent)]
+            space_types_ri_p_n_c_r += [(i.residence.id, i.id,
+                                        i.name, space_type_id_count[i.id], i.rent)]
         # print(space_types_ri_p_n_c)
         context = {
             "space_types_ri_p_n_c_r": space_types_ri_p_n_c_r,
@@ -128,11 +134,11 @@ class SearchSpace(views.View):
 class SearchGuide(views.View):
     template_name = "search_guide.html"
     form_class = SearchGuideForm
-    
+
     def get(self, request):
         form = self.form_class()
         return render(request, self.template_name, {"form": form})
-    
+
     def search_by_essentials(self, form, user):
         from_date, to_date = load_date_from_DateForm(form)
         city = int(form.cleaned_data['city'])
@@ -140,7 +146,7 @@ class SearchGuide(views.View):
         qs = GuideAvailable.objects.filter(guide__city__id=city, avail_from__lte=from_date,
                                            avail_to__gte=to_date, guide__gender=gender).exclude(guide__user_detail__user=user)
         return qs
-    
+
     def search_by_optionals(self, form, qs):
         max_rent = min_rent = residence_id = None
         if form.cleaned_data.get('max_rent', None):
@@ -150,11 +156,10 @@ class SearchGuide(views.View):
             min_rent = float(form.cleaned_data['min_rent'])
             qs = qs.filter(guide__rent__gte=min_rent)
         return qs
-    
+
     def post(self, request):
         form = self.form_class(request.POST or None)
         if form.is_valid():
             guide_avail_qs = self.search_by_essentials(form, request.user)
             guide_avail_qs = self.search_by_optionals(form, guide_avail_qs)
             return render(request, self.template_name, {"avails": guide_avail_qs, "form": form})
-            
