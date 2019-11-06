@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Post, Comment
@@ -25,20 +26,20 @@ def new_post(request):
     # post = get_object_or_404(Post, pk=pk)
     if request.user.is_authenticated:
         user = request.user
-        user_detail = UserDetail.objects.get(user=user)
+        user_detail = UserDetail.objects.get(user=request.user)
         if request.method == 'POST':
             form = PostForm(request.POST)
             if form.is_valid():
                 instance = form.save(commit=False)
                 instance.user_detail = user_detail
                 instance.save()
-                return redirect('bloglist')
+                return redirect('/blog/bloglist/')
         else:
             form = PostForm()
         return render(request, 'newpost.html', {'form': form})
     else:
         messages.info(request, 'Log in first')
-        return redirect('/login/')
+        return redirect('/accounts/login/')
 
 
 def PostList(request):
@@ -66,10 +67,13 @@ def PostDetail(request, pk):
 @login_required
 def addComment(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    user = request.user
+    user_detail = UserDetail.objects.get(user=request.user)
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
+            comment.user_detail = user_detail
             comment.post = post
             comment.save()
             return redirect('post_detail', pk=post.pk)
@@ -91,3 +95,16 @@ def comment_remove(request, pk):
     post_pk = comment.post.pk
     comment.delete()
     return redirect('post_detail', pk=post_pk)
+
+
+# class PostUpdateView(LoginRequiredMixin, UpdateView):
+#     # if this person is not logged in, where should this person go? To login_url
+#     login_url = '/login/'
+#     redirect_field_name = 'post_detail.html'
+#     form_class = PostForm
+#     model = Post
+
+
+# class PostDeleteView(LoginRequiredMixin, DeleteView):
+#     model = Post
+#     success_url = reverse_lazy('post_list')

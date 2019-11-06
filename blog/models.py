@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.urls import reverse
 from django.utils.timezone import timezone
+from django.db import IntegrityError
 # Create your models here.
 
 
@@ -52,7 +53,7 @@ class Comment(models.Model):
         self.save()
 
     def get_absolute_url(self):
-        return reverse('post_list')
+        return reverse('bloglist', kwargs={'pk': self.pk})
 
 
 class TestP(models.Model):
