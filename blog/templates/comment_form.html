@@ -5,5 +5,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Post Comment</button>
+
 </form>
+<script>var editor = new MediumEditor('.editable');</script>
 {% endblock content_1 %}

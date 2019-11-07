@@ -10,9 +10,21 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['title', 'content', 'status']
 
+        widgets = {
+            # The class here is a CSS class.
+            # 'title' : forms.TextInput(attrs={'class':'TextInputClass'}), #TextInputClass is our class
+            'content'  : forms.Textarea(attrs={'class':'editable medium-editor-textarea'}), #postcontent class is our class
+        }
+
 
 class CommentForm(forms.ModelForm):
 
     class Meta():
         model = Comment
         fields = ['text']
+
+        widgets = {
+            # The class here is a CSS class.
+            # 'title' : forms.TextInput(attrs={'class':'TextInputClass'}), #TextInputClass is our class
+            'text'  : forms.Textarea(attrs={'class':'editable medium-editor-textarea'}), #postcontent class is our class
+        }

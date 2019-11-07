@@ -22,6 +22,8 @@ class Post(models.Model):
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS, default=0)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['-created_on']
@@ -35,6 +37,19 @@ class Post(models.Model):
 
     def __str__(self):
         return '%s %s' % (self.user_detail.__str__(), self.title)
+
+
+class Preference(models.Model):
+    user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    value = models.IntegerField()
+    date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return '%s %s %s' % (self.user_detail.__str__(), self.post, self.value)
+
+    class Meta:
+        unique_together = ("user_detail", "post", "value")
 
 
 class Comment(models.Model):
