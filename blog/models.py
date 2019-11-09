@@ -32,6 +32,9 @@ class Post(models.Model):
         return self.comments.filter(approve_comment=True)
         # return self.comments.filter(approve_comment=True)
 
+    def total_likes(self):
+        return self.likes.count()
+
     def get_absolute_url(self):
         return reverse('post_detail', kwargs={'pk': self.pk})
 
@@ -46,7 +49,7 @@ class Preference(models.Model):
     date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '%s %s %s' % (self.user_detail.__str__(), self.post, self.value)
+        return str(self.user_detail) + ':' + str(self.post) + ':' + str(self.value)
 
     class Meta:
         unique_together = ("user_detail", "post", "value")

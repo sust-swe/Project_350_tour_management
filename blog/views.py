@@ -56,12 +56,130 @@ def PostList(request):
 
 
 def PostDetail(request, pk):
-    detail = get_object_or_404(Post, pk=pk)
+    post = get_object_or_404(Post, pk=pk)
+    # if request.user.is_authenticated:
+    #     user = UserDetail.objects.get(user=request.user)
+    #     is_liked = False
+    #     if post.likes.filter(pk=request.user.pk).exists():
+    #         is_liked = True
 
     context = {
-        'detail': detail
+        'post': post,
+        # 'is_liked': is_liked,
+        # 'total_likes': post.total_likes(),
     }
     return render(request, 'post_detail.html', context)
+
+
+@login_required
+def PostPreference(request, postid, userpreference):
+
+    if request.method == "POST":
+        post = get_object_or_404(Post, id=postid)
+
+        obj = ''
+
+        valueobj = ''
+
+        user = request.user
+        user_detail = UserDetail.objects.get(user=request.user)
+
+        try:
+            obj = Preference.objects.get(user_detail=user_detail, post=post)
+
+            valueobj = obj.value  # value of userpreference
+
+            valueobj = int(valueobj)
+
+            userpreference = int(userpreference)
+
+            if valueobj != userpreference:
+                obj.delete()
+
+                upref = Preference()
+                upref.user_detail = user_detail
+
+                upref.post = post
+
+                upref.value = userpreference
+
+                if userpreference == 1 and valueobj != 1:
+                    post.likes += 1
+                    post.dislikes -= 1
+                elif userpreference == 2 and valueobj != 2:
+                    post.dislikes += 1
+                    post.likes -= 1
+
+                upref.save()
+
+                post.save()
+
+                context = {'post': post,
+                           'postid': postid}
+
+                return render(request, 'post_detail.html', context)
+
+            elif valueobj == userpreference:
+                obj.delete()
+
+                if userpreference == 1:
+                    post.likes -= 1
+                elif userpreference == 2:
+                    post.dislikes -= 1
+
+                post.save()
+
+                context = {'post': post,
+                           'postid': postid}
+
+                return render(request, 'post_detail.html', context)
+
+        except Preference.DoesNotExist:
+            upref = Preference()
+
+            upref.user_detail = user_detail
+
+            upref.post = post
+
+            upref.value = userpreference
+
+            userpreference = int(userpreference)
+
+            if userpreference == 1:
+                post.likes += 1
+            elif userpreference == 2:
+                post.dislikes += 1
+
+            upref.save()
+
+            post.save()
+
+            context = {'post': post,
+                       'postid': postid}
+
+            return render(request, 'post_detail.html', context)
+
+    else:
+        post = get_object_or_404(Post, id=postid)
+        context = {'post': post,
+                   'postid': postid}
+
+        return render(request, 'post_detail.html', context)
+
+# def like_post(request, pk):
+#     post = get_object_or_404(Post, pk=pk)
+#     if request.user.is_authenticated:
+#         user = UserDetail.objects.get(user=request.user)
+#         is_liked = False
+#         if post.likes.filter(pk=request.user.pk).exists():
+#             post.likes.remove(request.user)
+#             is_liked = False
+#         else:
+#             post.likes.add(request.user)
+#             is_liked = True
+
+#     # post.likes.add(request.user)
+#     return HttpResponseRedirect(post.get_absolute_url())
 
 
 @login_required
@@ -95,98 +213,6 @@ def comment_remove(request, pk):
     post_pk = comment.post.pk
     comment.delete()
     return redirect('post_detail', pk=post_pk)
-
-
-@login_required
-def PostPreference(request, postid, userpreference):
-    if request.method == "POST":
-        eachpost = get_object_or_404(Post, id=postid)
-
-        obj = ''
-
-        valueobj = ''
-
-        try:
-            obj = Preference.objects.get(user=request.user, post=eachpost)
-
-            valueobj = obj.value  # value of userpreference
-
-            valueobj = int(valueobj)
-
-            userpreference = int(userpreference)
-
-            if valueobj != userpreference:
-                obj.delete()
-
-                upref = Preference()
-                upref.user = request.user
-
-                upref.post = eachpost
-
-                upref.value = userpreference
-
-                if userpreference == 1 and valueobj != 1:
-                    eachpost.likes += 1
-                    eachpost.dislikes -= 1
-                elif userpreference == 2 and valueobj != 2:
-                    eachpost.dislikes += 1
-                    eachpost.likes -= 1
-
-                upref.save()
-
-                eachpost.save()
-
-                context = {'eachpost': eachpost,
-                           'postid': postid}
-
-                return render(request, 'post_detail.html', context)
-
-            elif valueobj == userpreference:
-                obj.delete()
-
-                if userpreference == 1:
-                    eachpost.likes -= 1
-                elif userpreference == 2:
-                    eachpost.dislikes -= 1
-
-                eachpost.save()
-
-                context = {'eachpost': eachpost,
-                           'postid': postid}
-
-                return render(request, 'post_detail.html', context)
-
-        except Preference.DoesNotExist:
-            upref = Preference()
-
-            upref.user = request.user
-
-            upref.post = eachpost
-
-            upref.value = userpreference
-
-            userpreference = int(userpreference)
-
-            if userpreference == 1:
-                eachpost.likes += 1
-            elif userpreference == 2:
-                eachpost.dislikes += 1
-
-            upref.save()
-
-            eachpost.save()
-
-            context = {'eachpost': eachpost,
-                       'postid': postid}
-
-            return render(request, 'post_detail.html', context)
-
-    else:
-        eachpost = get_object_or_404(Post, id=postid)
-        context = {'eachpost': eachpost,
-                   'postid': postid}
-
-        return render(request, 'post_detail.html', context)
 
 
 # class PostUpdateView(LoginRequiredMixin, UpdateView):

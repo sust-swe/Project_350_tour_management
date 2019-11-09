@@ -8,28 +8,28 @@
         <div class=" justify-content-center col-md-12 card mb-4  mt-3 left  top">
             <div class="card-body">
                 <!-- {{post_detail}} -->
-                <h1>{% block title %} {{ detail.title }} {% endblock title %}</h1>
-                <p class=" text-muted">{{ detail.user_detail.user }} | {{ detail.created_on }}</p>
-                <p class="card-text ">{{ detail.content }}</p>
-                <!-- <p class="card-text ">{{ eachpost.user_detail.id }}</p> -->
-
+                <h1>{% block title %} {{ post.title }} {% endblock title %}</h1>
+                <p class=" text-muted">{{ post.user_detail.user }} | {{ post.created_on }}</p>
+                <p class="card-text ">{{ post.content }}</p>
                 <a href="#" onClick="document.getElementById('likebutton').submit()">Like This Post</a>
-                {{eachpost.likes}}
-                <a href="#" onClick="document.getElementById('dislikebutton').submit()">Dislike This Post</a>
-                {{eachpost.dislikes}}
-                <form id="likebutton" method="POST" action="/bloglist/{{eachpost.id}}/preference/1/">
+                {{post.likes}} | <a href="#" onClick="document.getElementById('dislikebutton').submit()">Dislike
+                    This Post</a> {{post.dislikes}}
+
+
+                <form id="likebutton" method="POST" action="/blog/bloglist/{{post.id}}/preference/1/">
                     {% csrf_token %}
                     <input type="hidden">
                 </form>
 
-                <form id="dislikebutton" method="POST" action="/bloglist/{{eachpost.id}}/preference/2/">
+                <form id="dislikebutton" method="POST" action="/blog/bloglist/{{post.id}}/preference/2/">
                     {% csrf_token %}
                     <input type="hidden">
                 </form>
-                <a href="{% url 'addcomment' pk=detail.pk %}">Add Comment</a>
+                <a href="{% url 'addcomment' pk=post.pk %}">Add Comment</a>
+
 
             </div>
-            {% for comment in detail.comments.all %}
+            {% for comment in post.comments.all %}
             <br>
             {% if user.is_authenticated or comment.approve_comment %}
             {{comment.created_on}}

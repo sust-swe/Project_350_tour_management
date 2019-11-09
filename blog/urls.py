@@ -12,7 +12,10 @@ urlpatterns = [
     # path('<int:id>/', views.PostDetail, name='post_detail'),
     # path()
     url(r'^bloglist/(?P<pk>[0-9]+)/$', views.PostDetail, name='post_detail'),
-    url(r'^bloglist(?P<postid>\d+)/preference/(?P<userpreference>\d+)/$', views.PostPreference, name='postpreference'),
+    url(r'^bloglist/(?P<postid>\d+)/preference/(?P<userpreference>\d+)/$',
+        views.PostPreference, name='postpreference'),
+    # url(r'^like/(?P<pk>[0-9]+)/$', views.like_post, name='like_post'),
+    # path('like/', views.like_post, name='like_post'),
     # url(r'^(?P<pk>[0-9]+)/edit/$',
     #     views.PostUpdateView.as_view(), name='post_edit'),
     # url(r'^(?P<pk>[0-9]+)/remove/$',
