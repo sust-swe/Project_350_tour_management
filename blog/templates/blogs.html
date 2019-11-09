@@ -11,8 +11,6 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
     <meta name="google" content="notranslate" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
 </head>
 
 <body>
@@ -43,6 +41,15 @@
     </style>
     {% block content_1 %}
     <div class="container">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="search" placeholder="Search" name="q">
+            <button class="btn btn-primary" type="submit">Search</button>
+
+        </form>
+    </div>
+
+    <div class="container">
         <div class="row">
             <!-- Blog Entries Column -->
             <div class=" justify-content-center col-md-12 mt-3 left">
@@ -50,6 +57,15 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h2 class="card-title"> <a>{{ post.title }} </a></h2>
+                        <div class="col-md-3 ">
+                            <div class="thumbnail">
+                                {% if post.display_pic %}
+                                <a href="#">
+                                    <img src="{{ post.display_pic.url }}" class="embed-responsive">
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
                         <p class="card-text text-muted h6"><a
                                 href="/accounts/profile/{{post.user_detail.user.id}}">{{ post.user_detail.user }}</a> |
                             {{ post.created_on}} </p>

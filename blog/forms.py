@@ -8,12 +8,13 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'status']
+        fields = ['title', 'content', 'status', 'display_pic']
 
         widgets = {
             # The class here is a CSS class.
             # 'title' : forms.TextInput(attrs={'class':'TextInputClass'}), #TextInputClass is our class
-            'content'  : forms.Textarea(attrs={'class':'editable medium-editor-textarea'}), #postcontent class is our class
+            # postcontent class is our class
+            'content': forms.Textarea(attrs={'class': 'editable medium-editor-textarea'}),
         }
 
 
@@ -26,5 +27,6 @@ class CommentForm(forms.ModelForm):
         widgets = {
             # The class here is a CSS class.
             # 'title' : forms.TextInput(attrs={'class':'TextInputClass'}), #TextInputClass is our class
-            'text'  : forms.Textarea(attrs={'class':'editable medium-editor-textarea'}), #postcontent class is our class
+            # postcontent class is our class
+            'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea'}),
         }

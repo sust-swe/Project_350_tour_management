@@ -3,6 +3,7 @@ from homepage.models import UserDetail, City
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.urls import reverse
+
 from django.utils.timezone import timezone
 from django.db import IntegrityError
 # Create your models here.
@@ -18,6 +19,8 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     user_detail = models.ForeignKey(
         UserDetail, on_delete=models.CASCADE)
+    display_pic = models.ImageField(upload_to='blog_pics',
+                                    null=True, blank=True, default=None)
     updated_on = models.DateTimeField(auto_now=True)
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 {% block content_1 %}
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/css/medium-editor.min.css" type="text/css"
-    media="screen" charset="utf-8">
+
 
 <div class="container">
     <div class="row">
@@ -39,7 +39,7 @@
             <a href="{% url 'comment_remove' pk=comment.pk %}">Remove Comment</a>
             {% endif %}
 
-            <p>{{ comment.text }}</p>
+            {{ comment.text | safe }}
             <p>By: {{comment.user_detail.user}}</p>
             {% endif %}
             {% empty %}

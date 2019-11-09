@@ -28,7 +28,7 @@ def new_post(request):
         user = request.user
         user_detail = UserDetail.objects.get(user=request.user)
         if request.method == 'POST':
-            form = PostForm(request.POST)
+            form = PostForm(request.POST, request.FILES)
             if form.is_valid():
                 instance = form.save(commit=False)
                 instance.user_detail = user_detail
@@ -44,6 +44,13 @@ def new_post(request):
 
 def PostList(request):
     postlist = Post.objects.filter(status=1).order_by('-created_on')
+
+    if request.method == 'POST':
+        query = request.POST['q']
+        print(query)
+        if query:
+            postlist = Post.objects.filter(status=1).filter(title__icontains=query)
+    
     context = {
         'post_lists': postlist
     }
