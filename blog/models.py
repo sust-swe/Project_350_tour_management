@@ -6,6 +6,8 @@ from django.urls import reverse
 
 from django.utils.timezone import timezone
 from django.db import IntegrityError
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 # Create your models here.
 
 
@@ -22,7 +24,7 @@ class Post(models.Model):
     display_pic = models.ImageField(upload_to='blog_pics',
                                     null=True, blank=True, default=None)
     updated_on = models.DateTimeField(auto_now=True)
-    content = models.TextField()
+    content = RichTextUploadingField()
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS, default=0)
     likes = models.IntegerField(default=0)
@@ -62,7 +64,7 @@ class Comment(models.Model):
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name='comments')
     user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
-    text = models.TextField()
+    text = RichTextField()
     created_on = models.DateTimeField(auto_now_add=True)
     approve_comment = models.BooleanField(default=False)
 

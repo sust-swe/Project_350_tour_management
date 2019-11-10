@@ -14,15 +14,20 @@
 </head>
 
 <body>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <!-- {% csrf_token %} -->
-        <input type="submit" value="Create Post">
-        <!-- {{ form.as_p }} -->
-        <!-- <button class="btn btn-success">Signin</button> -->
-    </form>
-    <script>var editor = new MediumEditor('.editable');</script>
+    <div class="container">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+            {{ form.as_p }}
+            <!-- {% csrf_token %} -->
+            <input type="submit" value="Create Post">
+            <!-- {{ form.as_p }} -->
+            <!-- <button class="btn btn-success">Signin</button> -->
+        </form>
+
+    </div>
+
+    <!-- <script>var editor = new MediumEditor('.editable');</script> -->
 </body>
 
 </html>

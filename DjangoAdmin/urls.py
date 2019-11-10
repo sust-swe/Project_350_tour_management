@@ -27,6 +27,7 @@ urlpatterns = [
     path('restaurant/', include('restaurant.urls')),
     path('guide/', include('guide.urls')),
     path('blog/', include('blog.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('search/', include('search.urls')),
     path('permission_denied/', PermissionDenied.as_view(),
          name='permission denied'),

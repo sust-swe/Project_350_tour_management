@@ -3,9 +3,10 @@
 <h1>New Comment</h1>
 <form class="post-form" method="POST">
     {% csrf_token %}
+    {{ form.media }}
     {{ form.as_p }}
     <button type="submit">Post Comment</button>
 
 </form>
-<script>var editor = new MediumEditor('.editable');</script>
+<!-- <script>var editor = new MediumEditor('.editable');</script> -->
 {% endblock content_1 %}
