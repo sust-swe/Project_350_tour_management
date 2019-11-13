@@ -42,42 +42,68 @@ def new_post(request):
         return redirect('/accounts/login/')
 
 
-def edit_post(request):
-    if request.user.is_authenticated:
-        user = request.user
-        user_detail = UserDetail.objects.get(user=request.user)
+class UpdatePost(views.View):
+    template_name = 'update_post.html'
+    form_class = PostForm
 
-        if request.method == 'GET':
-            form = UpdatePostForm(request.POST, request.FILES)
-
-            context = {
-                'form': form
-
-            }
-            return render(request, 'edit_post.html', context)
-
-        else:
-            user_form = UpdateUserForm(request.POST or None, instance=user)
-            user_detail_form = UserDetailForm(
-                request.POST, request.FILES, instance=user_detail)
-            if user_form.is_valid() and user_detail_form.is_valid():
-                user_form.save()
-                user_detail_form.save()
-                messages.info(request, 'Successfully updated')
-                return redirect('/profile/')
+    def get(self, request, pk):
+        if request.user.is_authenticated:
+            post = Post.objects.get(pk=pk)
+            if post.user_detail.user == request.user:
+                form = self.form_class(instance=post)
+                return render(request, self.template_name, {'form': form})
             else:
-                context = {
-                    'user_form': user_form, 'user_detail_form': user_detail_form
-                }
-                return render(request, 'edit_profile.html', context)
+                messages.info(request, 'Permission denied')
+                return redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'Log in First')
+            return redirect('/')
 
-    else:
-        messages.info(request, 'Log in first')
-        return redirect('/')
+    def post(self, request, pk):
+        if request.user.is_authenticated:
+            instance = Post.objects.get(pk=pk)
+            if instance.user_detail.user == request.user:
+                form = self.form_class(
+                    request.POST, request.FILES, instance=instance)
+                if form.is_valid():
+                    ob = form.save(commit=False)
+                    try:
+                        ob.full_clean()
+                        ob.save()
+                        return redirect('/blog/bloglist/')
+                    except ValidationError as e:
+                        nfe = e.message_dict[NON_FIELD_ERRORS]
+                        return (request, self.template_name, {'form': form, 'nfe': nfe})
+                else:
+                    messages.info('Invalid Credentials')
+                    return render(request, self.template_name, {'form': form})
+            else:
+                messages.info(request, 'Permission denied')
+                return redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'Log in First')
+            return redirect('/')
+
+
+class DeletePost(views.View):
+
+    def get(self, request, pk):
+        if request.user.is_authenticated:
+            instance = Post.objects.get(pk=pk)
+            if instance.user_detail.user == request.user:
+                instance.delete()
+                return redirect('/blog/bloglist')
+            else:
+                messages.info(request, 'Permission denied')
+                return redirect('/homepage/underground/')
+        else:
+            messages.info(request, 'You must login first')
+            redirect('/')
 
 
 def PostList(request):
     postlist = Post.objects.filter(status=1).order_by('-created_on')
+    postlistd = Post.objects.filter(status=1).order_by('-created_on')
 
     if request.method == 'POST':
         query = request.POST['q']
@@ -85,9 +111,13 @@ def PostList(request):
         if query:
             postlist = Post.objects.filter(
                 status=1).filter(title__icontains=query)
+            postlistd = Post.objects.filter(
+                status=1).filter(content__icontains=query)
 
     context = {
-        'post_lists': postlist
+        'post_lists': postlist,
+        'post_listd': postlistd
+
     }
     return render(request, 'blogs.html', context)
 
@@ -255,16 +285,3 @@ def comment_remove(request, pk):
     post_pk = comment.post.pk
     comment.delete()
     return redirect('post_detail', pk=post_pk)
-
-
-class PostUpdateView(LoginRequiredMixin, UpdateView):
-    # if this person is not logged in, where should this person go? To login_url
-    login_url = '/login/'
-    redirect_field_name = 'post_detail.html'
-    form_class = PostForm
-    model = Post
-
-
-class PostDeleteView(LoginRequiredMixin, DeleteView):
-    model = Post
-    success_url = reverse_lazy('bloglist')
