@@ -7,7 +7,7 @@ from homepage.models import UserDetail
 from . import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, UpdatePostForm
 from django import views
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -42,6 +42,40 @@ def new_post(request):
         return redirect('/accounts/login/')
 
 
+def edit_post(request):
+    if request.user.is_authenticated:
+        user = request.user
+        user_detail = UserDetail.objects.get(user=request.user)
+
+        if request.method == 'GET':
+            form = UpdatePostForm(request.POST, request.FILES)
+
+            context = {
+                'form': form
+
+            }
+            return render(request, 'edit_post.html', context)
+
+        else:
+            user_form = UpdateUserForm(request.POST or None, instance=user)
+            user_detail_form = UserDetailForm(
+                request.POST, request.FILES, instance=user_detail)
+            if user_form.is_valid() and user_detail_form.is_valid():
+                user_form.save()
+                user_detail_form.save()
+                messages.info(request, 'Successfully updated')
+                return redirect('/profile/')
+            else:
+                context = {
+                    'user_form': user_form, 'user_detail_form': user_detail_form
+                }
+                return render(request, 'edit_profile.html', context)
+
+    else:
+        messages.info(request, 'Log in first')
+        return redirect('/')
+
+
 def PostList(request):
     postlist = Post.objects.filter(status=1).order_by('-created_on')
 
@@ -49,8 +83,9 @@ def PostList(request):
         query = request.POST['q']
         print(query)
         if query:
-            postlist = Post.objects.filter(status=1).filter(title__icontains=query)
-    
+            postlist = Post.objects.filter(
+                status=1).filter(title__icontains=query)
+
     context = {
         'post_lists': postlist
     }
@@ -222,14 +257,14 @@ def comment_remove(request, pk):
     return redirect('post_detail', pk=post_pk)
 
 
-# class PostUpdateView(LoginRequiredMixin, UpdateView):
-#     # if this person is not logged in, where should this person go? To login_url
-#     login_url = '/login/'
-#     redirect_field_name = 'post_detail.html'
-#     form_class = PostForm
-#     model = Post
+class PostUpdateView(LoginRequiredMixin, UpdateView):
+    # if this person is not logged in, where should this person go? To login_url
+    login_url = '/login/'
+    redirect_field_name = 'post_detail.html'
+    form_class = PostForm
+    model = Post
 
 
-# class PostDeleteView(LoginRequiredMixin, DeleteView):
-#     model = Post
-#     success_url = reverse_lazy('post_list')
+class PostDeleteView(LoginRequiredMixin, DeleteView):
+    model = Post
+    success_url = reverse_lazy('bloglist')

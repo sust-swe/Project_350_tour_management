@@ -16,10 +16,10 @@ urlpatterns = [
         views.PostPreference, name='postpreference'),
     # url(r'^like/(?P<pk>[0-9]+)/$', views.like_post, name='like_post'),
     # path('like/', views.like_post, name='like_post'),
-    # url(r'^(?P<pk>[0-9]+)/edit/$',
-    #     views.PostUpdateView.as_view(), name='post_edit'),
-    # url(r'^(?P<pk>[0-9]+)/remove/$',
-    #     views.PostDeleteView.as_view(), name='post_remove'),
+    url(r'^blogist/(?P<pk>[0-9]+)/edit/$',
+        views.PostUpdateView.as_view(), name='post_edit'),
+    url(r'^bloglist/(?P<pk>[0-9]+)/remove/$',
+        views.PostDeleteView.as_view(), name='post_remove'),
 
 
 

@@ -18,6 +18,12 @@ class PostForm(forms.ModelForm):
         # }
 
 
+class UpdatePostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'status', 'display_pic']
+
+
 class CommentForm(forms.ModelForm):
 
     class Meta():

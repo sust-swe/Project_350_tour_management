@@ -41,10 +41,11 @@
     </style>
     {% block content_1 %}
     <div class="container">
+        <br>
         <form action="" method="POST">
             {% csrf_token %}
-            <input type="search" placeholder="Search" name="q">
-            <button class="btn btn-primary" type="submit">Search</button>
+            <input type="search" class="form-control" placeholder="Search" name="q">
+            <button style="margin-top: 5px;" class="btn btn-primary" type="submit">Search</button>
 
         </form>
     </div>
