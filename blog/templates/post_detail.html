@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
 {% load staticfiles %}
 {% block content_1 %}
 
@@ -15,12 +15,42 @@
                 <a class='btn btn-primary' href="{% url 'post_edit' pk=post.pk %}">
                     <span class="glyphicon glyphicon-pencil">Edit</span>
                 </a>
-                <a class='btn btn-primary' style="background-color: rgb(238, 10, 10);"
-                    href="{% url 'post_remove' pk=post.pk %}">
+                <!-- <a class='btn btn-primary' href="{% url 'post_remove' pk=post.pk %}" onclick="successful();"
+                    style="background-color: rgb(238, 10, 10);">
                     <span class="glyphicon glyphicon-remove">Remove</span>
-                </a> <br>
+                </a> -->
+                <button class="btn btn-primary" type="submit" onclick="successfulz();">Remove</button>
+
+
+
+                <script type="text/javascript">
+                    function successfulz() {
+                        swal({
+                            title: "Are you sure?",
+                            text: "Once deleted, you will not be able to recover this Post!",
+                            icon: "warning",
+                            buttons: true,
+                            dangerMode: true,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    window.location.href = "{% url 'post_remove' pk=post.pk %}";
+                                    // <a href="{% url 'post_remove' pk=post.pk %}" />
+                                    swal("Poof! Your Post has been deleted!", {
+                                        icon: "success",
+                                    });
+                                } else {
+                                    swal("Post is not Deleted!");
+                                }
+                            });
+                    }
+
+
+                </script>
+                <br>
                 {% endif %}
                 <br>
+                <!-- <a href="{% url 'post_remove' pk=post.pk %}" /> -->
                 <a href="#" class="btn btn-primary" onClick="document.getElementById('likebutton').submit()">Like</a>
                 {{post.likes}} <a href="#" class="btn btn-primary"
                     onClick="document.getElementById('dislikebutton').submit()">Dislike</a>

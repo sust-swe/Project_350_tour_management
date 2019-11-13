@@ -33,7 +33,7 @@ def new_post(request):
                 instance = form.save(commit=False)
                 instance.user_detail = user_detail
                 instance.save()
-                return redirect('/blog/bloglist/')
+                return redirect('/blog/bloglist')
         else:
             form = PostForm()
         return render(request, 'newpost.html', {'form': form})
@@ -54,7 +54,7 @@ class UpdatePost(views.View):
                 return render(request, self.template_name, {'form': form})
             else:
                 messages.info(request, 'Permission denied')
-                return redirect('/homepage/underground/')
+                return redirect('/blog/bloglist')
         else:
             messages.info(request, 'Log in First')
             return redirect('/')
@@ -69,8 +69,8 @@ class UpdatePost(views.View):
                     ob = form.save(commit=False)
                     try:
                         ob.full_clean()
-                        ob.save()
-                        return redirect('/blog/bloglist/')
+                        ob.save() 
+                        return redirect('post_detail', pk= instance.pk)
                     except ValidationError as e:
                         nfe = e.message_dict[NON_FIELD_ERRORS]
                         return (request, self.template_name, {'form': form, 'nfe': nfe})
@@ -79,7 +79,7 @@ class UpdatePost(views.View):
                     return render(request, self.template_name, {'form': form})
             else:
                 messages.info(request, 'Permission denied')
-                return redirect('/homepage/underground/')
+                return redirect('post_detail', pk=instance.pk)
         else:
             messages.info(request, 'Log in First')
             return redirect('/')
@@ -95,7 +95,7 @@ class DeletePost(views.View):
                 return redirect('/blog/bloglist')
             else:
                 messages.info(request, 'Permission denied')
-                return redirect('/homepage/underground/')
+                return redirect('post_detail', pk=instance.pk)
         else:
             messages.info(request, 'You must login first')
             redirect('/')

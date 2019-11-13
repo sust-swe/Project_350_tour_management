@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% extends "base.html" %}
+{% extends "base2.html" %}
 {% load staticfiles %}
 {% block content_1 %}
 <html lang="en">
@@ -20,7 +20,12 @@
             {{ form.media }}
             {{ form.as_p }}
             <!-- {% csrf_token %} -->
-            <input type="submit" value="Create Post">
+            <input type="submit" onclick="success();" value="Create Post">
+            <script type="text/javascript">
+                function success() {
+                    swal("Successful!", "Your Post Created!", "success")
+                }
+            </script>
             <!-- {{ form.as_p }} -->
             <!-- <button class="btn btn-success">Signin</button> -->
         </form>
