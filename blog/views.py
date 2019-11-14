@@ -16,6 +16,7 @@ from django.views.generic import (
     TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView)
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 # Create your views here.
+from hitcount.views import HitCountDetailView
 
 
 def blog(request):
@@ -69,8 +70,8 @@ class UpdatePost(views.View):
                     ob = form.save(commit=False)
                     try:
                         ob.full_clean()
-                        ob.save() 
-                        return redirect('post_detail', pk= instance.pk)
+                        ob.save()
+                        return redirect('post_detail', pk=instance.pk)
                     except ValidationError as e:
                         nfe = e.message_dict[NON_FIELD_ERRORS]
                         return (request, self.template_name, {'form': form, 'nfe': nfe})
@@ -127,20 +128,25 @@ def PostList(request):
 #     template_name = 'post_detail.html'
 
 
-def PostDetail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+class PostDetail(HitCountDetailView):
+    model = Post
+    template_name = 'post_detail.html'
+    context_object_name = 'post'
+    count_hit = True
+
+    def get(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        context = {
+            'post': post,
+            # 'count_hit': count_hit
+        }
+        return render(request, 'post_detail.html', context)
+
     # if request.user.is_authenticated:
     #     user = UserDetail.objects.get(user=request.user)
     #     is_liked = False
     #     if post.likes.filter(pk=request.user.pk).exists():
     #         is_liked = True
-
-    context = {
-        'post': post,
-        # 'is_liked': is_liked,
-        # 'total_likes': post.total_likes(),
-    }
-    return render(request, 'post_detail.html', context)
 
 
 @login_required

@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'search.apps.SearchConfig',
     'imagekit',
     'ckeditor',
-    'ckeditor_uploader'
+    'ckeditor_uploader',
+    'hitcount'
 ]
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 

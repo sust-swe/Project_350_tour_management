@@ -8,6 +8,9 @@ from django.utils.timezone import timezone
 from django.db import IntegrityError
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
+from hitcount.models import HitCountMixin, HitCount
+from django.contrib.contenttypes.fields import GenericRelation
+from django.utils.encoding import python_2_unicode_compatible
 # Create your models here.
 
 
@@ -17,6 +20,7 @@ STATUS = (
 )
 
 
+@python_2_unicode_compatible
 class Post(models.Model):
     title = models.CharField(max_length=200)
     user_detail = models.ForeignKey(
@@ -29,6 +33,8 @@ class Post(models.Model):
     status = models.IntegerField(choices=STATUS, default=0)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+    hit_count_generic = GenericRelation(
+        HitCount, object_id_field='object_pk', related_query_name='hit_count_generic_relation')
 
     class Meta:
         ordering = ['-created_on']
@@ -42,6 +48,9 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('post_detail', kwargs={'pk': self.pk})
+
+    def save(self, *args, **kwargs):
+        return super(Post, self).save(*args, **kwargs)
 
     def __str__(self):
         return '%s %s' % (self.user_detail.__str__(), self.title)

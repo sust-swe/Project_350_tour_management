@@ -1,5 +1,6 @@
 {% extends 'base2.html' %}
 {% load staticfiles %}
+{% load hitcount_tags %}
 {% block content_1 %}
 
 
@@ -9,6 +10,8 @@
             <div class="card-body">
                 <!-- {{post_detail}} -->
                 <h1>{% block title %} {{ post.title }} {% endblock title %}</h1>
+                <!-- <p>Views: {% get_hit_count for post %}</p> -->
+                <!-- <p>{{ post.get_hit_count }}</p> -->
                 <p class=" text-muted">{{ post.user_detail.user }} | {{ post.created_on }}</p>
                 <p class="card-text ">{{ post.content | safe | linebreaksbr}}</p>
                 {% if user.is_authenticated %}
@@ -51,6 +54,7 @@
                 {% endif %}
                 <br>
                 <!-- <a href="{% url 'post_remove' pk=post.pk %}" /> -->
+
                 <a href="#" class="btn btn-primary" onClick="document.getElementById('likebutton').submit()">Like</a>
                 {{post.likes}} <a href="#" class="btn btn-primary"
                     onClick="document.getElementById('dislikebutton').submit()">Dislike</a>
