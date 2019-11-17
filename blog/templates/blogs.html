@@ -61,7 +61,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h2 class="card-title"> <a>{{ post.title }} </a></h2>
-                        <!-- <p>Views: {% get_hit_count for post %}</p> -->
+                        <p>Views: {% get_hit_count for post %}</p>
                         <div class="col-md-3 ">
                             <div class="thumbnail">
                                 {% if post.display_pic %}
@@ -75,8 +75,8 @@
                                 href="/accounts/profile/{{post.user_detail.user.id}}">{{ post.user_detail.user }}</a> |
                             {{ post.created_on}} </p>
                         <p class="card-text">{{post.content|slice:":200" | safe }}</p>
-                        <a href="{% url 'post_detail' pk=post.pk  %}">Comments: {{post.approve_comments.count}} </a>
-                        <a href="{% url 'post_detail' pk=post.pk  %}" class="btn btn-primary">Read More &rarr;</a>
+                        <a href="{% url 'post_detail' post.id  %}">Comments: {{post.approve_comments.count}} </a>
+                        <a href="{% url 'post_detail' post.id  %}" class="btn btn-primary">Read More &rarr;</a>
                         <!-- <a href="/restaurant/{{ restaurant.id }}/">{{ restaurant.name }}</a> -->
                     </div>
                 </div>

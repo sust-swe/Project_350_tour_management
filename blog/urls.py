@@ -11,7 +11,7 @@ urlpatterns = [
     # path('<slug:slug>/', views.PostDetail.as_view(), name='post_detail'),
     # path('<int:id>/', views.PostDetail, name='post_detail'),
     # path()
-    path('hitcount/', include(('hitcount.urls', 'hitcount'), namespace='hitcount')),
+    
     url(r'^bloglist/(?P<pk>[0-9]+)/$',
         views.PostDetail.as_view(), name='post_detail'),
     url(r'^bloglist/(?P<postid>\d+)/preference/(?P<userpreference>\d+)/$',

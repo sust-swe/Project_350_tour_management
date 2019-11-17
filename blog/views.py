@@ -134,13 +134,15 @@ class PostDetail(HitCountDetailView):
     context_object_name = 'post'
     count_hit = True
 
-    def get(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
-        context = {
-            'post': post,
-            # 'count_hit': count_hit
-        }
-        return render(request, 'post_detail.html', context)
+    def get_context_data(self, **kwargs):
+        # post = get_object_or_404(Post, pk=pk)
+        context = super(PostDetail, self).get_context_data(**kwargs)
+        # context = {
+        #     'post': post,
+        #     # 'count_hit': count_hit
+        # }
+        return context
+        # return render(request, 'post_detail.html', context)
 
     # if request.user.is_authenticated:
     #     user = UserDetail.objects.get(user=request.user)

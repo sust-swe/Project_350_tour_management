@@ -26,6 +26,7 @@ urlpatterns = [
     path('residence/', include('residence.urls')),
     path('restaurant/', include('restaurant.urls')),
     path('guide/', include('guide.urls')),
+    path('hitcount/', include(('hitcount.urls', 'hitcount'), namespace='hitcount')),
     path('blog/', include('blog.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('search/', include('search.urls')),

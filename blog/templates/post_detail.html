@@ -10,7 +10,7 @@
             <div class="card-body">
                 <!-- {{post_detail}} -->
                 <h1>{% block title %} {{ post.title }} {% endblock title %}</h1>
-                <!-- <p>Views: {% get_hit_count for post %}</p> -->
+                <p>Views: {% get_hit_count for post %}</p>
                 <!-- <p>{{ post.get_hit_count }}</p> -->
                 <p class=" text-muted">{{ post.user_detail.user }} | {{ post.created_on }}</p>
                 <p class="card-text ">{{ post.content | safe | linebreaksbr}}</p>
