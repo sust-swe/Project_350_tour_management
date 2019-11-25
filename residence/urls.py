@@ -16,6 +16,7 @@ urlpatterns = [
     path("<int:id>/space_type/", views.ShowSpaceTypes.as_view()),
     path("<int:residence_id>/create_space_type/",
          views.CreateSpaceType.as_view()),
+    path("<int:residence_id>/orders/", views.ShowReceivedResidenceOrder.as_view()),
     path('space/<int:space_id>/', views.SpaceDetail.as_view(), name='Space Detail'),
     path('space/<int:space_id>/update/',
          views.UpdateSpace.as_view(), name='Update Space'),
@@ -25,6 +26,7 @@ urlpatterns = [
          views.CreateSpaceAvailability.as_view(), name='c_s_a'),
     path("space/<int:space_id>/unavail/", views.MakeSpaceUnavailable.as_view()),
     path("space/<int:space_id>/book/", views.BookSpace.as_view()),
+    path("space/<int:space_id>/availability/", views.ShowSpaceAvailability.as_view()),
     path("ajax/", include("residence.ajax_handler")),
     path("space_type/<int:space_type_id>/",
          views.ShowSpaceTypeDetail.as_view()),
@@ -33,5 +35,7 @@ urlpatterns = [
     path("space_type/<int:space_type_id>/delete/",
          views.DeleteSpaceType.as_view()),
     path("book/", views.BookSpace.as_view()),
-    path("order/", views.ShowResidenceOrder.as_view()),
+    path("received_order/", views.ShowReceivedResidenceOrder.as_view()),
+    path("purchased_order/", views.ShowPurchasedOrder.as_view()),
+    path("order/<int:order_id>/", views.ShowSpaceOrderDetail.as_view())
 ]

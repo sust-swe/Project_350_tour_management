@@ -79,7 +79,7 @@ class Space(models.Model):
                 # print(self.id)
                 if Space.objects.get(residence=self.residence, name=self.name).id != self.id:
                     raise ValidationError(
-                        "This Residence has already a same named space")
+                        "This Residence has already a space of this name")
 
 
 class SpaceAvailable(models.Model):

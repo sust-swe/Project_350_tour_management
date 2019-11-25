@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content_1 %}
+<title>guide bookings</title>
+{% endblock %}
+
+{% block header %}
+{{guide.name}} #bookings
+{% endblock %}
+
+{% block content_2 %}
+<table>
+    {% for booking in bookings %}
+    <tr>
+        <td>
+            <a href="/guide/bookings/{{booking.id}}/"><button class="body_table_data_button">
+                    {{ booking.customer.user.username }} at {{ booking.booking_time }}
+                </button></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
+{% block body_op %}
+<a href="/guide/{{ guide.id }}/"><button class="body_op_button_class">{{ guide.name }}</button></a>
+{% endblock %}

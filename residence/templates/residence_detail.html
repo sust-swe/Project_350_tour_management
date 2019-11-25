@@ -4,36 +4,63 @@
 <title>Residence Detail</title>
 {% endblock %}
 
+{% block header %}
+{{ ob.name }}
+{% endblock %}
+
 {% block content_2 %}
-<h1>{{ ob.name }}</h1>
+
+{% if ob.img %}
 <table>
-    {% if ob.address %}<tr>
+    <tr>
+        <td><img src="{{ ob.img.url }}" class="image_ste" /></td>
+    </tr>
+</table>
+{% endif %}
+
+<table class="body_table">
+    {% if ob.address %}
+    <tr>
         <td>Address</td>
         <td>{{ ob.address }}</td>
-    </tr>{% endif %}
-    {% if ob.city %}<tr>
+    </tr>
+    {% endif %}
+
+    {% if ob.city %}
+    <tr>
         <td>City</td>
         <td>{{ ob.city }}</td>
-    </tr>{% endif %}
-    {% if ob.mobile %}<tr>
+    </tr>
+    {% endif %}
+
+    {% if ob.mobile %}
+    <tr>
         <td>Mobile</td>
         <td>{{ ob.mobile }}</td>
-    </tr>{% endif %}
-    {% if ob.description %}<tr>
+    </tr>
+    {% endif %}
+    {% if ob.description %}
+    <tr>
         <td>Description</td>
         <td>{{ ob.description }}</td>
-    </tr>{% endif %}
+    </tr>
+    {% endif %}
+    <tr>
+        <td>Owner</td>
+        <td>
+            <a href="/accounts/profile/{{ob.user_detail.user.id}}/"><button
+                    class="body_table_data_button">{{ob.user_detail.user.username}}</button></a>
+        </td>
+    </tr>
 </table>
-{% if ob.img %} <img src="{{ ob.img.url }}" /> {% endif %}
-<br><br>
-<a href="space_type/">Space Types</a><br>
+{% endblock %}
 
-
-<br><br>
+{% block body_op %}
+<a href="space_type/"><button class="body_op_button_class">Space Types</button></a>
 {% if request.user == ob.user_detail.user %}
-<a href="space/">Spaces</a><br>
-<a href="update/">Update</a><br>
-<a href="delete/">Delete</a><br>
-
+<a href="space/"><button class="body_op_button_class">Spaces</button></a>
+<a href="update/"><button class="body_op_button_class">Update</button></a>
+<a href="delete/"><button class="body_op_button_class">Delete</button></a>
+<a href="/residence/{{ ob.id }}/orders"><button class="body_op_button_class">Bookings</button></a>
 {% endif %}
 {% endblock %}

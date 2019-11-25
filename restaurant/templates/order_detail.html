@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content_1 %}<title> Order Detail </title>{% endblock %}
+
+{% block content_2 %}
+    <table>
+    <tr>
+        <th> Item </th>
+        <th> Quantity </th>
+        <th> Price </th>
+    </tr>
+
+    {% for order_detail in order_details %}
+<tr>
+<td>{{ order_detail.food.name }}</td>
+<td>{{ order_detail.quantity }}</td>
+<td>{{ order_detail.quantity }} X {{ order_detail.food.price }}</td>
+</tr>
+    {% endfor %}
+    <tr>
+        <td></td>
+        <td> Bill </td>
+        <td> {{ order.bill }} </td>
+
+    </tr>
+</table>
+    <p> From <a href="/restaurant/{{ order.restaurant.id }}/"><button>{{ order.restaurant.name }}</button></a></p>
+{% endblock %}

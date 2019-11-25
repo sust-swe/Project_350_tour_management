@@ -3,57 +3,69 @@
 
 {% block content_1 %}
 <title>SearchSpace</title>
+<style>
+    .body_table {
+        background-color: #9a9ff1;
+        color: black;
+        overflow-y: auto;
+        width: 800px;
+    }
+
+    .body_header {
+        background-color: #37375b;
+        color: #e6d8dd;
+        font-size: 35px;
+        overflow: hidden;
+        width: 800px;
+    }
+</style>
 {% endblock content_1 %}
+
+{% block header %}
+Search For Residence
+{% endblock %}
 
 {% block content_2 %}
 
 <form method="POST">
     {% csrf_token %}
-    <table>
+    <table class="form_table">
         {{form.as_table}}
-        <tr>
-            <td></td>
-            <td>
-                <input type="submit" value="Search">
-            </td>
-        </tr>
     </table>
+    <button type="submit" class="body_button_class">Search</button>
 </form>
-
-{% if residence_qs.exists %}
-
-<p>
-    <h1>Results</h1>
-    <table>
-        <tr>
-            <th>Residence</th>
-            <th>Space Type</th>
-        </tr>
-        {% for res in residence_qs %}
-        <tr>
-            <td><a href="/residence/{{res.id}}/">{{res.name}}</a></td>
-            <td>
-                <ul>
-                    {% for ri,pk,name,count,rent in space_types_ri_p_n_c_r %}
-                    {% if ri == res.id %}
-                    <li>
-                        <a href="/residence/space_type/{{pk}}/">{{name}}</a> {{count}} Space Available at ${{rent}} per
-                        space
-                        <button class="book" space_type="{{pk}}" id="space_type_id_{{pk}}">Book</button>
-                    </li> {% endif %} {% endfor %} </ul>
-            </td>
-        </tr> {% endfor %}
-    </table>
-</p> {% else %} <h1>No Results Found</h1>
-{% endif %}
+<table class="body_table">
+    {% if residence_qs.exists %}
+    <tr>
+        <th colspan="3">Results</th>
+    </tr>
+    <tr>
+        <th>Residence</th>
+        <th>Space Type</th>
+        <th>Details</th>
+    </tr>
+    {% for res in residence_qs %}
+    {% for ri,pk,name,count,rent in space_types_ri_p_n_c_r %}
+    {% if ri == res.id %}
+    <tr>
+        <td><a href="/residence/{{res.id}}/"><button class="body_table_data_button">{{res.name}}</button></a></td>
+        <td><a href="/residence/space_type/{{pk}}/"><button class="body_table_data_button">{{name}}</button></a></td>
+        <td>{{count}} Space Available at ${{rent}} per space</td>
+        {% if request.user.is_authenticated %}
+        <td><button class="book body_table_data_button" space_type="{{pk}}" id="space_type_id_{{pk}}">Book</button></td>
+        {% endif %}
+    </tr>
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    {% else %}
+    <th colspan="3">No Results Found</th>
+    {% endif %}
+</table>
 
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
     load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
     load_from_day="/search/ajax/load_from_day/">
-
-        $("#b1").click(function () { $("#test").show(); });
-        $("#b1").dblclick(function () { $("#test").hide(); });
-
 
         $("#id_from_year").change(function () {
             // $("#test").html('changed');
@@ -132,7 +144,6 @@
     </script>
 
 <script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
-
     $("#id_country").change(function () {
         $.ajax({
             url: $("#load_city_ajax").attr("load_city"),
@@ -147,7 +158,6 @@
             }
         });
     });
-
     $("#id_city").change(function () {
         // $("#test").html("load_residence");
         $.ajax({
@@ -156,11 +166,9 @@
             success: function (redata) { $("#id_residence").html(redata); }
         });
     });
-
 </script>
 
 <script id="bookyee_space" book_url="/search/ajax/book/">
-
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -188,12 +196,7 @@
             }
         }
     });
-
     $(".book").click(function () {
-        //$("#test").html($(this).attr("space_type"));
-        /*effective -O- */
-        //$(this).hide();
-        //alert(this);
         $.ajax({
             url: "/residence/book/",
             type: "POST",
@@ -209,32 +212,10 @@
             },
             success: function (response) {
                 alert(response);
-
+                $(".book").hide();
             }
         });
-        $(this).hide();
-        /*
-        var jqxhr = $.post("", function () {
-            alert("success");
-        })
-            .done(function () {
-                alert("Booked");
-            })
-            .fail(function () {
-                alert("Not Available");
-            })
-            .always(function () {
-                alert("finished");
-            });
-
-        // Perform other work here ...
-
-        // Set another completion function for the request above
-        jqxhr.always(function () {
-            alert("second finished");
-        });
-        */
     });
 </script>
-<p id="test"></p>
+
 {% endblock content_2 %}

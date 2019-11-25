@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content_1 %}
+<title>guide booking detail</title>
+
+{% endblock %}
+
+{% block header %}
+Booking #{{ booking.id }}
+{% endblock %}
+
+{% block content_2 %}
+<table class="body_table">
+    <tr>
+        <td>Guide</td>
+        <td><a href="/guide/{{ booking.guide.id }}/">
+                <button class="body_table_data_button">{{ booking.guide.name }}</button></a></td>
+    </tr>
+    <tr>
+        <td>Hirer</td>
+        <td><a href="/accounts/profile/{{ booking.customer.user.id }}/"><button
+                    class="body_table_data_button">{{ booking.customer.user.username }}</button> </a> </td>
+    </tr>
+    <tr>
+        <td>Days</td>
+        <td>{{ booking.book_from }} - {{ booking.book_to }}</td>
+    </tr>
+    <tr>
+        <td>City</td>
+        <td>{{ booking.guide.city.city }}</td>
+    </tr>
+</table>
+{% endblock %}
+
+{% block body_op %}
+{% if booking.customer.user == request.user %}
+<a href="/guide/purchased_order/"><button class="body_op_button_class">Guide Bookings</button></a>
+{% elif booking.guide.user_detail.user == request.user %}
+<a href="/guide/{{booking.guide.id}}/bookings/"><button class="body_op_button_class">{{booking.guide.name}}
+        #bookings</button></a>
+{% endif %}
+{% endblock %}

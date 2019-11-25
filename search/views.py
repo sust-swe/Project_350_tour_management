@@ -1,13 +1,14 @@
 from homepage.base import *
-from .forms import SearchRestaurantForm, SpaceSearchForm
+from .forms import SearchRestaurantForm, SpaceSearchForm, SearchGuideForm
 from homepage.models import City
 from restaurant.models import Restaurant
 from residence.models import SpaceAvailable, SpaceType, Residence
+from guide.models import GuideAvailable
 from .first_view import load_city_choice, load_flw_from_day, load_flw_to_day, load_flw_from_month, load_flw_to_month, load_flw_to_year, load_date_from_DateForm
 
 ##########################################   non-class views        ##########################
 
-###########################################   class based views     ###########################
+#######################################        class based views          ################################################################
 
 
 class SearchRestaurant(views.View):
@@ -29,19 +30,24 @@ class SearchRestaurant(views.View):
             # print(Restaurant.objects.all())
 
             restaurants = Restaurant.objects.all()
-
+            # print(restaurants)
+            if request.user.is_authenticated:
+                restaurants = restaurants.exclude(
+                    user_detail__user=request.user)
+            # print(restaurants)
             if country_id:
-                restaurants = Restaurant.objects.filter(
+                restaurants = restaurants.filter(
                     country_id=country_id)
             # print(restaurants)
+            print(restaurants)
             if city_id:
                 restaurants = restaurants.filter(city_id=int(city_id))
             # print(restaurants)
+
             if restaurant_name:
                 restaurants = restaurants.filter(
                     name__contains=restaurant_name)
             # print(restaurants)
-
             return render(request, self.template_name, {'restaurants': restaurants, 'form': form})
         else:
             # print(form.as_table())
@@ -54,7 +60,7 @@ class SearchSpace(views.View):
 
     def get(self, request):
         form = self.form_class()
-        #print('space search view')
+        # print('space search view')
         # print(form.as_table())
         return render(request, self.template_name, {'form': form})
 
@@ -73,12 +79,14 @@ class SearchSpace(views.View):
         return qs
 
     # searches by form's mandatory fields
-    def search_by_essentials(self, form):
+    def search_by_essentials(self, form, user):
         person_n = int(form.cleaned_data['person_n'])
         from_date, to_date = load_date_from_DateForm(form)
         city = int(form.cleaned_data['city'])
         qs = SpaceAvailable.objects.filter(space__residence__city__id=city, avail_from__lte=from_date,
                                            avail_to__gte=to_date, space__space_type__person=person_n)
+        if user.is_authenticated:
+            qs = qs.exclude(space__residence__user_detail__user=user)
         return qs
 
     def process_context(self, avail_space_qs, space_n):
@@ -115,7 +123,7 @@ class SearchSpace(views.View):
         form = self.form_class(request.POST or None)
         if form.is_valid():
             # print("search space valid")
-            space_avail_qs = self.search_by_essentials(form)
+            space_avail_qs = self.search_by_essentials(form, request.user)
             space_avail_qs = self.search_by_optionals(form, space_avail_qs)
             space_n = int(form.cleaned_data['space_n'])
             context = self.process_context(space_avail_qs, space_n)
@@ -125,3 +133,39 @@ class SearchSpace(views.View):
         else:
             print(form.as_table())
             return render(request, self.template_name, {'form': form})
+
+
+class SearchGuide(views.View):
+    template_name = "search_guide.html"
+    form_class = SearchGuideForm
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
+
+    def search_by_essentials(self, form, user):
+        from_date, to_date = load_date_from_DateForm(form)
+        city = int(form.cleaned_data['city'])
+        gender = int(form.cleaned_data["gender"])
+        qs = GuideAvailable.objects.filter(guide__city__id=city, avail_from__lte=from_date,
+                                           avail_to__gte=to_date, guide__gender=gender)
+        if user.is_authenticated:
+            qs = qs.exclude(guide__user_detail__user=user)
+        return qs
+
+    def search_by_optionals(self, form, qs):
+        max_rent = min_rent = residence_id = None
+        if form.cleaned_data.get('max_rent', None):
+            max_rent = float(form.cleaned_data['max_rent'])
+            qs = qs.filter(guide__rent__lte=max_rent)
+        if form.cleaned_data.get('min_rent', None):
+            min_rent = float(form.cleaned_data['min_rent'])
+            qs = qs.filter(guide__rent__gte=min_rent)
+        return qs
+
+    def post(self, request):
+        form = self.form_class(request.POST or None)
+        if form.is_valid():
+            guide_avail_qs = self.search_by_essentials(form, request.user)
+            guide_avail_qs = self.search_by_optionals(form, guide_avail_qs)
+            return render(request, self.template_name, {"avails": guide_avail_qs, "form": form})

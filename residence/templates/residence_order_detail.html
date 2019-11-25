@@ -1,13 +1,9 @@
 {% extends 'base.html' %}
-
-
 {% block content_1 %}
 <title>Residence Order Detail</title>
 {% endblock content_1 %}
-
-
 {% block content_2 %}
-<h1>Residence Order</h1>
+<h1>Received Residence Orders</h1>
 <table class="spacing-table">
     <tr>
         <th>Order ID</th>
@@ -16,18 +12,18 @@
         <th>No of Space</th>
         <th>From</th>
         <th>To</th>
+        <th>Booked at</th>
     </tr>
-
     {% for order in orders %}
     <tr>
         <td>{{order.id}}</td>
-        <td>{{order.space_type.residence.name}}</td>
-        <td>{{order.space_type.name}}</td>
+        <td> <a href="/residence/{{order.space_type.residence.id}}/">{{order.space_type.residence.name}}</a></td>
+        <td> <a href="/residence/space_type/{{order.space_type.id}}/">{{order.space_type.name}}</a></td>
         <td>{{order.n_space}}</td>
-        <td>{{order.from_date}}</td>
-        <td>{{order.to_date}}</td>
+        <td>{{order.book_from}}</td>
+        <td>{{order.book_to}}</td>
+        <td>{{order.booking_time}}</td>
     </tr>
     {% endfor %}
-
 </table>
 {% endblock content_2 %}

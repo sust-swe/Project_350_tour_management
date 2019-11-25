@@ -1,13 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-    <title>My Guide</title>
+<title>My Guide</title>
+{% endblock %}
+
+{% block header %}
+My Guide
 {% endblock %}
 
 {% block content_2 %}
-    {% for guide in qs %}
-        <a href="/guide/{{ guide.id }}/">{{ guide.name }}</a> <br>
+<table>
+    {% for item in qs %}
+    <tr>
+        <td>
+            <a href="/guide/{{ item.id }}/"><button class="body_button_class">{{ item.name }}</button> </a>
+        </td>
+    </tr>
     {% endfor %}
-    <br>
-    <a href="/guide/add_guide/" >Add New Guide</a>
+</table>
+{% endblock %}
+
+{% block body_op %}
+<a href="/guide/add_guide/"><button class="body_op_button_class">Add Guide</button></a>
 {% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block header %}
+    {{ space.name }} Available
+{% endblock %}
+
+{% block content_1 %} <title>Space Availability</title>  {% endblock %}
+
+{% block content_2 %}
+{%if avails.exists %}
+        <table class="body_table">
+            <tr>
+                <td>From</td>
+                <td>To</td>
+            </tr>
+            {% for avail in avails %}
+
+            <tr>
+
+                <td>{{avail.avail_from}}</td>
+                <td>{{avail.avail_to}}</td>
+            </tr>
+
+            {% endfor %}
+        </table>
+{%endif%}
+{% endblock %}
+
+{% block body_op %}
+    <a href="/residence/space/{{ space.id }}/"><button class="body_op_button_class">{{ space.name }}</button></a>
+ {% if space.residence.user_detail.user == request.user %}
+    <a href="/residence/space/{{ space.id }}/avail/"><button class="body_op_button_class">Create Availability</button></a>
+    <a href="/residence/space/{{space.id}}/unavail/"><button class="body_op_button_class"> Make Unavailable</button></a>
+    {% endif %}
+{% endblock %}

@@ -10,6 +10,7 @@ pillow = "*"
 django-ckediotor = "*"
 django-ckeditor = "*"
 django-hitcount = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.7"

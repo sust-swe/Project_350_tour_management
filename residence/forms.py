@@ -9,10 +9,11 @@ class ResidenceForm(forms.ModelForm):
     class Meta:
         model = Residence
         exclude = ['user_detail']
+        labels = {"img": "Photo"}
 
     def __init__(self, *args, **kwargs):
-        print("ResidenceForm")
-        super(ResidenceForm, self).__init__(*args, **kwargs)
+
+        super().__init__(*args, **kwargs)
 
         self.fields['country'].queryset = Country.objects.all()
         self.fields['city'].queryset = City.objects.none()
@@ -25,6 +26,8 @@ class ResidenceForm(forms.ModelForm):
             self.fields['city'].queryset = self.instance.country.city_set.order_by(
                 'city')
 
+        print("ResidenceForm")
+
 
 class SpaceForm(forms.ModelForm):
     class Meta:
@@ -36,11 +39,17 @@ class SpaceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         residence_id = None
         init_dict = {}
+        # form for creating new space
         if kwargs.get('initial', None):
             init_dict = kwargs.get('initial', None)
             if init_dict.get('residence', None):
                 residence_id = init_dict.get('residence', None)
+        # print("44", self.data)
 
+        if kwargs.get("instance", None):
+            instance = kwargs.get("instance", None)
+            residence_id = instance.id
+            # print(instance, type(instance))
         self.fields['space_type'].queryset = SpaceType.objects.filter(
             residence_id=residence_id)
 
@@ -153,12 +162,9 @@ class SpaceSearchForm(forms.Form):
         # print('init spacesearch     form')
 
 
-class BookSpaceForm(forms.Form):
-    space_type = forms.ChoiceField(choices=[])
-
-
 class CreateSpaceTypeForm(forms.ModelForm):
-
+    
     class Meta:
         model = SpaceType
         exclude = ['residence']
+        labels = {"pic": "Photo", "person": "Person per Space"}

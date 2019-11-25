@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content_1 %}
+<title>Cart</title>
+{% endblock content_1 %}
+
+{% block header %}
+Food Cart
+{% endblock %}
+
+{% block content_2 %}
+<table class="body_table">
+    {% if cart_detail.exists %}
+
+    {% for item in cart_detail %}
+    <tr>
+        <td> <a href="/restaurant/food/{{item.food.id}}/">
+                <button class="body_table_data_button"> {{ item.food.name }}</button>
+            </a></td>
+        <td>{{ item.quantity }} pcs</td>
+        <td>$ {{ item.food.price }} X {{ item.quantity }}</td>
+        <td><button class="plus body_table_data_button" myval="{{ item.food.id }}">+</button></td>
+        <td><button class="minus body_table_data_button" myval="{{ item.food.id }}">-</button></td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td>Bill</td>
+        <td></td>
+        <td>{{ cart.bill }}</td>
+    </tr>
+    <tr>
+        <td colspan="5">
+            <a href="/restaurant/place_order/">
+                <button class="body_table_data_button">Place Order</button>
+            </a>
+        </td>
+    </tr>
+
+    {% else %}
+    <tr>
+        <th>Empty</th>
+    </tr>
+    {% endif %}
+</table>
+
+<script>
+    $(".plus").click(function () {
+        $.ajax({
+            url: "/restaurant/addtocart/",
+            data: { "item_id": $(this).attr("myval") },
+            success: function (redata) {
+                location.reload();
+            }
+        });
+    });
+    $(".minus").click(function () {
+        $.ajax({
+            url: "/restaurant/delfromcart/",
+            data: { "item_id": $(this).attr("myval") },
+            success: function (redata) {
+                location.reload();
+
+            }
+        });
+    });
+</script>
+
+{% endblock content_2 %}
+
+{% block body_op %}
+{% if cart.restaurant.name %}
+<a href="/restaurant/{{ cart.restaurant.id }}/"><button
+        class="body_op_button_class">{{ cart.restaurant.name }}</button></a>
+{% endif %}
+{% endblock %}

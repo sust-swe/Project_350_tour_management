@@ -17,7 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from homepage.views import PermissionDenied
+from .views import PermissionDenied, LoginRequired
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +32,8 @@ urlpatterns = [
     path('search/', include('search.urls')),
     path('permission_denied/', PermissionDenied.as_view(),
          name='permission denied'),
+    path('login_required/', LoginRequired.as_view()),
+
 ]
 
 urlpatterns = urlpatterns + \

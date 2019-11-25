@@ -44,7 +44,9 @@ def edit_profile(request):
             return render(request, 'edit_profile.html', context)
 
         else:
-            user_form = UpdateUserForm(request.POST or None, instance=user)
+            print("edit profile post")
+            user_form = UpdateUserForm(
+                request.POST, request.FILES, instance=user)
             user_detail_form = UserDetailForm(
                 request.POST, request.FILES, instance=user_detail)
             if user_form.is_valid() and user_detail_form.is_valid():
@@ -121,3 +123,11 @@ class PermissionDenied(views.View):
     def get(self, request):
         messages.info(request, 'Permission Denied')
         return redirect('/')
+    
+    
+class MyOrder(views.View):
+    template_name = "my_order.html"
+    
+    def get(self, request):
+        if request.user.is_authenticated:
+            return render(request, self.template_name)

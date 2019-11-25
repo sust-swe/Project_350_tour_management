@@ -8,5 +8,6 @@ urlpatterns = [
     path('profile/', views.Profile.as_view(), name='profile'),
     path('edit_profile/', views.edit_profile, name='edit profile'),
     path('change_password/', views.ChangePassword.as_view(), name='change password'),
-    path('underground/', views.Underground.as_view(), name='Underground')
+    path('underground/', views.Underground.as_view(), name='Underground'),
+    path("my_orders/", views.MyOrder.as_view()),
 ]

@@ -1,17 +1,56 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-    <title>Guide Detail</title>
+<title>Guide Detail</title>
+{% endblock %}
+
+{% block header %}
+{{ guide.name }}
 {% endblock %}
 
 {% block content_2 %}
-    <h1>{{ guide.name }}</h1>
-    <table>
-    {% if guide.mobile %}<tr><td>Mobile</td><td>{{ guide.mobile }}</td></tr>{% endif %}
-    {% if guide.description %}<tr><td>Description</td><td>{{ guide.description }}</td></tr>{% endif %}
-    </table>
-    {% if guide.img %} <img src="{{ guide.img.url }}" height="300" width="450" >{% endif %}
-<br>
-    <a href="/guide/{{ guide.id }}/update/">Update    </a><br>
-    <a href="/guide/{{ guide.id }}/delete/">Delete</a>
+<table class="body_table">
+    {% if guide.img %}
+    <tr>
+        <td>
+            <img src="{{ guide.img.url }}" class="image_ste">
+        </td>
+    </tr>
+    {% endif %}
+</table>
+<table class="body_table">
+    {% if guide.mobile %}<tr>
+        <td>Mobile</td>
+        <td>{{ guide.mobile }}</td>
+    </tr>{% endif %}
+    {% if guide.description %}<tr>
+        <td>Description</td>
+        <td>{{ guide.description }}</td>
+    </tr>{% endif %}
+    <tr>
+        <td>City</td>
+        <td>{{ guide.city.city }}</td>
+    </tr>
+    <tr>
+        <td>Gender</td>
+        <td>{{ guide.gender.name }}</td>
+    </tr>
+    <tr>
+        <td>Owner</td>
+        <td>
+            <a href="/accounts/profile/{{ guide.user_detail.user.id }}/">
+                <button class="body_table_data_button">{{guide.user_detail.user.username}}</button>
+            </a>
+        </td>
+    </tr>
+</table>
+{% endblock %}
+
+{% block body_op %}
+{% if guide.user_detail.user == request.user %}
+<a href="/guide/{{ guide.id }}/update/"><button class="body_op_button_class">Update</button></a>
+<a href="/guide/{{ guide.id }}/delete/"><button class="body_op_button_class">Delete</button></a>
+<a href="/guide/{{ guide.id }}/availability/"><button class="body_op_button_class">Availability</button></a>
+<a href="/guide/{{ guide.id }}/bookings/"><button class="body_op_button_class">Bookings</button></a>
+{% endif %}
 {% endblock %}

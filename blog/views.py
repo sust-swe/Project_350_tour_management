@@ -137,6 +137,11 @@ class PostDetail(HitCountDetailView):
     def get_context_data(self, **kwargs):
         # post = get_object_or_404(Post, pk=pk)
         context = super(PostDetail, self).get_context_data(**kwargs)
+        context.update({
+            'popular_posts': Post.objects.order_by('-hit_count_generic__hits')[:3],
+        }
+
+        )
         # context = {
         #     'post': post,
         #     # 'count_hit': count_hit

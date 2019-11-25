@@ -5,21 +5,18 @@
 <title>csa</title>
 {% endblock content_1 %}
 
+{% block header %}
+    {{ space.name }}
+{% endblock %}
 
 {% block content_2 %}
 <form method="POST">
     {% csrf_token %}
-    <table>
+    <table class="form_table">
         {{form.as_table}}
-        <tr>
-            <td>
-            <td><input type="submit" value="Submit"></td>
-            </td>
-        </tr>
-
     </table>
+<button class="body_button_class" type="submit">Submit</button>
 </form>
-
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
     load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
     load_from_day="/search/ajax/load_from_day/">
@@ -101,7 +98,9 @@
                 success: function (redata) { $("#id_to_day").html(redata); }
             });
         });
-
-
     </script>
 {% endblock content_2 %}
+
+{% block body_op %}
+    <a href="/residence/space/{{ space.id }}/"><button class="body_op_button_class">{{ space.name }}</button></a>
+{% endblock %}

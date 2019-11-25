@@ -3,7 +3,8 @@ from .models import Restaurant, Food
 
 
 class RestaurantForm(forms.ModelForm):
-    description = forms.CharField(max_length=255, widget=forms.TextInput(), required=False)
+    description = forms.CharField(
+        max_length=255, widget=forms.TextInput(), required=False)
 
     class Meta:
         model = Restaurant
@@ -18,3 +19,6 @@ class FoodForm(forms.ModelForm):
     class Meta:
         model = Food
         exclude = ['restaurant']
+        labels = {
+            "name": "Item Name", "img": "Photo", "person": "For person", "available_at_time": "Available at"
+        }

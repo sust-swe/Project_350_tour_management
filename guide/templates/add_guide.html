@@ -4,12 +4,32 @@
     <title>Add Guide</title>
 {% endblock %}
 
+{% block header %}
+    Add Guide
+{% endblock %}
+
 {% block content_2 %}
     <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <table>
+    <table class="form_table">
         {{ form.as_table }}
-        <tr><td></td><td> <input type="submit" value="Add">  </td></tr>
     </table>
+    <button class="body_button_class" type="submit">Add</button>
     </form>
+
+    <script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
+    $("#id_country").change(function () {
+        $.ajax({
+            url: $("#load_city_ajax").attr("load_city"),
+            data: { 'country': $("#id_country").val() },
+            success: function (redata) {
+                $("#id_city").html(redata);
+            }
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block body_op %}
+    <a href="/guide/my_guide/"><button class="body_op_button_class">My Guides</button></a>
 {% endblock %}

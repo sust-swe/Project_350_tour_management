@@ -5,16 +5,22 @@
 <title>Create Update Space Type</title>
 {% endblock content_1 %}
 
+{% block header %}
+    Space Type
+{% endblock %}
 
 {% block content_2 %}
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <table>
+    <table class="form_table">
         {{form.as_table}}
-        <tr>
-            <td></td>
-            <td><input type="submit" value="Save"></td>
-        </tr>
     </table>
+<button class="body_button_class" type="submit">Create</button>
 </form>
 {% endblock content_2 %}
+
+{% block body_op %}
+<a href="/residence/{{ residence.id }}/">
+    <button class="body_op_button_class">{{ residence.name }}</button>
+</a>
+{% endblock %}
