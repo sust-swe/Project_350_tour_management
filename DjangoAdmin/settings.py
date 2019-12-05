@@ -44,10 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'search.apps.SearchConfig',
-    'imagekit',
     'ckeditor',
     'ckeditor_uploader',
-    'hitcount'
+    'hitcount',
+
+    'crispy_forms'
 ]
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 
@@ -142,6 +143,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
 # pip install Pillow

@@ -60,6 +60,12 @@
 
 /* ################################       Body             ################################################################# */
 /*     */
+.posttitletext {
+    height: 500px;
+    width: 100px;
+
+}
+
 .body_class{
     background-image: url("/static/photo/bi12.jpg");
     text-indent: -9999px;

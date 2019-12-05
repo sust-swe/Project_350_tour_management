@@ -4,52 +4,279 @@
 <html lang="en">
 
 <head>
+    <title>TravelX - Make Your Travel Easier!</title>
     <script type="text/javascript" src="/static/js-shoaib/jquery-3.4.1.js/"></script>
     <link rel="stylesheet" type="text/css" href="/static/CSS/mystyle.css/">
-    {% block content_1 %} <title>base</title> {% endblock content_1 %}
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Ubuntu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/CSS/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <script src="/static/js-shoaib/bootstrap.min.js"></script>
+    {% block header %}
+
+    {% endblock %}
+
+    {% block content_1 %} <title>TravelX - Make Your Travel Easier!</title> {% endblock content_1 %}
 </head>
 
 <body>
 
-    <div class="navigation_class" align="center">
-        <a href="/search/restaurant/"><button class="navigation_button_class">Restaurant</button></a>
-        <a href="/search/space/"><button class="navigation_button_class">Residence</button></a>
-        <a href="/search/guide/"><button class="navigation_button_class">Guide</button></a>
-        <a href="/search/blog/"><button class="navigation_button_class">Blog</button></a>
-    </div>
+    <section id="title">
 
-    <div class="header_class">
-        {% block header %}
+        <nav class="navbar navbar-expand-lg">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span> <i class="fas fa-list"></i></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <h8 style="color: khaki;">TravelX</h8>
+            </a> &nbsp; &nbsp; &nbsp; &nbsp;
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search/space/">
+                            <p1>Residence</p1>
+                        </a>
 
-        {% endblock %}
-    </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search/restaurant/">
+                            <p1>Restaurants</p1>
+                        </a>
 
-    <div align="center" class="body_class">
-        {% block content_2 %}
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search/guide/">
+                            <p1>Guide</p1>
+                        </a>
 
-        {% endblock content_2 %}
-        <br><br>
-    </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blog/bloglist/">
+                            <p1>Blog</p1>
+                        </a>
 
-    <div class="body_options">
-        {% block body_op %}
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <!-- <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <p1>Login</p1>
+                                </a>
+        
+                            </li> -->
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle b" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-        {% endblock %}
-    </div>
+                            <button type="button" class="btn btn-outline-success btn-lg">
+                                <p2>Profile</p2>
+                            </button>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/profile/">View Profile</a>
+                            <a class="dropdown-item" href="/home/">My Feeds</a>
+                            <a class="dropdown-item" href="/restaurant/gotocart/">My Carts</a>
+                            <a class="dropdown-item" href="#">My Orders</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/accounts/logout/" style="color: crimson;">Sign Out</a>
+                        </div>
+                    </li>
+                    {% else %}
 
-    <div class="footer_class" align="center">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/accounts/login/">
+                            <button type="button" class="btn btn-outline-success btn-lg">
+                                <p2>Login</p2>
+                            </button>
+
+                        </a>
+
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <button type="button" class="btn btn-outline-success btn-lg">
+                                <p2>Become a Host</p2>
+                            </button>
+
+                        </a>
+
+                    </li>
+
+                </ul>
+            </div>
+
+        </nav>
+        <br> <br> <br>
+        <div class="container">
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="5000"
+                datta-pause="hover">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <h1 style="text-align: center;">Book Hotels, Restaurants and Guides!</h1>
+                        <br><br>
+                        <p style="text-align: center; font-size: large;">Search your favourite Hotels, Restaurants,
+                            Guides by
+                            location and Book them easily!</p>
+                        <br><br><br>
+                        <!-- <img class="d-block w-100" src="..." alt="First slide"> -->
+                    </div>
+                    <div class="carousel-item">
+                        <h1 style="text-align: center;">Become a Host!</h1>
+                        <br><br>
+                        <p style="text-align: center; font-size: large;">Be our partner and add your own Residence,
+                            Hotels, or
+                            Guides!</p>
+                        <br><br><br>
+                        <!-- <img class="d-block w-100" src="..." alt="Second slide"> -->
+                    </div>
+                    <div class="carousel-item">
+                        <h1 style="text-align: center;">See Travel stories and write your own!</h1>
+                        <br><br>
+                        <p style="text-align: center; font-size: large;">You can read different travel stories of
+                            different
+                            people and you can also write your own!</p>
+                        <br><br><br>
+                        <!-- <img class="d-block w-100" src="..." alt="Third slide"> -->
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+
+        </div>
+
+
+
+    </section>
+
+
+
+
+
+
+    {% block content_2 %}
+
+    {% endblock content_2 %}
+    <br><br>
+
+    {% block body_op %}
+
+    {% endblock %}
+
+    <footer class="page-footer font-small mdb-color lighten-3 pt-4" style="background: #FFFF;">
         {% block footer %}
         {% endblock %}
-        {% if request.user.is_authenticated %}
-        <a href="/profile/"><button class="footer_button_class">Profile</button></a>
-        <a href="/home/"><button class="footer_button_class">Home</button></a>
-        <a href="/accounts/logout/"><button class="footer_button_class">Logout</button></a>
-        <a href="/restaurant/gotocart/"><button class="footer_button_class">Food Cart</button></a>
-        {% else %}
-        <a href="/accounts/register/"><button class="footer_button_class">Register</button></a>
-        <a href="/accounts/login/"><button class="footer_button_class">Login</button></a>
-        {% endif %}
-    </div>
+
+        <!-- Footer Links -->
+        <div class="container text-center text-md-left">
+
+            <!-- Grid row -->
+            <div class="row">
+
+                <!-- Grid column -->
+                <div class="col-md-4 col-lg-3 mr-auto my-md-4 my-0 mt-4 mb-1">
+
+                    <!-- Content -->
+                    <h5 class="font-weight-bold text-uppercase mb-4">About TravelX</h5>
+                    <p>TravelX is a Tour Guide App which helps you to nake your tour Easier!</p>
+                    <p>
+                        You can Book Hotels, Order your favourite food from your favourite Restaurants, Book Trusted
+                        Guides to make travel Easier.
+                        You can also Be a Host. Our Blog Feature is another thing for your Comfort!
+                    </p>
+
+                </div>
+                <!-- Grid column -->
+
+                <hr class="clearfix w-100 d-md-none">
+
+                <!-- Grid column -->
+                <!-- Grid column -->
+
+                <hr class="clearfix w-100 d-md-none">
+
+                <!-- Grid column -->
+                <div class="col-md-4 col-lg-3 mx-auto my-md-4 my-0 mt-4 mb-1">
+
+                    <!-- Contact details -->
+                    <h5 class="font-weight-bold text-uppercase mb-4">Address</h5>
+
+                    <ul class="list-unstyled">
+                        <li>
+                            <p>
+                                <i class="fas fa-home mr-3"></i> Lake City, Neharipara, Sylhet</p>
+                        </li>
+                        <li>
+                            <p>
+                                <i class="fas fa-envelope mr-3"></i> travelx@gmail.com</p>
+                        </li>
+                        <li>
+                            <p>
+                                <i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
+                        </li>
+                    </ul>
+
+                </div>
+                <!-- Grid column -->
+
+                <hr class="clearfix w-100 d-md-none">
+
+                <!-- Grid column -->
+                <div class="col-md-4 col-lg-2 text-center mx-auto my-4">
+
+                    <!-- Social buttons -->
+                    <h5 class="font-weight-bold text-uppercase mb-4">Follow Us</h5>
+
+                    <!-- Facebook -->
+                    <a type="button" class="btn-floating btn-fb">
+                        <i class="fab fa-facebook-f"></i> &nbsp;
+                    </a>
+                    <!-- Twitter -->
+                    <a type="button" class="btn-floating btn-tw">
+                        <i class="fab fa-twitter"></i> &nbsp;
+                    </a>
+                    <!-- Google +-->
+                    <a type="button" class="btn-floating btn-gplus">
+                        <i class="fab fa-google-plus-g"></i> &nbsp;
+                    </a>
+                    <!-- Dribbble -->
+                    <a type="button" class="btn-floating btn-dribbble">
+                        <i class="fab fa-dribbble"></i>
+                    </a>
+
+                </div>
+                <!-- Grid column -->
+
+            </div>
+            <!-- Grid row -->
+
+        </div>
+        <!-- Footer Links -->
+
+        <!-- Copyright -->
+        <!-- <div class="footer-copyright text-center py-3">© 2018 Copyright:
+                    <a href="https://mdbootstrap.com/education/bootstrap/"> MDBootstrap.com</a>
+                </div> -->
+        <!-- Copyright -->
+
+    </footer>
+
 </body>
 
 </html>

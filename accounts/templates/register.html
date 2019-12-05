@@ -1,19 +1,111 @@
 {% extends 'base.html' %}
-{% block content_1 %}
-<title>Registration</title>
-{% endblock %}
+{% load crispy_forms_tags %}
 
 {% block header %}
-    Create New Account
+<link rel="icon" type="image/png" href="/static/photo/icons/favicon.ico" />
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="/static/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="/static/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="/static/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="/static/vendor/animate/animate.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="/static/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="/static/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="/static/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="/static/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="/static/CSS/util.css">
+<link rel="stylesheet" type="text/css" href="/static/CSS/main.css">
+
 {% endblock %}
 
+{% block content_1 %} <title>Login</title> {% endblock %}
+
 {% block content_2 %}
-<form method="post">
-    {% csrf_token %}
-    <table class="form_table">
-        {{ form1.as_table }}
-        {{ form2.as_table }}
-    </table>
-    <button class="body_button_class" type="submit">Register</button>
-</form>
+<script src="/static/js-shoaib/jquery-3.4.1.js"></script>
+<script src="/static/js-shoaib/bootstrap.min.js"></script>
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-form-title" style="background-image: url(/static/photo/bgme.jpg);">
+                <span class="login100-form-title-1">
+                    Sign Up
+                </span>
+            </div>
+
+            <form class="login100-form validate-form" method="POST">
+
+                {% csrf_token %}
+                <!-- <table> -->
+                {{ form1|crispy }}
+                {{ form2|crispy }}
+                <br> <br>
+                <!-- <div class="wrap-input100 validate-input m-b-26" data-validate="Username is required"> -->
+                <!-- {% csrf_token %} -->
+                <!-- <table> -->
+                <!-- {{ form.as_p }} -->
+                <!-- <span class="focus-input100"></span> -->
+                <!-- </div> -->
+
+                <!-- <div class="wrap-input100 validate-input m-b-18" data-validate="Password is required">
+                    <span class="label-input100">Password</span>
+                    <input class="input100" type="password" name="pass" placeholder="Enter password">
+                    <span class="focus-input100"></span>
+                </div> -->
+
+                <div class="flex-sb-m w-full p-b-30">
+                    <div class="contact100-form-checkbox">
+                        <br>
+                        <input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
+                        <label class="label-checkbox100" for="ckb1">
+
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div> <br>
+
+                    </div>
+                </div>
+
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn">
+                        Register
+                    </button>
+
+                </div>
+                <br> <br>
+                <div style="margin-top: 30px;">
+                    Already Have an Account? &nbsp; <a href="/accounts/login/" style="font-size: 1.5rem;">Login!</a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!--===============================================================================================-->
+<script src="/static/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+<script src="/static/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+<script src="/static/vendor/bootstrap/js/popper.js"></script>
+<script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+<script src="/static/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+<script src="/static/vendor/daterangepicker/moment.min.js"></script>
+<script src="/static/vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+<script src="/static/vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+<script src="/static/js-shoaib/main.js"></script>
+
 {% endblock %}

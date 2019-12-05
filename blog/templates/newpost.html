@@ -15,22 +15,31 @@
 
 <body>
     <div class="container">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.media }}
-            {{ form.as_p }}
-            <!-- {% csrf_token %} -->
-            <input type="submit" onclick="success();" value="Create Post">
-            <script type="text/javascript">
-                function success() {
-                    swal("Successful!", "Your Post Created!", "success")
-                }
-            </script>
-            <!-- {{ form.as_p }} -->
-            <!-- <button class="btn btn-success">Signin</button> -->
-        </form>
+        <div class="card justify-content-center">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{form.media}}
+                    {{ form.as_p }}
+                    <br>
+                    <!-- {% csrf_token %} -->
+                    <input type="submit" class="btn btn-primary" onclick="success();" value="Create Post">
+                    <script type="text/javascript">
+                        function success() {
+                            swal("Successful!", "Your Post Created!", "success")
+                        }
+                    </script>
+                    <!-- {{ form.as_p }} -->
+                    <!-- <button class="btn btn-success">Signin</button> -->
+                </form>
+
+
+
+            </div>
+        </div>
 
     </div>
+
 
     <!-- <script>var editor = new MediumEditor('.editable');</script> -->
 </body>

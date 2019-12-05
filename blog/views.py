@@ -17,6 +17,7 @@ from django.views.generic import (
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 # Create your views here.
 from hitcount.views import HitCountDetailView
+from django.core.paginator import Paginator
 
 
 def blog(request):
@@ -104,7 +105,9 @@ class DeletePost(views.View):
 
 def PostList(request):
     postlist = Post.objects.filter(status=1).order_by('-created_on')
-    postlistd = Post.objects.filter(status=1).order_by('-created_on')
+    paginator = Paginator(postlist, 6)
+    # postlistd = Post.objects.filter(status=1).order_by('-created_on')
+    page = request.GET.get('page')
 
     if request.method == 'POST':
         query = request.POST['q']
@@ -112,12 +115,11 @@ def PostList(request):
         if query:
             postlist = Post.objects.filter(
                 status=1).filter(title__icontains=query)
-            postlistd = Post.objects.filter(
-                status=1).filter(content__icontains=query)
+
+    postlist = paginator.get_page(page)
 
     context = {
         'post_lists': postlist,
-        'post_listd': postlistd
 
     }
     return render(request, 'blogs.html', context)

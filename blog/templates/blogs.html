@@ -54,8 +54,6 @@
     <div class="container">
         <div class="row">
             <!-- Blog Entries Column -->
-            <script>
-            </script>
             <div class=" justify-content-center col-md-12 mt-3 left">
                 {% for post in post_lists %}
                 <div class="card mb-4">
@@ -85,7 +83,68 @@
                 {% endfor %}
             </div>
         </div>
+        <!-- Pagination -->
+
+        <div class="mt-50">
+            {% if post_lists.has_other_pages %}
+            <ul class="pagination justify-content-center">
+                <!-- Previous Arrow -->
+                {% if post_lists.has_previous %}
+                <li class="page-item">
+                    <a href="?page={{post_lists.previous_page_number}}" class="page-link"><i
+                            class="fa fa-angle-left"></i></a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link"><i class="fa fa-angle-left"></i></a>
+                </li>
+                {% endif %}
+                <!-- All the Page Number -->
+                {% for i in post_lists.paginator.page_range %}
+                {% if post_lists.number == i %}
+                <li class="page-item active">
+                    <a class="page-link">{{i}}</a>
+                </li>
+                {% elif i > post_lists.number|add:'-3' and i < post_lists.number|add:'3' %}
+                <li class="page-item">
+                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                </li>
+                {% elif i == 1 %}
+                <li class="page-item">
+                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                </li>
+                <li class="page-item disabled">
+                    <a href="" class="page-link">...</a>
+                </li>
+                {% elif i == post_lists.paginator.num_pages %}
+                <li class="page-item disabled">
+                    <a href="" class="page-link">...</a>
+                </li>
+                <li class="page-item">
+                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                <!-- Next Arrow -->
+                {% if post_lists.has_next %}
+                <li class="page-item">
+                    <a href="?page={{post_lists.next_page_number}}" class="page-link"><i
+                            class="fa fa-angle-right"></i></a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link"><i class="fa fa-angle-right"></i></a>
+                </li>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </div>
+
+
+
     </div>
+
     {% endblock %}
 
 </body>
