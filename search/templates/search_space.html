@@ -1,67 +1,112 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 
 {% block content_1 %}
-<title>SearchSpace</title>
-<style>
-    .body_table {
-        background-color: #9a9ff1;
-        color: black;
-        overflow-y: auto;
-        width: 800px;
-    }
-
-    .body_header {
-        background-color: #37375b;
-        color: #e6d8dd;
-        font-size: 35px;
-        overflow: hidden;
-        width: 800px;
-    }
-</style>
+<title></title>
 {% endblock content_1 %}
 
 {% block header %}
-Search For Residence
 {% endblock %}
 
 {% block content_2 %}
 
-<form method="POST">
-    {% csrf_token %}
-    <table class="form_table">
-        {{form.as_table}}
-    </table>
-    <button type="submit" class="body_button_class">Search</button>
-</form>
-<table class="body_table">
-    {% if residence_qs.exists %}
-    <tr>
-        <th colspan="3">Results</th>
-    </tr>
-    <tr>
-        <th>Residence</th>
-        <th>Space Type</th>
-        <th>Details</th>
-    </tr>
-    {% for res in residence_qs %}
-    {% for ri,pk,name,count,rent in space_types_ri_p_n_c_r %}
-    {% if ri == res.id %}
-    <tr>
-        <td><a href="/residence/{{res.id}}/"><button class="body_table_data_button">{{res.name}}</button></a></td>
-        <td><a href="/residence/space_type/{{pk}}/"><button class="body_table_data_button">{{name}}</button></a></td>
-        <td>{{count}} Space Available at ${{rent}} per space</td>
-        {% if request.user.is_authenticated %}
-        <td><button class="book body_table_data_button" space_type="{{pk}}" id="space_type_id_{{pk}}">Book</button></td>
-        {% endif %}
-    </tr>
-    {% endif %}
-    {% endfor %}
-    {% endfor %}
-    {% else %}
-    <th colspan="3">No Results Found</th>
-    {% endif %}
-</table>
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Search
+                    Restaurants</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <!-- <table class="form_table"> -->
+                        {{ form|crispy }}
+                        <!-- </table> -->
+                        <br>
+                        <div class="text-right">
+                            <button type="submit" style="font-family: Ubuntu;"
+                                class="btn btn-dark btn-lg">Search</button>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            {% if restaurants.exists %}
+            <div class="card searchbox">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Results</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <table>
+                    <tr>
+                        <th><button class="btn btn-dark">Residence </button></th>
+                        <th><button class="btn btn-dark">Space Type </button></th>
+                        <th><button class="btn btn-dark">Details </button></th>
+                    </tr>
+                    {% for res in residence_qs %}
+                    {% for ri,pk,name,count,rent in space_types_ri_p_n_c_r %}
+                    {% if ri == res.id %}
+                    <tr>
+                        <td><a href="/residence/{{res.id}}/"><button
+                                    class="body_table_data_button">{{res.name}}</button></a></td>
+                        <td><a href="/residence/space_type/{{pk}}/"><button
+                                    class="body_table_data_button">{{name}}</button></a></td>
+                        <td>{{count}} Space Available at ${{rent}} per space</td>
+                        {% if request.user.is_authenticated %}
+                        <td><button class="btn btn-dark" space_type="{{pk}}" id="space_type_id_{{pk}}">Book</button>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                    {% else %}
+                    <div class="card-body">
+                        <div class="text-center">
+                            <button class="btn btn-dark">No Hotels/Spaces Found!</button>
+
+                        </div>
+
+                    </div>
+                    {% endif %}
+                </table>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
 
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
     load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"

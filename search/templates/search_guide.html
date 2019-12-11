@@ -1,41 +1,102 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content_1 %}
-<title>search guide</title>
-{% endblock %}
+<title></title>
+{% endblock content_1 %}
 
 {% block header %}
-Search Guide
 {% endblock %}
 
 {% block content_2 %}
-<form method="post">
-    {% csrf_token %}
-    <table class="form_table">
-        {{ form.as_table }}
-    </table>
-    <button type="submit" class="body_button_class">Search</button>
-</form>
-<table class="body_table">
-    {% if avails.exists %}
-    <tr>
-        <th colspan="2">Results</th>
-    </tr>
-    {% for avail in avails %}
-    <tr>
-        <td><a href="/guide/{{avail.guide.id}}/"><button
-                    class="body_table_data_button">{{avail.guide.name}}</button></a></td>
-        {% if request.user.is_authenticated %}
-        <td><button class="book body_table_data_button" guide="{{avail.guide.id}}">Book</button></td>
-        {%endif%}
-    </tr>
-    {% endfor %}
-    {% else %}
-    <tr>
-        <th colspan="2">No Results Found</th>
-    </tr>
-    {% endif %}
-</table>
+
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Search
+                    Guide</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <!-- <table class="form_table"> -->
+                        {{ form|crispy }}
+                        <!-- </table> -->
+                        <br>
+                        <div class="text-right">
+                            <button type="submit" style="font-family: Ubuntu;"
+                                class="btn btn-dark btn-lg">Search</button>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
+
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+
+            {% if avails.exists %}
+            <div class="card searchbox">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Results</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+
+                <table>
+                    {% for avail in avails %}
+                    <tr>
+                        <td><a href="/guide/{{avail.guide.id}}/"><button
+                                    class="btn btn-light">{{avail.guide.name}}</button></a></td>
+                        {% if request.user.is_authenticated %}
+                        <td><button class="btn btn-dark" guide="{{avail.guide.id}}">Book</button></td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <div class="card-body">
+                        <div class="text-center">
+                            <button class="btn btn-dark">No Guides Found!</button>
+
+                        </div>
+
+                    </div>
+                    {% endif %}
+                </table>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
 
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
     load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
