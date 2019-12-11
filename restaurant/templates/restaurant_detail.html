@@ -1,51 +1,114 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-<title>Restaurant Detail</title>
 {% endblock %}
 
 {% block header %}
-<span>{{ restaurant.name }}</span>
+
 {% endblock %}
 
 {% block content_2 %}
 
-<table class="body_table">
-    <tr>
-        <td>
-            {% if restaurant.img %}
-            <img src="{{ restaurant.img.url }}" class="image_ste">
-            {% endif %}
-        </td>
-    </tr>
-</table>
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
 
-<table class="body_table">
-    <tr>
-        <td>City</td>
-        <td>{{ restaurant.city }}</td>
-    </tr>
-    <tr>
-        <td>Address</td>
-        <td>{{ restaurant.address }} </td>
-    </tr>
-    <tr>
-        <td>Owner</td>
-        <td>
-            <a href="/accounts/profile/{{ restaurant.user_detail.user.id }}"><button class="body_table_data_button">
-                    {{restaurant.user_detail.user.username}}</button></a>
-        </td>
-    </tr>
-</table>
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                {% if restaurant.img %}
+                <img src="{{ restaurant.img.url }}" class="card-img-top thumbnail">
+                {% else %}
+
+                <img src="/static/photo/res_img.jpg" alt="..." class="card-img-top thumbnail">
+                {% endif %}
+
+                <div class="card-body">
+                    <!-- <div class="row"> -->
+                    <!-- <div class="col"> -->
 
 
-{% endblock %}
+                    <!-- </div> -->
+                    <!-- <div class="col" style="margin-left: 20px;"> -->
+                    <h1 style="font-family: Ubuntu;">{{ restaurant.name }}</h1>
+                    <p><i class="fas fa-map-marker-alt" style="color: gray; font-size: large;">&nbsp;
+                            {{ restaurant.city }}, {{ restaurant.country }}.
+                        </i></p>
+                    <br>
+                    <div style="color:#383c3a;">{{ restaurant.description }} </div>
+                    <br>
+                    <ul class="list-unstyled">
+                        <li>
+                            <p>
+                                <i class="fas fa-phone mr-3"></i> Phone No :&nbsp; {{ restaurant.mobile }}</p>
+                        </li>
+                        <li>
+                            <p>
+                                <i class="fas fa-user mr-3"></i> Owned By :&nbsp; <a
+                                    href="/accounts/profile/{{ restaurant.user_detail.user.id }}">
+                                    {{restaurant.user_detail.user.first_name}}&nbsp;{{restaurant.user_detail.user.last_name}}</a>
+                            </p>
+                        </li>
+                    </ul>
+                    {% endblock %}
+                    {% block body_op %}
+                    <br>
+                    <div class="row">
+                        <div class="col">
 
-{% block body_op %}
-<a href="menu/"><button class="body_op_button_class">Menu</button></a>
-{% if request.user == restaurant.user_detail.user %}
-<a href="update/"><button class="body_op_button_class">Update</button></a>
-<a href="delete/"><button class="body_op_button_class">Delete</button></a>
-<a href="orders/"><button class="body_op_button_class">Orders</button></a>
-{% endif %}
+
+
+                            <a href="menu/"> <button type="button"
+                                    class="btn btn-info btn-lg btn-block">Menu</button></a>
+
+
+                            <!-- <a href="delete/"><button class="body_op_button_class">Delete</button></a> -->
+                            <!-- <a href="orders/"><button class="body_op_button_class">Orders</button></a> -->
+
+
+
+
+                        </div>
+                        {% if request.user == restaurant.user_detail.user %}
+                        <div class="col">
+                            <a href="update/"> <button type="button"
+                                    class="btn btn-dark btn-lg btn-block">Update</button></a>
+
+                        </div>
+                        <div class="col">
+                            <a href="delete/"> <button type="button"
+                                    class="btn btn-danger btn-lg btn-block">Delete</button></a>
+                            <!-- <button type="button" class="btn btn-danger btn-lg btn-block">Delete</button> -->
+
+                        </div>
+                        <div class="col">
+                            <a href="orders/"> <button type="button"
+                                    class="btn btn-dark btn-lg btn-block">Orders</button></a>
+
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+<div class="col-lg-2">
+
+</div>
+
+
+</div>
+
+</div>
+<br> <br>
 {% endblock %}

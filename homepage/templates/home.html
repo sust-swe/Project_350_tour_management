@@ -1,50 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-<title>my home page</title>
-<style>
-    .home_comp_class {
-        background-color: #898989;
-        color: black;
-        width: 100%;
-        height: 20%;
-        font-size: 35px;
-        vertical-align: center;
-        border-style: none;
-    }
-
-    .home_comp_class:hover {
-        background-color: #474747;
-        color: #b0b0b0;
-        width: 100%;
-        height: 20%;
-        font-size: 35px;
-        vertical-align: center;
-        border-style: none;
-    }
-</style>
-{% endblock %}
+<title></title>
+{% endblock content_1 %}
 
 {% block header %}
-HOME
 {% endblock %}
 
 {% block content_2 %}
-<table>
-    <tr>
-        <td><a href="/restaurant/my_restaurant/"><button class="body_button_class">My Restaurant</button></a></td>
-    </tr>
-    <tr>
-        <td><a href="/residence/my_residence/"><button class="body_button_class">My Residence</button></a></td>
-    </tr>
-    <tr>
-        <td><a href="/guide/my_guide/"><button class="body_button_class">My Guide</button></a></td>
-    </tr>
-    <tr>
-        <td><a href="/blog/my_blog/"><button class="body_button_class">My Blog</button></a></td>
-    </tr>
-    <tr>
-        <td><a href="/my_orders/"><button class="body_button_class">My Orders</button></a></td>
-    </tr>
-</table>
+
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">My Feeds</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+                    <br>
+                    <a href="/restaurant/my_restaurant/"><button type="button"
+                            class="btn btn-outline-dark btn-lg btn-block" style="font-family: Ubuntu;">My
+                            Restaurants</button></a> <br>
+                    <a href="/residence/my_residence/"><button type="button"
+                            class="btn btn-outline-dark btn-lg btn-block" style="font-family: Ubuntu;">My
+                            Spaces</button></a> <br>
+                    <a href="/guide/my_guide/"><button type="button" class="btn btn-outline-dark btn-lg btn-block"
+                            style="font-family: Ubuntu;">My
+                            Guides</button></a> <br>
+                    <a href="/my_orders/"><button type="button" class="btn btn-outline-dark btn-lg btn-block"
+                            style="font-family: Ubuntu;">My
+                            Orders</button></a> <br>
+                    <a href="#"><button type="button" class="btn btn-outline-dark btn-lg btn-block"
+                            style="font-family: Ubuntu;">My
+                            Blogs</button></a> <br>
+
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
 {% endblock %}
