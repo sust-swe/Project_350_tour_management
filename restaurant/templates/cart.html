@@ -1,47 +1,114 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-<title>Cart</title>
+<title></title>
 {% endblock content_1 %}
 
 {% block header %}
-Food Cart
 {% endblock %}
 
 {% block content_2 %}
-<table class="body_table">
-    {% if cart_detail.exists %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
 
-    {% for item in cart_detail %}
-    <tr>
-        <td> <a href="/restaurant/food/{{item.food.id}}/">
-                <button class="body_table_data_button"> {{ item.food.name }}</button>
-            </a></td>
-        <td>{{ item.quantity }} pcs</td>
-        <td>$ {{ item.food.price }} X {{ item.quantity }}</td>
-        <td><button class="plus body_table_data_button" myval="{{ item.food.id }}">+</button></td>
-        <td><button class="minus body_table_data_button" myval="{{ item.food.id }}">-</button></td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td>Bill</td>
-        <td></td>
-        <td>{{ cart.bill }}</td>
-    </tr>
-    <tr>
-        <td colspan="5">
-            <a href="/restaurant/place_order/">
-                <button class="body_table_data_button">Place Order</button>
-            </a>
-        </td>
-    </tr>
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">Food Cart</h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        <table class="table">
+                            <thead>
+                                <tr>
 
-    {% else %}
-    <tr>
-        <th>Empty</th>
-    </tr>
-    {% endif %}
-</table>
+                                    <th scope="col">Item</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if cart_detail.exists %}
+
+                                {% for item in cart_detail %}
+                                <tr>
+                                    <td>
+                                        <a href="/restaurant/food/{{ order_detail.food.id }}/"
+                                            style="font-family: Ubuntu; font-size: large; margin-top: 5px; color:#2a2c2b">
+                                            {{ item.food.name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger"
+                                            style="height: min-content;">{{ item.quantity }}</button>
+
+                                    </td>
+                                    <td>
+                                        {{ item.quantity }} X {{ item.food.price }} Taka &nbsp;<button
+                                            class="plus btn btn-danger" myval="{{ item.food.id }}"><i
+                                                class="fas fa-plus"></i></button>
+                                        <button class="minus btn btn-info" myval="{{ item.food.id }}"><i
+                                                class="fas fa-minus"></i></button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td><b>Total Bill</b> </td>
+                                    <td></td>
+                                    <td><b>{{ cart.bill }} Taka</b> </td>
+                                </tr>
+                            </tbody>
+                        </table> <br>
+                        <!-- <div class="container"> -->
+                        <div class="row">
+                            <div class="col">
+                                <a href="/restaurant/place_order/">
+                                    <button class="btn btn-info btn-lg btn-block">Place Order</button>
+                                </a> <br>
+
+                            </div>
+
+                        </div>
+                        {% else %}
+                        <h1 style="font-family: Ubuntu;">Cart is Empty!</h1>
+                        <br>
+                        {% endif %}
+                        {% if cart.restaurant.name %}
+                        <a href="/restaurant/{{ cart.restaurant.id }}/"><button
+                                class="btn btn-secondary btn-lg btn-block">{{ cart.restaurant.name }}</button></a>
+                        {% endif %}
+
+
+                        <!-- </div> -->
+
+
+
+
+
+
+                        <br>
+
+
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
+
 
 <script>
     $(".plus").click(function () {
@@ -64,12 +131,4 @@ Food Cart
         });
     });
 </script>
-
-{% endblock content_2 %}
-
-{% block body_op %}
-{% if cart.restaurant.name %}
-<a href="/restaurant/{{ cart.restaurant.id }}/"><button
-        class="body_op_button_class">{{ cart.restaurant.name }}</button></a>
-{% endif %}
 {% endblock %}

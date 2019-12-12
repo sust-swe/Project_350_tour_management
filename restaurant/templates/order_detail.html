@@ -1,9 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content_1 %}
+<title></title>
+{% endblock content_1 %}
+
+{% block header %}
+{% endblock %}
+
+{% block content_2 %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">Order Detail</h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        <table class="table">
+                            <thead>
+                                <tr>
+
+                                    <th scope="col">Item</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order_detail in order_details %}
+                                <tr>
+                                    <td>
+                                        <a href="/restaurant/food/{{ order_detail.food.id }}/"
+                                            style="font-family: Ubuntu; font-size: large; margin-top: 5px;">
+                                            {{ order_detail.food.name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger">{{ order_detail.quantity }}</button>
+
+                                    </td>
+                                    <td>
+                                        {{ order_detail.quantity }} X {{ order_detail.food.price }} Taka
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td><b>Total Bill</b> </td>
+                                    <td></td>
+                                    <td> {{ order.bill }} Taka</td>
+                                </tr>
+                            </tbody>
+                        </table> <br>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    Ordered From
+
+                                </div>
+                                <div class="col-lg-8">
+                                    <a href="/restaurant/{{ order.restaurant.id }}/">
+                                        <button
+                                            class="btn btn-info btn-lg btn-block">{{ order.restaurant.name }}</button>
+                                    </a>
+
+                                </div>
+
+                            </div>
+                            <br>
+
+                        </div>
+
+
+
+                        <br><br>
+
+
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
+{% endblock %}
+
+
 {% extends "base.html" %}
 
 {% block content_1 %}<title> Order Detail </title>{% endblock %}
 
 {% block content_2 %}
-    <table>
+<table>
     <tr>
         <th> Item </th>
         <th> Quantity </th>
@@ -11,11 +111,11 @@
     </tr>
 
     {% for order_detail in order_details %}
-<tr>
-<td>{{ order_detail.food.name }}</td>
-<td>{{ order_detail.quantity }}</td>
-<td>{{ order_detail.quantity }} X {{ order_detail.food.price }}</td>
-</tr>
+    <tr>
+        <td>{{ order_detail.food.name }}</td>
+        <td>{{ order_detail.quantity }}</td>
+        <td>{{ order_detail.quantity }} X {{ order_detail.food.price }}</td>
+    </tr>
     {% endfor %}
     <tr>
         <td></td>
@@ -24,5 +124,5 @@
 
     </tr>
 </table>
-    <p> From <a href="/restaurant/{{ order.restaurant.id }}/"><button>{{ order.restaurant.name }}</button></a></p>
+<p> From <a href="/restaurant/{{ order.restaurant.id }}/"><button>{{ order.restaurant.name }}</button></a></p>
 {% endblock %}

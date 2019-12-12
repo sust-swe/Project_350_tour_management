@@ -111,6 +111,57 @@
             </div>
 
         </nav>
+        {% block content %}
+        <br> <br> <br>
+        <div class="container">
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="5000"
+                datta-pause="hover">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <h1 style="text-align: center;">Book Hotels, Restaurants and Guides!</h1>
+                        <br><br>
+                        <p style="text-align: center; font-size: large;">Search your favourite Hotels, Restaurants,
+                            Guides by
+                            location and Book them easily!</p>
+                        <br><br><br>
+                        <!-- <img class="d-block w-100" src="..." alt="First slide"> -->
+                    </div>
+                    <div class="carousel-item">
+                        <h1 style="text-align: center;">Become a Host!</h1>
+                        <br><br>
+                        <p style="text-align: center; font-size: large;">Be our partner and add your own Residence,
+                            Hotels, or
+                            Guides!</p>
+                        <br><br><br>
+                        <!-- <img class="d-block w-100" src="..." alt="Second slide"> -->
+                    </div>
+                    <div class="carousel-item">
+                        <h1 style="text-align: center;">See Travel stories and write your own!</h1>
+                        <br><br>
+                        <p style="text-align: center; font-size: large;">You can read different travel stories of
+                            different
+                            people and you can also write your own!</p>
+                        <br><br><br>
+                        <!-- <img class="d-block w-100" src="..." alt="Third slide"> -->
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+
+        </div>
+        {% endblock content %}
 
 
 
@@ -121,11 +172,10 @@
 
 
 
-
     {% block content_2 %}
 
     {% endblock content_2 %}
-
+    <br><br>
 
     {% block body_op %}
 

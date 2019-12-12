@@ -8,104 +8,108 @@
 {% endblock %}
 
 {% block content_2 %}
-<br> <br>
-<div class="container">
-    <div class="row">
-        <div class="col-lg-1">
 
-        </div>
-        <div class="col-lg-10">
-            <div class="card searchbox" style="height: max-content;">
-                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-1">
 
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            {% if user_detail.img %}
-                            <img src="{{ user_detail.img.url }}" style="width: 400px; height: 440px; margin: 6%;"
-                                alt="..." class="img-thumbnail searchbox">
-                            {% endif %}
+            </div>
+            <div class="col-lg-10">
+                <div class="card searchbox" style="height: max-content;">
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
 
-                        </div>
-                        <div class="col" style="margin-left: 20px;">
-                            <h1 style="font-family: Ubuntu;">{{ user.first_name }} {{ user.last_name }}</h1>
-                            <h5><i class="fas fa-at" style="color: gray;"> {{ user.username }}
-                                </i></h5>
-                            <br>
-                            {% if user_detail.description %}
-                            <!-- <td>Description</td> -->
-
-                            <div style="color:#383c3a;">{{ user_detail.description }} </div>
-                            {% endif %}
-                            <br>
-                            <ul class="list-unstyled">
-                                <li>
-                                    {% if user_detail.address %}
-                                    <!-- <td>Address</td> -->
-                                    <!-- <td>{{ user_detail.address }}</td> -->
-
-                                    <p>
-                                        <i class="fas fa-home mr-3"></i> {{ user_detail.address }}</p>
-                                    {% endif %}
-                                </li>
-                                <li>
-                                    <p>
-                                        <i class="fas fa-envelope mr-3"></i> {{ user.email }}</p>
-                                </li>
-                                <li>
-                                    <p>
-                                        <i class="fas fa-phone mr-3"></i> {{ user_detail.mobile }}</p>
-                                </li>
-                                <li>
-                                    {% if user_detail.city %}
-                                    <!-- <td>City</td> -->
-                                    <!-- <td>{{ user_detail.city }}</td> -->
-
-                                    <p>
-                                        <i class="fas fa-university mr-3"></i> {{ user_detail.city }}</p>
-                                    {% endif %}
-                                </li>
-                            </ul>
-                            <br>
-                            {% if request.user == user %}
-                            <div class="row">
-                                <div class="col lg-6">
-                                    <a href="/edit_profile/"><button type="button" class="btn btn-info btn-lg">&nbsp;
-                                            &nbsp; Edit
-                                            Profile
-                                            &nbsp; &nbsp;</button></a>
-
-                                </div>
-                                <div class="col lg-6">
-                                    <a href="/change_password/"> <button type="button" class="btn btn-dark btn-lg">
-                                            Change Password </button></a>
-
-
-                                </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                {% if user_detail.img %}
+                                <img src="{{ user_detail.img.url }}" style="width: 400px; height: 440px; margin: 6%;"
+                                    alt="..." class="img-thumbnail searchbox">
+                                {% endif %}
 
                             </div>
-                            {% endif %}
+                            <div class="col" style="margin-left: 20px;">
+                                <h1 style="font-family: Ubuntu;">{{ user.first_name }} {{ user.last_name }}</h1>
+                                <h5><i class="fas fa-at" style="color: gray;"> {{ user.username }}
+                                    </i></h5>
+                                <br>
+                                {% if user_detail.description %}
+                                <!-- <td>Description</td> -->
+
+                                <div style="color:#383c3a;">{{ user_detail.description }} </div>
+                                {% endif %}
+                                <br>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        {% if user_detail.address %}
+                                        <!-- <td>Address</td> -->
+                                        <!-- <td>{{ user_detail.address }}</td> -->
+
+                                        <p>
+                                            <i class="fas fa-home mr-3"></i> {{ user_detail.address }}</p>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        <p>
+                                            <i class="fas fa-envelope mr-3"></i> {{ user.email }}</p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            <i class="fas fa-phone mr-3"></i> {{ user_detail.mobile }}</p>
+                                    </li>
+                                    <li>
+                                        {% if user_detail.city %}
+                                        <!-- <td>City</td> -->
+                                        <!-- <td>{{ user_detail.city }}</td> -->
+
+                                        <p>
+                                            <i class="fas fa-university mr-3"></i> {{ user_detail.city }}</p>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                                <br>
+                                {% if request.user == user %}
+                                <div class="row">
+                                    <div class="col lg-6">
+                                        <a href="/edit_profile/"><button type="button"
+                                                class="btn btn-info btn-lg">&nbsp;
+                                                &nbsp; Edit
+                                                Profile
+                                                &nbsp; &nbsp;</button></a>
+
+                                    </div>
+                                    <div class="col lg-6">
+                                        <a href="/change_password/"> <button type="button" class="btn btn-dark btn-lg">
+                                                Change Password </button></a>
+
+
+                                    </div>
+
+                                </div>
+                                {% endif %}
 
 
 
+
+                            </div>
 
                         </div>
 
+
                     </div>
-
-
                 </div>
+
+            </div>
+            <div class="col-lg-1">
+
             </div>
 
-        </div>
-        <div class="col-lg-1">
 
         </div>
-
 
     </div>
-
+    <br> <br>
 </div>
-<br> <br>
 
 {% endblock %}

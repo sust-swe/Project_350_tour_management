@@ -1,4 +1,4 @@
-#title 
+.titlebg
 {
     /* background-color: burlywood; */
     background-image: url("/static/photo/bgfinal3.jpg");
@@ -9,6 +9,10 @@ h8 {
     font-size: 3rem;
     line-height: 1.5;
     color: black;
+}
+
+.bgbg {
+    background: #ffffff;
 }
 
 .searchbox 
