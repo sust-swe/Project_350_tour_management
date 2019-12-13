@@ -26,10 +26,14 @@
                                 {% if user_detail.img %}
                                 <img src="{{ user_detail.img.url }}" style="width: 400px; height: 440px; margin: 6%;"
                                     alt="..." class="img-thumbnail searchbox">
+                                {% else %}
+                                <img src="/static/photo/guide_image.jpg"
+                                    style="width: 400px; height: 440px; margin: 6%;" alt="..."
+                                    class="img-thumbnail searchbox">
                                 {% endif %}
 
                             </div>
-                            <div class="col" style="margin-left: 20px;">
+                            <div class="col" style="margin-left: 30px; margin-top: 7px;">
                                 <h1 style="font-family: Ubuntu;">{{ user.first_name }} {{ user.last_name }}</h1>
                                 <h5><i class="fas fa-at" style="color: gray;"> {{ user.username }}
                                     </i></h5>
@@ -73,14 +77,14 @@
                                 <div class="row">
                                     <div class="col lg-6">
                                         <a href="/edit_profile/"><button type="button"
-                                                class="btn btn-info btn-lg">&nbsp;
-                                                &nbsp; Edit
+                                                class="btn btn-info btn-lg btn-block"> Edit
                                                 Profile
-                                                &nbsp; &nbsp;</button></a>
+                                            </button></a>
 
                                     </div>
                                     <div class="col lg-6">
-                                        <a href="/change_password/"> <button type="button" class="btn btn-dark btn-lg">
+                                        <a href="/change_password/"> <button type="button"
+                                                class="btn btn-dark btn-lg btn-block">
                                                 Change Password </button></a>
 
 

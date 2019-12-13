@@ -47,43 +47,40 @@
 
     </div>
 
-</div>
-<br> <br>
-
-
-<br> <br>
+</div> <br> <br>
 <div class="container">
     <div class="row">
         <div class="col-lg-2">
 
         </div>
         <div class="col-lg-8">
-
             {% if avails.exists %}
             <div class="card searchbox">
                 <h3 class="card-header" style="background: #232524; color: #FFFF;">Results</h3>
                 <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
-
-                <table>
-                    {% for avail in avails %}
-                    <tr>
-                        <td><a href="/guide/{{avail.guide.id}}/"><button
-                                    class="btn btn-light">{{avail.guide.name}}</button></a></td>
+                {% for avail in avails %}
+                <div class="card-body">
+                    <div class="text-center">
+                        <a href="/guide/{{avail.guide.id}}/">
+                            <button class="btn btn-secondary btn-lg btn-block">{{avail.guide.name}}</button>
+                        </a> <br>
                         {% if request.user.is_authenticated %}
-                        <td><button class="btn btn-dark" guide="{{avail.guide.id}}">Book</button></td>
-                        {%endif%}
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    <div class="card-body">
-                        <div class="text-center">
-                            <button class="btn btn-dark">No Guides Found!</button>
-
-                        </div>
+                        <button class="book btn btn-info" guide="{{avail.guide.id}}">Book</button> <br>
+                        {% endif %}
 
                     </div>
-                    {% endif %}
-                </table>
+
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="card-body">
+                    <div class="text-center">
+                        <button class="btn btn-dark">No Guides Found!</button>
+
+                    </div>
+
+                </div>
+                {% endif %}
             </div>
 
         </div>
@@ -96,6 +93,9 @@
 
 </div>
 <br> <br>
+
+
+
 
 
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"

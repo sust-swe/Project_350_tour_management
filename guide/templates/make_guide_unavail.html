@@ -1,22 +1,54 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 
 {% block content_1 %}
-<title>csa</title>
+<title></title>
 {% endblock content_1 %}
 
 {% block header %}
-    {{ guide.name }}
 {% endblock %}
 
 {% block content_2 %}
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table class="form_table">
-        {{form.as_table}}
-    </table>
-<button class="body_button_class" type="submit">Submit</button>
-</form>
+
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">{{ guide.name }}'s Availability</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- <table class="form_table"> -->
+                        {{ form|crispy }}
+
+                        <!-- </table> -->
+                        <br>
+                        <div class="text-right">
+                            <button type="submit" style="font-family: Ubuntu;" class="btn btn-info btn-lg">Make
+                                Unavailable</button>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
 
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
     load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
@@ -100,8 +132,5 @@
             });
         });
     </script>
-{% endblock content_2 %}
 
-{% block body_op %}
-    <a href="/guide/{{ guide.id }}/"><button class="body_op_button_class">{{ guide.name }}</button></a>
 {% endblock %}

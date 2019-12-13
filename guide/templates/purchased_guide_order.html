@@ -1,29 +1,56 @@
-{% extends "base.html" %}
-
+{% extends 'base.html' %}
+{% load static %}
+{% static "images" as statimgsrc %}
 {% block content_1 %}
-<title>purchased guide order</title>
-{% endblock %}
+<title></title>
+{% endblock content_1 %}
 
 {% block header %}
-Guide Bookings
 {% endblock %}
 
 {% block content_2 %}
-<table>
-    {% for order in orders %}
-    <tr>
-        <td>
-            <a href="/guide/bookings/{{ order.id }}/">
-                <button class="body_button_class">
-                    {{ order.guide.name }} at {{ order.booking_time }}
-                </button>
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% endblock %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
 
-{% block body_op %}
-<a href="/my_orders/"><button class="body_op_button_class">My Orders</button></a>
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">Guide Bookings</h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        <!-- <table> -->
+                        {% for order in orders %}
+                        <!-- <tr> -->
+                        <!-- <td> -->
+                        <a href="/guide/bookings/{{ order.id }}/"><button class="btn btn-outline-dark btn-lg btn-block"
+                                style="font-family: Ubuntu;"> {{ order.guide.name }} at
+                                {{ order.booking_time }}</button></a>
+                        <!-- </td> -->
+                        <!-- </tr> -->
+                        {% endfor %}
+                        <!-- </table> -->
+
+                        {% endblock %}
+                        {% block body_op %}
+                        <br> <br>
+                        <a href="/my_orders/"><button class="btn btn-info btn-lg btn-block"
+                                style="font-family: Ubuntu;">My Orders</button></a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
 {% endblock %}
