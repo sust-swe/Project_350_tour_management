@@ -10,19 +10,6 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['title', 'content', 'status', 'display_pic']
 
-        widgets = {
-            # The class here is a CSS class.
-            'title' : forms.TextInput(attrs={
-                'class':'form-control posttitletext',
-                'placeholder':'Enter Title',
-            }), #TextInputClass is our class
-            # postcontent class is our class
-            'content': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder':'Post Description',
-                }),
-        }
-
 
 class UpdatePostForm(forms.ModelForm):
     class Meta:
