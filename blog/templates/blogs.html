@@ -101,7 +101,7 @@
                                 | {{ post.created_on }}</div>
                             {% endif %}
                         </p>
-                        <div style="color:#383c3a;">{{post.content|slice:":200" | safe }} <div class="text-right">
+                        <div style="color:#383c3a;">{{post.content | slice:":200" | safe }} <div class="text-right">
                                 <a href="{% url 'post_detail' post.id  %}"><button type="submit"
                                         style="font-family: Ubuntu;" class="btn btn-secondary">Read More
                                     </button></a>
