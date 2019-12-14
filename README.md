@@ -25,4 +25,4 @@ Development Tools
     2. Database 
         - Postgresql
     3. Frontend
-        - HTML, CSS, Javascript(jQuery), Django Template Language
+        - HTML, CSS, Javascript(jQuery), Django Template Language, Bootstrap 4.
