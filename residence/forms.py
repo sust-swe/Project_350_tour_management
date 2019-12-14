@@ -1,6 +1,7 @@
-from .models import Residence, Space, SpaceAvailable
+from .models import Residence, Space, SpaceAvailable, SpaceType
 from homepage.base import *
-from .views_1 import load_flw_to_day, load_flw_from_day, load_flw_from_month, load_flw_to_month, load_flw_to_year
+from homepage.models import Country, City
+from .views_1 import load_flw_to_day, load_flw_from_day, load_flw_from_month, load_flw_to_month, load_flw_to_year, load_city_choice
 
 
 class ResidenceForm(forms.ModelForm):
@@ -8,9 +9,11 @@ class ResidenceForm(forms.ModelForm):
     class Meta:
         model = Residence
         exclude = ['user_detail']
+        labels = {"img": "Photo"}
 
     def __init__(self, *args, **kwargs):
-        super(ResidenceForm, self).__init__(*args, **kwargs)
+
+        super().__init__(*args, **kwargs)
 
         self.fields['country'].queryset = Country.objects.all()
         self.fields['city'].queryset = City.objects.none()
@@ -23,11 +26,32 @@ class ResidenceForm(forms.ModelForm):
             self.fields['city'].queryset = self.instance.country.city_set.order_by(
                 'city')
 
+        print("ResidenceForm")
+
 
 class SpaceForm(forms.ModelForm):
     class Meta:
         model = Space
         exclude = ['residence']
+
+    def __init__(self, *args, **kwargs):
+        # print("SpaceForm")
+        super().__init__(*args, **kwargs)
+        residence_id = None
+        init_dict = {}
+        # form for creating new space
+        if kwargs.get('initial', None):
+            init_dict = kwargs.get('initial', None)
+            if init_dict.get('residence', None):
+                residence_id = init_dict.get('residence', None)
+        # print("44", self.data)
+
+        if kwargs.get("instance", None):
+            instance = kwargs.get("instance", None)
+            residence_id = instance.id
+            # print(instance, type(instance))
+        self.fields['space_type'].queryset = SpaceType.objects.filter(
+            residence_id=residence_id)
 
 
 class SpaceAvailabilityForm(forms.ModelForm):
@@ -77,7 +101,14 @@ class DateForm(forms.Form):
                 from_year, to_year, from_month, to_month, from_day))
 
 
-class SpaceBookForm(forms.Form):
+class SpaceSearchForm(forms.Form):
+    space_n = forms.ChoiceField(
+        choices=[(i, str(i)) for i in range(1, 100)], label="Number of Space")
+    person_n = forms.ChoiceField(
+        choices=[(i, str(i)) for i in range(1, 100)], label="Person per Room")
+    max_rent = forms.CharField(label="Maximal Rent", required=False)
+    min_rent = forms.CharField(label="Minimal Rent", required=False)
+    residence_name = forms.CharField(max_length=255, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -116,3 +147,24 @@ class SpaceBookForm(forms.Form):
                 choices=load_flw_to_month(from_year, to_year, from_month))
             self.fields['to_day'] = forms.ChoiceField(choices=load_flw_to_day(
                 from_year, to_year, from_month, to_month, from_day))
+
+        country_choice = [("", "------------")]
+        for ob in Country.objects.all():
+            country_choice += [(ob.id, str(ob.name))]
+        self.fields['country'] = forms.ChoiceField(choices=country_choice)
+
+        self.fields['city'] = forms.ChoiceField(choices=[("", "------------")])
+
+        if 'country' in self.data:
+            country = int(self.data.get('country', None))
+            self.fields['city'] = forms.ChoiceField(
+                choices=load_city_choice(City, country))
+        # print('init spacesearch     form')
+
+
+class CreateSpaceTypeForm(forms.ModelForm):
+    
+    class Meta:
+        model = SpaceType
+        exclude = ['residence']
+        labels = {"pic": "Photo", "person": "Person per Space"}

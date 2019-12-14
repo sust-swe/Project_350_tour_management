@@ -4,72 +4,77 @@
 <title>Space Detail</title>
 {% endblock %}
 
+{% block header %}
+{{ space.name }}
+{% endblock %}
+
 {% block content_2 %}
-<h1>{{ space.space_type_name }}</h1>
-<table>
-    {% if space.rent %}<tr>
-        <td>Rent</td>
-        <td>{{ space.rent }}</td>
-    </tr>{% endif %}
-    {% if space.rent %}<tr>
-        <td>For </td>
-        <td>{{ space.person }} person</td>
-    </tr>{% endif %}
-    {% if space.shared == True %}<tr>
-        <td>Shared Space</td>
-    </tr>{% endif %}
+<table class="body_table">
+    {% if space.space_type.pic %}
+    <tr>
+        <td><img src="{{ space.space_type.pic.url }}" class="image_ste"></td>
+    </tr>
+    {% endif %}
 </table>
-{% if space.img %} <img src="{{ space.img.url }}" height="300" width="450"> {% endif %}
-<br><br><br>
-<div>
-    <a href="/residence/space/{{space.id}}/book/">Book</a>
-</div>
+
+<table class="body_table">
+    <tr>
+        <td>For </td>
+        <td>{{ space.space_type.person }} person</td>
+    </tr>
+    <tr>
+        <th colspan="2">
+            <a href="/residence/space_type/{{space.space_type.id}}/">
+                <button class="body_table_data_button">{{space.space_type.name}}</button>
+            </a>
+        </th>
+    </tr>
+</table>
+
+
 {% if space.residence.user_detail.user == request.user %}
-<a href="/residence/space/{{ space.id }}/update/"> Update</a> <br>
-<a href="/residence/space/{{ space.id }}/delete/"> Delete</a> <br>
-<a href="/residence/space/{{ space.id }}/avail/"> Create New Availability </a><br>
+<p id="owner_access">
+
+
+    <p id="availables">
+
+    </p>
+    {% if bookings.exists %}
+    <h1>Bookings</h1>
+    <p id="Bookings">
+        <table class="spacing-table">
+            <tr>
+
+                <td>From</td>
+                <td>To</td>
+                <td>By</td>
+                <td>Total Payable</td>
+                <td>Booked at</td>
+            </tr>
+
+            {% for booking in bookings %}
+            <tr>
+
+                <td>{{booking.book_from}}</td>
+                <td>{{booking.book_to}}</td>
+                <td>{{booking.guest}}</td>
+                <td>{{booking.total_rent}}</td>
+                <td>{{booking.booking_time}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </p>
+    {% endif %}
+</p>
 {% endif %}
+{% endblock %}
 
-<div id="availables">
-    <table class="spacing-table">
-        <tr>
-            <td>From</td>
-            <td>To</td>
-        </tr>
-        {% for avail in avails %}
-
-        <tr>
-
-            <td>{{avail.avail_from}}</td>
-            <td>{{avail.avail_to}}</td>
-        </tr>
-
-        {% endfor %}
-    </table>
-</div>
-<div id="Bookings">
-    <table class="spacing-table">
-        <tr>
-
-            <td>From</td>
-            <td>To</td>
-            <td>By</td>
-            <td>Total Payable</td>
-            <td>Booked at</td>
-        </tr>
-
-        {% for booking in bookings %}
-        <tr>
-
-            <td>{{booking.book_from}}</td>
-            <td>{{booking.book_to}}</td>
-            <td>{{booking.guest}}</td>
-            <td>{{booking.total_rent}}</td>
-            <td>{{booking.booking_time}}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-</div>
-
+{% block body_op %}
+<a href="/residence/{{space.residence.id}}/"><button class="body_op_button_class">{{space.residence.name}}</button></a>
+{% if space.residence.user_detail.user == request.user %}
+<a href="/residence/space/{{ space.id }}/update/"><button class="body_op_button_class">Update</button></a>
+<a href="/residence/space/{{ space.id }}/delete/"><button class="body_op_button_class">Delete</button></a><a
+    href="/residence/space/{{ space.id }}/availability/"><button class="body_op_button_class">Availability</button></a>
+{% endif %}
 {% endblock %}

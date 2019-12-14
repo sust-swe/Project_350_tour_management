@@ -2,13 +2,82 @@ from homepage.base import *
 
 
 #######################################          Complementary methods          ######################################
+
+
 month_array = ['', 'January', 'February', 'March', 'April', 'May', 'June',
                'July', 'August', 'September', 'Octobor', 'November', 'December']
 
-# returns true even a part is booked
+
+def make_space_unavailable_amap(SpaceAvailable, space, from_date, to_date):
+    # makes space unavailable through the entire proposed time span (as much as is available)
+    if from_date > to_date:
+        return
+    # proposed time span entirely included into available time span
+    qs = SpaceAvailable.objects.filter(
+        space=space, avail_from__lte=from_date, avail_to__gte=to_date)
+
+    if qs.exists():
+        ob = qs[0]
+        pre_date = from_date - timedelta(1)
+        post_date = to_date + timedelta(1)
+        ob1 = None
+        ob2 = None
+        if ob.avail_from < from_date:
+            ob1 = SpaceAvailable(
+                space=space, avail_from=ob.avail_from, avail_to=pre_date)
+        if ob.avail_to > to_date:
+            ob2 = SpaceAvailable(
+                space=space, avail_from=post_date, avail_to=ob.avail_to)
+        ob.delete()
+        if ob1:
+            ob1.save()
+        if ob2:
+            ob2.save()
+        return
+
+    # available time spans entirely included in the proposed time span
+    SpaceAvailable.objects.filter(
+        space=space, avail_from__gte=from_date, avail_to__lte=to_date).delete()
+
+    # proposed time span starts in between available time span
+    qs = SpaceAvailable.objects.filter(
+        space=space, avail_from__lte=from_date, avail_to__gte=from_date)
+    if qs.exists():
+        ob = qs[0]
+        pre_date = from_date - timedelta(1)
+        ob_1 = SpaceAvailable(
+            space=space, avail_from=ob.avail_from, avail_to=pre_date)
+        ob.delete()
+        ob_1.save()
+
+    # proposed time span ends in between avaiable time span
+    qs = SpaceAvailable.objects.filter(
+        space=space, avail_from__lte=to_date, avail_to__gte=to_date)
+    if qs.exists():
+        ob = qs[0]
+        post_date = to_date+timedelta(1)
+        ob_1 = SpaceAvailable(space=space, avail_from=post_date,
+                              avail_to=ob.avail_to)
+        ob.delete()
+        ob_1.save()
 
 
+def make_space_unavailable(SpaceAvailable, space, from_date, to_date):
+    # if the space is entirely available through the time span
+    # then makes it unavailable and returns True else False
+    if from_date > to_date:
+        return False
+    if SpaceAvailable.objects.filter(space=space, avail_from__lte=from_date, avail_to__gte=to_date).exists():
+        make_space_unavailable_amap(SpaceAvailable, space, from_date, to_date)
+        return True
+    else:
+        return False
+
+
+# returns TRUE even a part of the proposed time span is booked,otherwise returns FALSE
 def is_space_booked(SpaceBooking, space, from_date, to_date):
+    if from_date > to_date:
+        return True
     # proposed time span atarts within booked time span
     dec1 = SpaceBooking.objects.filter(
         space=space, book_from__lte=from_date, book_to__gte=from_date).exists()
@@ -24,7 +93,10 @@ def is_space_booked(SpaceBooking, space, from_date, to_date):
         return False
 
 
-def create_avail_space(SpaceAvailable, space, from_date, to_date):
+# make a space available which is not booked at all within proposed time span, returns None
+def make_space_available_not_booked(SpaceAvailable, space, from_date, to_date):
+    if from_date > to_date:
+        return
     # proposed time span entirely included in old time span
     if SpaceAvailable.objects.filter(space=space, avail_from__lte=from_date, avail_to__gte=to_date).exists():
         return
@@ -34,7 +106,7 @@ def create_avail_space(SpaceAvailable, space, from_date, to_date):
     SpaceAvailable.objects.filter(
         space=space, avail_from__gte=from_date, avail_to__lte=to_date).delete()
 
-    # proposed time span starts within a old time span
+    # proposed time span starts within an available time span
     qs2 = SpaceAvailable.objects.filter(
         space=space, avail_from__lte=from_date, avail_to__gte=from_date)
     if qs2.exists():
@@ -42,7 +114,7 @@ def create_avail_space(SpaceAvailable, space, from_date, to_date):
         from_date = ob1.avail_from
         ob1.delete()
 
-    # proposed time span ends within a old time span
+    # proposed time span ends within an available time span
     qs3 = SpaceAvailable.objects.filter(
         space=space, avail_from__lte=to_date, avail_to__gte=to_date)
     if qs3.exists():
@@ -50,17 +122,17 @@ def create_avail_space(SpaceAvailable, space, from_date, to_date):
         to_date = ob2.avail_to
         ob2.delete()
 
-    pre_date = ob.from_date - timedelta(1)
-    post_date = ob.to_date + timedelta(1)
+    pre_date = from_date - timedelta(1)
+    post_date = to_date + timedelta(1)
 
     # adjacent time span preceeding proposed time span be unified
-    qs4 = SpaceAvailable.objects.filter(space, avail_to=pre_date)
+    qs4 = SpaceAvailable.objects.filter(space=space, avail_to=pre_date)
     if qs4.exists():
         from_date = qs4[0].avail_from
         qs4[0].delete()
 
     # adjacent time span following proposed time span be unified
-    qs5 = SpaceAvailable(space=space, avail_from=post_date)
+    qs5 = SpaceAvailable.objects.filter(space=space, avail_from=post_date)
     if qs5.exists():
         to_date = qs5[0].avail_to
         qs5[0].delete()
@@ -69,37 +141,59 @@ def create_avail_space(SpaceAvailable, space, from_date, to_date):
     ob.save()
 
 
-def is_space_available(SpaceAvailable, space, from_date, to_date):
-    qs = SpaceAvailable.objects.filter(
-        space=space, avail_from__lte=from_date, avail_to__gte=to_date).exists()
+# make space available as much as possible(as much is not booked)
+def create_avail_space(SpaceAvailable, SpaceBooking, space, from_date, to_date):
 
+    # entire proposed time span benn booked
+    if SpaceBooking.objects.filter(space=space, book_from__lte=from_date, book_to__gte=to_date).exists() or from_date > to_date:
+        return
+
+    # skip the time span,booked, preceeding the proposed time span
+    qs = SpaceBooking.objects.filter(
+        space=space, book_from__lte=from_date, book_to__gte=from_date)
     if qs.exists():
+        ob = qs[0]
+        from_date = ob.book_to+timedelta(1)
+
+    # skip the booked time span following the proposed time span
+    qs = SpaceBooking.objects.filter(
+        space=space, book_from__lte=to_date, book_to__gte=to_date)
+    if qs.exists():
+        ob = qs[0]
+        to_date = ob.book_from-timedelta(1)
+
+    if from_date > to_date:
+        return
+    print("create avail space", from_date, to_date)
+    # skip the booked time span entirely included in proposed time span
+    qs = SpaceBooking.objects.filter(
+        space=space, book_from__gte=from_date, book_to__lte=to_date)
+    if qs.exists():
+        make_space_available_not_booked(
+            SpaceAvailable, space, from_date, qs[0].book_from - timedelta(1))
+        i = 0
+        for ob in qs:
+            if i == 0:
+                i += 1
+                continue
+            else:
+                make_space_available_not_booked(
+                    SpaceAvailable, space, qs[i-1].book_to+timedelta(1), qs[i].book_from-timedelta(1))
+            i = i+1
+        make_space_available_not_booked(
+            SpaceAvailable, space, qs[i-1].book_to+timedelta(1), to_date)
+    else:
+        make_space_available_not_booked(
+            SpaceAvailable, space, from_date, to_date)
+
+
+# returns true if the space is available through the entire propsed time span
+def is_space_available(SpaceAvailable, space, from_date, to_date):
+    if SpaceAvailable.objects.filter(space=space, avail_from__lte=from_date, avail_to__gte=to_date).exists():
         return True
     return False
 
-
-def make_space_unavailable(SpaceAvailable, space, from_date, to_date):
-    qs = SpaceAvailable.objects.filter(
-        space=space, avail_from__lte=from_date, avail_to__gte=to_date)
-    if not qs.exists():
-        return
-    ob = qs[0]
-    pre_date = from_date - timedelta(1)
-    post_date = to_date + timedelta(1)
-    ob1 = None
-    ob2 = None
-    if ob.avail_from < from_date:
-        ob1 = SpaceAvailable(
-            space=space, avail_from=ob.avail_from, avail_to=pre_date)
-    if ob.avail_to > to_date:
-        ob2 = SpaceAvailable(space=space. avail_from=post_date, avail_to=ob.avail_to)
-    ob.delete()
-    if ob1:
-        ob1.save()
-    if ob2:
-        ob2.save()
-
-    ######################################       Load dependent date     ###################################
+###########################################       Load dependent date     ###################################################
 
 
 def load_flw_from_month(year):
@@ -181,3 +275,25 @@ def load_flw_to_day(from_year, to_year, from_month, to_month, from_day):
     for i in range(lb, ub+1):
         days += [(i, str(i))]
     return days
+
+
+def load_city_choice(City, country_id):
+    city_choice = [("", "------------")]
+
+    for ob in City.objects.filter(country_id=country_id):
+        city_choice += [(ob.id, str(ob.city))]
+
+    return city_choice
+
+
+def load_date_from_DateForm(form):
+    
+    year = int(form.cleaned_data['from_year'])
+    month = int(form.cleaned_data['from_month'])
+    day = int(form.cleaned_data['from_day'])
+    from_date = date(year, month, day)
+    year = int(form.cleaned_data['to_year'])
+    month = int(form.cleaned_data['to_month'])
+    day = int(form.cleaned_data['to_day'])
+    to_date = date(year, month, day)
+    return from_date, to_date

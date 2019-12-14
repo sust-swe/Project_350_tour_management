@@ -7,6 +7,11 @@ from django.db.models import Q
 class Country(models.Model):
     name = models.CharField(max_length=50)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['name'], name="Unique Country")
+        ]
+
     def __str__(self):
         return self.name
 
@@ -25,7 +30,7 @@ class City(models.Model):
         ]
 
     def __str__(self):
-        return '%s, %s' % (self.city, self.country)
+        return self.city
 
 
 class Address(models.Model):
@@ -73,7 +78,8 @@ class MyChoice:
     ]
 
     Eating_time = [
-        ('b', 'Breakfast'), ('l', 'Lunch'), ('d', 'Dinner'), ('a', 'all time')
+        ('Breakfast', 'Breakfast'), ('Lunch',
+                                     'Lunch'), ('Dinner', 'Dinner'), ('All Time', 'All Time')
     ]
 
     months = [

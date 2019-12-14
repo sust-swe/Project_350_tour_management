@@ -44,7 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'search.apps.SearchConfig',
+    'ckeditor',
+    'ckeditor_uploader',
+    'hitcount',
+
+    'crispy_forms'
 ]
+
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'project_350',
         'USER': 'postgres',
-        'PASSWORD': '1234',
+        'PASSWORD': 'isthisyou',
         'HOST': 'localhost'
     }
 }
@@ -137,6 +145,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
 # pip install Pillow

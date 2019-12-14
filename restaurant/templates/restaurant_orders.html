@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content_1 %}
+<title></title>
+{% endblock content_1 %}
+
+{% block header %}
+{% endblock %}
+
+{% block content_2 %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">{{restaurant.name}}'s Orders</h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        {% for order in orders %}
+                        <tr>
+                            <td>
+                                <a href="/restaurant/order/{{ order.id }}/"><button
+                                        class="btn btn-outline-dark btn-lg btn-block">{{ order.customer.username }}
+                                        at {{ order.order_time }}</button> </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endblock %}
+
+                        {% block body_op %}
+                        <br> <br>
+
+
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
+{% endblock %}

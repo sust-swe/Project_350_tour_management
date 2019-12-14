@@ -1,17 +1,52 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content_1 %}
-    <title>Update Restaurant Detail</title>
+<title></title>
+{% endblock content_1 %}
+
+{% block header %}
 {% endblock %}
 
 {% block content_2 %}
 
-    <ul>{% for m in nfe %}<li>{{ m }}</li>{% endfor %}</ul>
-    <form method="post" enctype="multipart/form-data">
-    {%  csrf_token %}
-    <table>
-        {{ form.as_table }}
-        <tr><td></td><td> <input type="submit" value="Save"> </td></tr>
-    </table>
-    </form>
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Update Restaurant</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- <table class="form_table"> -->
+                        {{ form|crispy }}
+                        <!-- </table> -->
+                        <br>
+                        <div class="text-right">
+                            <button type="submit" style="font-family: Ubuntu;" class="btn btn-info btn-lg">Update
+                            </button>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
 {% endblock %}

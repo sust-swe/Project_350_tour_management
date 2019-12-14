@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content_1 %}
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content_2 %}
+
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-9.5">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Post Comment</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{form.media}}
+                        {{ form|crispy }}
+                        <br>
+                        <!-- {% csrf_token %} -->
+                        <div class="text-right">
+                            <input type="submit" class="btn btn-info btn-lg" onclick="success();" value="Post Comment">
+                        </div>
+                        <script type="text/javascript">
+                            function successful() {
+                                swal({
+                                    title: "Successful!!",
+                                    text: "Your Comment Posted!",
+                                    type: "success",
+                                    timer: 2000
+                                });
+                                // swal("Good job!", "Your Comment Posted!", "success")
+                                // var timeout = 1000; //1 second
+                                // setTimeout(() => {
+
+                                // }, timeout);
+                            }
+
+
+                        </script>
+                        <!-- {{ form.as_p }} -->
+                        <!-- <button class="btn btn-success">Signin</button> -->
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-1">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+{% endblock %}

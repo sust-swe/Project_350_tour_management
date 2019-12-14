@@ -1,42 +1,48 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q, F
-from homepage.models import City, UserDetail, Address
+from homepage.models import City, UserDetail, Address, Country
+from homepage.base import *
 
 # Create your models here.
 
 
+class Gender(models.Model):
+    name = models.CharField(max_length=20)
+    
+    def __str__(self):
+        return self.name
+    
+
 class Guide(models.Model):
     user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=255, null=True, default=None)
+    gender = models.ForeignKey(Gender, on_delete=models.CASCADE, null=True)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="guide", null=True, default=None)
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name="guide", null=True, default=None)
     mobile = models.IntegerField()
     img = models.ImageField(upload_to='GuidePhoto', default=None, null=True, blank=True)
     description = models.CharField(max_length=255, default=None, null=True, blank=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user_detail', 'name'], name='users unique guide'),
-            models.UniqueConstraint(fields=['mobile'], name='guides unique mobile')
-        ]
-
+    rent = models.FloatField(null=True)
+    
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
+        if not (exclude and "user_detail" in exclude):
+            if Guide.objects.filter(user_detail=self.user_detail, name=self.name).exists():
+                if Guide.objects.get(user_detail=self.user_detail, name=self.name).id != self.id:
+                    raise ValidationError("You have already a guide of the same name")
+        if Guide.objects.filter(mobile=self.mobile).exists():
+            if Guide.objects.get(mobile=self.mobile).id != self.id:
+                raise ValidationError("This mobile number is already used")
+            
     def __str__(self):
-        return '%s from %s' % (self.name, self.user_detail)
+        return self.name
 
 
 class GuideAvailable(models.Model):
     guide = models.ForeignKey(Guide, on_delete=models.CASCADE)
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
     avail_from = models.DateField()
     avail_to = models.DateField()
-    rent_per_day = models.FloatField()
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['guide', 'avail_from'], name='unique from'),
-            models.UniqueConstraint(fields=['guide', 'avail_to'], name='unique to'),
-            models.CheckConstraint(check=Q(rent_per_day__gte=0), name='positive rent'),
-            models.CheckConstraint(check=Q(avail_from__lte=F('avail_to')), name='valid date span')
-        ]
 
     def __str__(self):
         return '%s %s %s' % (self.guide.__str__(), str(self.avail_from), str(self.avail_to))
@@ -45,18 +51,10 @@ class GuideAvailable(models.Model):
 class GuideBooking(models.Model):
     guide = models.ForeignKey(Guide, on_delete=models.CASCADE)
     customer = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
     book_from = models.DateField()
     book_to = models.DateField()
     total_rent = models.FloatField()
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['guide', 'book_from'], name='uc1'),
-            models.UniqueConstraint(fields=['guide', 'book_to'], name='uc2'),
-            models.CheckConstraint(check=Q(total_rent__gte=0), name='positive total'),
-            models.CheckConstraint(check=Q(book_from__lte=F('book_to')), name='gb valid date span')
-        ]
+    booking_time = models.DateTimeField(null=True)
 
     def __str__(self):
         return '%s hired by %s from %s to %s' % (self.guide.__str__(), self.customer.__str__(), str(self.book_from),

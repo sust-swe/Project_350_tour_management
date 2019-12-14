@@ -1,15 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-    <title>Residence Space</title>
+<title>Residence Space</title>
+{% endblock %}
+
+{% block header %}
+Spaces
 {% endblock %}
 
 {% block content_2 %}
-
+<table>
     {% for space in spaces %}
-        <a href="/residence/space/{{ space.id }}/">{{ space.space_type_name }}</a><br>
+    <tr>
+        <td>
+            <a href="/residence/space/{{ space.id }}/"><button class="body_button_class">{{ space.name }}</button></a>
+        </td>
+    </tr>
     {% endfor %}
-    <br>
-    <a href="add_space/">Add New Space</a>
+</table>
+{% endblock %}
 
+{% block body_op %}
+
+{% if request.user == residence.user_detail.user %}
+<a href="add_space/"><button class="body_op_button_class">Add New Space</button></a>
+{% endif %}
+
+<a href="/residence/{{residence.id}}/"><button class="body_op_button_class">{{residence.name}}</button></a>
 {% endblock %}

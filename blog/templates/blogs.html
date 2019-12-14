@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load hitcount_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Blogs</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    <meta name="google" content="notranslate" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            font-size: 17px;
+            background-color: #fdfdfd;
+        }
+
+        .shadow {
+            box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #f00000;
+            border-color: #dc281e;
+        }
+
+        .masthead {
+            background: #3398E1;
+            height: auto;
+            padding-bottom: 15px;
+            box-shadow: 0 16px 48px #E3E7EB;
+            padding-top: 10px;
+        }
+    </style>
+    {% block content_2 %}
+    <br> <br>
+    <div class="container">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-10">
+                    <input type="search" class="form-control" placeholder="Search" name="q">
+
+                </div>
+                <div class="col-lg-2">
+                    <button class="btn btn-secondary  btn-block" type="submit">Search</button>
+
+                </div>
+
+            </div>
+            <br>
+
+
+
+        </form>
+        <a href="{% url 'newpost' %}"><button type="button" class="btn btn-info btn-lg btn-block">Create
+                Post!</button></a> <br>
+        <button type="button" class="btn btn-light btn-lg btn-block">Latest Posts</button> <br>
+        <div class="row">
+            {% for post in post_lists %}
+            <div class="col-md-4" style="margin-bottom: 30px;">
+                <div class="card searchbox" style="height: max-content;">
+
+                    {% if post.display_pic %}
+                    <img src="{{ post.display_pic.url }}" alt="..." class="card-img-top thumbnail">
+                    {% else %}
+                    <img src="/static/photo/bgfinal2.jpg" alt="..." class="card-img-top thumbnail">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <!-- <div class="row"> -->
+                        <!-- <div class="col"> -->
+
+
+                        <!-- </div> -->
+                        <!-- <div class="col" style="margin-left: 20px;"> -->
+
+                        <h3 style="font-family: Ubuntu;">{{ post.title }}</h3>
+                        <p style="color: grey;">
+                            {% if post.user_detail.img %}
+
+
+
+                            <div style="font-family: Ubuntu; color: gray;"> <img src="{{ post.user_detail.img.url }}"
+                                    style="width: 25px; height: 25px; border-radius: 50%;" alt="..." class="">
+                                <a href="/accounts/profile/{{post.user_detail.user.id}}">{{ post.user_detail.user }}</a>
+                                | {{ post.created_on }}</div>
+                            {% else %}
+
+                            <div style="font-family: Ubuntu; color: gray;"> <img src="/static/photo/guide_image.jpg"
+                                    style="width: 25px; height: 25px; border-radius: 50%;" alt="..." class="">
+                                <a href="/accounts/profile/{{post.user_detail.user.id}}">{{ post.user_detail.user }}</a>
+                                | {{ post.created_on }}</div>
+                            {% endif %}
+                        </p>
+                        <div style="color:#383c3a;">{{post.content | slice:":200" | safe }} <div class="text-right">
+                                <a href="{% url 'post_detail' post.id  %}"><button type="submit"
+                                        style="font-family: Ubuntu;" class="btn btn-secondary">Read More
+                                    </button></a>
+
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+            {% endfor %}
+            <br> <br>
+
+
+        </div>
+        <div class="mt-50">
+            {% if post_lists.has_other_pages %}
+            <ul class="pagination justify-content-center">
+                <!-- Previous Arrow -->
+                {% if post_lists.has_previous %}
+                <li class="page-item">
+                    <a href="?page={{post_lists.previous_page_number}}" class="page-link"><i
+                            class="fa fa-angle-left"></i></a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link"><i class="fa fa-angle-left"></i></a>
+                </li>
+                {% endif %}
+                <!-- All the Page Number -->
+                {% for i in post_lists.paginator.page_range %}
+                {% if post_lists.number == i %}
+                <li class="page-item active">
+                    <a class="page-link">{{i}}</a>
+                </li>
+                {% elif i > post_lists.number|add:'-3' and i < post_lists.number|add:'3' %}
+                <li class="page-item">
+                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                </li>
+                {% elif i == 1 %}
+                <li class="page-item">
+                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                </li>
+                <li class="page-item disabled">
+                    <a href="" class="page-link">...</a>
+                </li>
+                {% elif i == post_lists.paginator.num_pages %}
+                <li class="page-item disabled">
+                    <a href="" class="page-link">...</a>
+                </li>
+                <li class="page-item">
+                    <a href="?page={{i}}" class="page-link">{{i}}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                <!-- Next Arrow -->
+                {% if post_lists.has_next %}
+                <li class="page-item">
+                    <a href="?page={{post_lists.next_page_number}}" class="page-link"><i
+                            class="fa fa-angle-right"></i></a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link"><i class="fa fa-angle-right"></i></a>
+                </li>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </div>
+
+
+
+
+
+
+    </div>
+
+    <br> <br>
+
+    {% endblock %}

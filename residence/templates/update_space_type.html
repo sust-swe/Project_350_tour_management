@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content_1 %}
+<title>Update Space Type</title>
+{% endblock content_1 %}
+
+{% block header %}
+    {{space_type.name}}
+{% endblock %}
+
+{% block content_2 %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table class="form_table">
+        {{form.as_table}}
+    </table>
+<button class="body_button_class" type="submit">Update</button>
+</form>
+{% endblock content_2 %}
+
+{% block body_op %}
+<a href="/residence/space_type/{{ space_type.id }}/">
+    <button class="body_op_button_class">{{ space_type.name }}</button>
+</a>
+{% endblock %}

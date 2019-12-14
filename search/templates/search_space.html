@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content_1 %}
+<title></title>
+{% endblock content_1 %}
+
+{% block header %}
+{% endblock %}
+
+{% block content_2 %}
+
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Search
+                    Restaurants</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <!-- <table class="form_table"> -->
+                        {{ form|crispy }}
+                        <!-- </table> -->
+                        <br>
+                        <div class="text-right">
+                            <button type="submit" style="font-family: Ubuntu;"
+                                class="btn btn-dark btn-lg">Search</button>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            {% if restaurants.exists %}
+            <div class="card searchbox">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Results</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <table>
+                    <tr>
+                        <th><button class="btn btn-dark">Residence </button></th>
+                        <th><button class="btn btn-dark">Space Type </button></th>
+                        <th><button class="btn btn-dark">Details </button></th>
+                    </tr>
+                    {% for res in residence_qs %}
+                    {% for ri,pk,name,count,rent in space_types_ri_p_n_c_r %}
+                    {% if ri == res.id %}
+                    <tr>
+                        <td><a href="/residence/{{res.id}}/"><button
+                                    class="body_table_data_button">{{res.name}}</button></a></td>
+                        <td><a href="/residence/space_type/{{pk}}/"><button
+                                    class="body_table_data_button">{{name}}</button></a></td>
+                        <td>{{count}} Space Available at ${{rent}} per space</td>
+                        {% if request.user.is_authenticated %}
+                        <td><button class="btn btn-dark" space_type="{{pk}}" id="space_type_id_{{pk}}">Book</button>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                    {% else %}
+                    <div class="card-body">
+                        <div class="text-center">
+                            <button class="btn btn-dark">No Hotels/Spaces Found!</button>
+
+                        </div>
+
+                    </div>
+                    {% endif %}
+                </table>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
+
+<script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
+    load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
+    load_from_day="/search/ajax/load_from_day/">
+
+        $("#id_from_year").change(function () {
+            // $("#test").html('changed');
+            var year = $(this).val();
+            var url = $("#date_ajax").attr("load_from_month");
+            // $("#test").html(url);
+
+            $.ajax({
+                url: url,
+                data: { 'year': year },
+                success: function (shoaib) { $("#id_from_month").html(shoaib); }
+            });
+
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_year"),
+                data: { 'year': year },
+                success: function (redata) { $("#id_to_year").html(redata) }
+            });
+        });
+
+        $("#id_from_month").change(function () {
+            var year = $("#id_from_year").val();
+            var month = $("#id_from_month").val();
+            var url = $("#date_ajax").attr("load_from_day");
+            // $("#test").html('ok');
+            $.ajax({
+                url: url,
+                data: { 'year': year, 'month': month },
+                success: function (tasrif) { $("#id_from_day").html(tasrif); }
+            });
+
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_month"),
+                data: { 'from_year': $("#id_from_year").val(), 'to_year': $("#id_to_year").val(), 'from_month': $("#id_from_month").val() },
+                success: function (redata) { $("#id_to_month").html(redata); }
+            });
+        });
+
+        $("#id_to_year").change(function () {
+            // $("#test").html('ok');
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_month"),
+                data: { 'from_year': $("#id_from_year").val(), 'to_year': $("#id_to_year").val(), 'from_month': $("#id_from_month").val() },
+                success: function (redata) { $("#id_to_month").html(redata); }
+            });
+        });
+
+        $("#id_to_month").change(function () {
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_day"),
+                data: {
+                    'from_year': $("#id_from_year").val(),
+                    'from_month': $("#id_from_month").val(),
+                    'from_day': $("#id_from_day").val(),
+                    'to_year': $("#id_to_year").val(),
+                    'to_month': $("#id_to_month").val(),
+                    "space_type": $(this).attr("")
+                },
+                success: function (redata) { $("#id_to_day").html(redata); }
+            });
+        });
+
+        $("#id_from_day").change(function () {
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_day"),
+                data: {
+                    'from_year': $("#id_from_year").val(),
+                    'from_month': $("#id_from_month").val(),
+                    'from_day': $("#id_from_day").val(),
+                    'to_year': $("#id_to_year").val(),
+                    'to_month': $("#id_to_month").val(),
+                },
+                success: function (redata) { $("#id_to_day").html(redata); }
+            });
+        });
+    </script>
+
+<script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
+    $("#id_country").change(function () {
+        $.ajax({
+            url: $("#load_city_ajax").attr("load_city"),
+            data: { 'country': $("#id_country").val() },
+            success: function (redata) {
+                $("#id_city").html(redata);
+                $.ajax({
+                    url: $("#load_city_ajax").attr("load_residence"),
+                    data: { 'city': $("#id_city").val() },
+                    success: function (redata) { $("#id_residence").html(redata); }
+                });
+            }
+        });
+    });
+    $("#id_city").change(function () {
+        // $("#test").html("load_residence");
+        $.ajax({
+            url: $("#load_city_ajax").attr("load_residence"),
+            data: { 'city': $("#id_city").val() },
+            success: function (redata) { $("#id_residence").html(redata); }
+        });
+    });
+</script>
+
+<script id="bookyee_space" book_url="/search/ajax/book/">
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $(".book").click(function () {
+        $.ajax({
+            url: "/residence/book/",
+            type: "POST",
+            data: {
+                "from_year": $("#id_from_year").val(),
+                "from_month": $("#id_from_month").val(),
+                "from_day": $("#id_from_day").val(),
+                "to_year": $("#id_to_year").val(),
+                "to_month": $("#id_to_month").val(),
+                "to_day": $("#id_to_day").val(),
+                "space_type": $(this).attr("space_type"),
+                "n_space": $("#id_space_n").val()
+            },
+            success: function (response) {
+                alert(response);
+                $(".book").hide();
+            }
+        });
+    });
+</script>
+
+{% endblock content_2 %}

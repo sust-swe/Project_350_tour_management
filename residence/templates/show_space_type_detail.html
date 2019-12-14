@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+{% block content_1 %}
+<title>Space Type Detail</title>
+{% endblock content_1 %}
+
+{% block header %}
+{{space_type.name}}
+{% endblock %}
+
+{% block content_2 %}
+
+
+<table class="body_table">
+    <tr>
+        <td colspan="2">
+            {%if space_type.pic %}
+            <img src="{{space_type.pic.url}}" class="image_ste">
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>$ {{space_type.rent}} per day</td>
+    </tr>
+    <tr>
+        <td>For {{space_type.person}} Person</td>
+    </tr>
+    <tr>
+        <td>{{space_type.description}}</td>
+    </tr>
+</table>
+
+
+{% endblock content_2 %}
+
+{% block body_op %}
+<a href="/residence/{{space_type.residence.id}}/"><button
+        class="body_op_button_class">{{space_type.residence.name}}</button></a>
+{% if space_type.residence.user_detail.user == request.user %}
+<a href="update/"><button class="body_op_button_class">Update</button></a>
+<a href="delete/"><button class="body_op_button_class">Delete</button></a>
+{% endif %}
+{% endblock %}

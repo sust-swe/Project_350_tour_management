@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content_1 %}
+<title>show space order detail </title>
+{% endblock %}
+
+{% block header %}
+Booking #{{ order.id }}
+{% endblock %}
+
+{% block content_2 %}
+<table class="body_table">
+    <tr>
+        <td>Residence</td>
+        <td><a href="/residence/{{ order.space_type.residence.id }}/">
+                <button class="body_table_data_button">{{ order.space_type.residence.name }}</button>
+            </a></td>
+    </tr>
+    <tr>
+        <td>Booked By</td>
+        <td><a href="/accounts/profile/{{ order.guest.user.id }}/">
+                <button class="body_table_data_button">{{ order.guest.user.username }}</button>
+            </a></td>
+    </tr>
+    <tr>
+        <td>Space Type</td>
+        <td><a href="/residence/space_type/{{ order.space_type.id }}/">
+                <button class="body_table_data_button"> {{ order.space_type.name }}</button>
+            </a></td>
+    </tr>
+    <tr>
+        <td>No of Spaces</td>
+        <td>{{ order.n_space }}</td>
+    </tr>
+    <tr>
+        <td>Person per space</td>
+        <td>{{ order.space_type.person }}</td>
+    </tr>
+    <tr>
+        <td>Days</td>
+        <td>{{ order.book_from }} - {{ order.book_to }}</td>
+    </tr>
+    <tr>
+        <td>Booked at</td>
+        <td>{{ order.booking_time }}</td>
+    </tr>
+</table>
+<br>
+{% if request.user == order.space_type.residence.user_detail.user %}
+<table class="body_table">
+    <tr>
+        <th>Spaces</th>
+    </tr>
+    {% for booking in space_booking %}
+    <tr>
+        <td>
+            <a href="/residence/space/{{ booking.space.id }}/">
+                <button class="body_table_data_button">{{ booking.space.name }}</button>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}
+
+{% block body_op %}
+{% if request.user == order.space_type.residence.user_detail.user %}
+<a href="/residence/{{ order.space_type.residence.id }}/orders/">
+    <button class="body_op_button_class">{{order.space_type.residence.name}} #bookings</button>
+</a>
+{% elif request.user == order.guest.user %}
+<a href="/residence/purchased_order/">
+    <button class="body_op_button_class">Space Bookings</button>
+</a>
+{% endif %}
+{% endblock %}
+order space_booking

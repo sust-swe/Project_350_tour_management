@@ -1,27 +1,54 @@
 {% extends 'base.html' %}
 
-{% block content_1 %}<title>Menu</title>{% endblock %}
+{% block content_1 %}
+<title></title>
+{% endblock content_1 %}
+
+{% block header %}
+{% endblock %}
 
 {% block content_2 %}
-    <table>
-    {% if menu %}<tr><th>Item</th><th>Price</th><th>Available at</th><th>Photo</th><th></th><th></th></tr>{% endif %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
 
-    {% for item in menu %}
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">{{restaurant.name}}'s Menu</h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        {% for item in menu %}
+                        <a href="/restaurant/food/{{ item.id }}/"><button type="button"
+                                class="btn btn-outline-dark btn-lg btn-block"
+                                style="font-family: Ubuntu;">{{ item.name }}</button></a> <br>
+                        {% endfor %}
+                        {% endblock %}
 
-        <tr><td>{{ item.name }}</td><td>{{ item.price }}</td><td>{{ item.available_at_time }}</td>
-            <td>
-            {% if item.img %}
-            <img src="{{ item.img.url }}" height="100" width="100">
-            {% endif %}
-            </td>
-        {% if item.restaurant.user_detail.user == request.user %}
-        <td><a href="/restaurant/food/{{ item.id }}/update/">Update</a> </td>
-        <td><a href="/restaurant/food/{{ item.id }}/delete/">Delete</a> </td>
-        {% endif %}
-        </tr>
-    {% endfor %}
-    </table>
-    {% if restaurant.user_detail.user == request.user %}
-    <p><a href="add_item/">Add Item</a></p>
-    {% endif %}
+                        {% block body_op %}
+                        <br><br>
+
+                        {% if restaurant.user_detail.user == request.user %}
+                        <a href="add_item/"><button class="btn btn-info btn-lg btn-block">Add New Item</button></a>
+                        {% endif %}
+
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
 {% endblock %}

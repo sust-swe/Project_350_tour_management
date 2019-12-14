@@ -2,14 +2,55 @@
 {% load static %}
 {% static "images" as statimgsrc %}
 {% block content_1 %}
-<title>My Restaurants</title>
+<title></title>
+{% endblock content_1 %}
+
+{% block header %}
 {% endblock %}
 
 {% block content_2 %}
-<p>
-    {% for restaurant in qs %}
-    <a href="/restaurant/{{ restaurant.id }}/">{{ restaurant.name }}</a><br>
-    {% endfor %}
-</p>
-<a href="/restaurant/add/"> Add New Restaurant </a> <br>
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">My Restaurants</h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        <!-- <table> -->
+                        {% for restaurant in qs %}
+                        <!-- <tr> -->
+                        <!-- <td> -->
+                        <a href="/restaurant/{{restaurant.id}}/"><button class="btn btn-outline-dark btn-lg btn-block"
+                                style="font-family: Ubuntu;">{{restaurant.name}}</button></a>
+                        <!-- </td> -->
+                        <!-- </tr> -->
+                        {% endfor %}
+                        <!-- </table> -->
+
+                        {% endblock %}
+                        {% block body_op %}
+                        <br> <br>
+                        <a href="/restaurant/add/"><button class="btn btn-info btn-lg btn-block"
+                                style="font-family: Ubuntu;">Add New
+                                Restaurant</button></a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
 {% endblock %}

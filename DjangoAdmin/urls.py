@@ -17,7 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from homepage.views import PermissionDenied
+from .views import PermissionDenied, LoginRequired
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,11 +26,14 @@ urlpatterns = [
     path('residence/', include('residence.urls')),
     path('restaurant/', include('restaurant.urls')),
     path('guide/', include('guide.urls')),
+    path('hitcount/', include(('hitcount.urls', 'hitcount'), namespace='hitcount')),
     path('blog/', include('blog.urls')),
-    path('dd/', include('testme.dependentSelection')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('search/', include('search.urls')),
     path('permission_denied/', PermissionDenied.as_view(),
          name='permission denied'),
+    path('login_required/', LoginRequired.as_view()),
+
 ]
 
 urlpatterns = urlpatterns + \

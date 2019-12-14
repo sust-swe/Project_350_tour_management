@@ -1,0 +1,243 @@
+{% load static %}
+{% static "images" as statimgsrc %}
+<!DOCTYPE>
+<html lang="en">
+
+<head>
+    <title>TravelX - Make Your Travel Easier!</title>
+    <script type="text/javascript" src="/static/js-shoaib/jquery-3.4.1.js/"></script>
+    <link rel="stylesheet" type="text/css" href="/static/CSS/mystyle.css/">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Ubuntu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/CSS/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <script src="/static/js-shoaib/bootstrap.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'CSS/blog.css' %}">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/css/medium-editor.min.css"
+        type="text/css" media="screen" charset="utf-8">
+    {% block header %}
+
+    {% endblock %}
+
+    {% block content_1 %} <title>TravelX - Make Your Travel Easier!</title> {% endblock content_1 %}
+</head>
+
+<body>
+
+    <div class="titlebg">
+
+        <nav class="navbar navbar-expand-lg">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span> <i class="fas fa-list"></i></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <h8 style="color: khaki;">TravelX</h8>
+            </a> &nbsp; &nbsp; &nbsp; &nbsp;
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search/space/">
+                            <p1>Residence</p1>
+                        </a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search/restaurant/">
+                            <p1>Restaurants</p1>
+                        </a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search/guide/">
+                            <p1>Guide</p1>
+                        </a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blog/bloglist/">
+                            <p1>Blog</p1>
+                        </a>
+
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <!-- <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <p1>Login</p1>
+                                </a>
+        
+                            </li> -->
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle b" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                            <button type="button" class="btn btn-outline-success btn-lg">
+                                <p2>Profile</p2>
+                            </button>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/profile/">View Profile</a>
+                            <a class="dropdown-item" href="/home/">My Feeds</a>
+                            <a class="dropdown-item" href="/restaurant/gotocart/">My Carts</a>
+                            <a class="dropdown-item" href="#">My Orders</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/accounts/logout/" style="color: crimson;">Sign Out</a>
+                        </div>
+                    </li>
+                    {% else %}
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/accounts/login/">
+                            <button type="button" class="btn btn-outline-success btn-lg">
+                                <p2>Login</p2>
+                            </button>
+
+                        </a>
+
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <button type="button" class="btn btn-outline-success btn-lg">
+                                <p2>Become a Host</p2>
+                            </button>
+
+                        </a>
+
+                    </li>
+
+                </ul>
+            </div>
+
+        </nav>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    {% block content_2 %}
+
+    {% endblock content_2 %}
+
+
+    {% block body_op %}
+
+    {% endblock %}
+
+    <footer class="page-footer font-small mdb-color lighten-3 pt-4" style="background: #FFFF;">
+        {% block footer %}
+        {% endblock %}
+
+        <!-- Footer Links -->
+        <div class="container text-center text-md-left">
+
+            <!-- Grid row -->
+            <div class="row">
+
+                <!-- Grid column -->
+                <div class="col-md-4 col-lg-3 mr-auto my-md-4 my-0 mt-4 mb-1">
+
+                    <!-- Content -->
+                    <h5 class="font-weight-bold text-uppercase mb-4">About TravelX</h5>
+                    <p>TravelX is a Tour Guide App which helps you to nake your tour Easier!</p>
+                    <p>
+                        You can Book Hotels, Order your favourite food from your favourite Restaurants, Book Trusted
+                        Guides to make travel Easier.
+                        You can also Be a Host. Our Blog Feature is another thing for your Comfort!
+                    </p>
+
+                </div>
+                <!-- Grid column -->
+
+                <hr class="clearfix w-100 d-md-none">
+
+                <!-- Grid column -->
+                <!-- Grid column -->
+
+                <hr class="clearfix w-100 d-md-none">
+
+                <!-- Grid column -->
+                <div class="col-md-4 col-lg-3 mx-auto my-md-4 my-0 mt-4 mb-1">
+
+                    <!-- Contact details -->
+                    <h5 class="font-weight-bold text-uppercase mb-4">Address</h5>
+
+                    <ul class="list-unstyled">
+                        <li>
+                            <p>
+                                <i class="fas fa-home mr-3"></i> Lake City, Neharipara, Sylhet</p>
+                        </li>
+                        <li>
+                            <p>
+                                <i class="fas fa-envelope mr-3"></i> travelx@gmail.com</p>
+                        </li>
+                        <li>
+                            <p>
+                                <i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
+                        </li>
+                    </ul>
+
+                </div>
+                <!-- Grid column -->
+
+                <hr class="clearfix w-100 d-md-none">
+
+                <!-- Grid column -->
+                <div class="col-md-4 col-lg-2 text-center mx-auto my-4">
+
+                    <!-- Social buttons -->
+                    <h5 class="font-weight-bold text-uppercase mb-4">Follow Us</h5>
+
+                    <!-- Facebook -->
+                    <a type="button" class="btn-floating btn-fb">
+                        <i class="fab fa-facebook-f"></i> &nbsp;
+                    </a>
+                    <!-- Twitter -->
+                    <a type="button" class="btn-floating btn-tw">
+                        <i class="fab fa-twitter"></i> &nbsp;
+                    </a>
+                    <!-- Google +-->
+                    <a type="button" class="btn-floating btn-gplus">
+                        <i class="fab fa-google-plus-g"></i> &nbsp;
+                    </a>
+                    <!-- Dribbble -->
+                    <a type="button" class="btn-floating btn-dribbble">
+                        <i class="fab fa-dribbble"></i>
+                    </a>
+
+                </div>
+                <!-- Grid column -->
+
+            </div>
+            <!-- Grid row -->
+
+        </div>
+        <!-- Footer Links -->
+
+        <!-- Copyright -->
+        <!-- <div class="footer-copyright text-center py-3">© 2018 Copyright:
+                    <a href="https://mdbootstrap.com/education/bootstrap/"> MDBootstrap.com</a>
+                </div> -->
+        <!-- Copyright -->
+
+    </footer>
+
+</body>
+
+</html>

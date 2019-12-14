@@ -1,17 +1,128 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-    <title>Guide Detail</title>
+<!-- <title>Profile</title> -->
+{% endblock %}
+
+{% block header %}
 {% endblock %}
 
 {% block content_2 %}
-    <h1>{{ guide.name }}</h1>
-    <table>
-    {% if guide.mobile %}<tr><td>Mobile</td><td>{{ guide.mobile }}</td></tr>{% endif %}
-    {% if guide.description %}<tr><td>Description</td><td>{{ guide.description }}</td></tr>{% endif %}
-    </table>
-    {% if guide.img %} <img src="{{ guide.img.url }}" height="300" width="450" >{% endif %}
-<br>
-    <a href="/guide/{{ guide.id }}/update/">Update    </a><br>
-    <a href="/guide/{{ guide.id }}/delete/">Delete</a>
+
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-1">
+
+            </div>
+            <div class="col-lg-10">
+                <div class="card searchbox" style="height: max-content;">
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                {% if guide.img %}
+                                <img src="{{ guide.img.url }}" style="width: 400px; height: 440px; margin: 6%;"
+                                    alt="..." class="img-thumbnail searchbox">
+                                {% else %}
+                                <img src="/static/photo/guide_image.jpg"
+                                    style="width: 400px; height: 440px; margin: 6%;" alt="..."
+                                    class="img-thumbnail searchbox">
+                                {% endif %}
+
+                            </div>
+                            <div class="col" style="margin-left: 30px; margin-top: 7px;">
+                                <h1 style="font-family: Ubuntu;">{{ guide.name }}</h1>
+                                <h5 style="color: grey;">{{ guide.city.city }}, {{ guide.country }}
+                                </h5>
+                                <br>
+                                {% if guide.description %}
+                                <!-- <td>Description</td> -->
+
+                                <div style="color:#383c3a;">{{ guide.description }} </div>
+                                {% endif %}
+                                <br>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <p>
+                                            <i class="fas fa-venus-mars mr-3"></i> {{ guide.gender.name }}</p>
+                                    </li>
+                                    <li>
+                                        {% if guide.mobile %}
+                                        <p>
+                                            <i class="fas fa-phone mr-3"></i> {{ guide.mobile }}</p>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        <!-- {% if guide.mobile %} -->
+                                        <p>
+                                            <i class="fas fa-user mr-3"></i> Owner : <a
+                                                href="/accounts/profile/{{ guide.user_detail.user.id }}/">
+                                                {{guide.user_detail.user.username}}
+                                            </a>
+                                        </p>
+                                        <!-- {% endif %} -->
+                                    </li>
+                                </ul>
+                                <br>
+                                {% if guide.user_detail.user == request.user %}
+                                <div class="row">
+                                    <div class="col lg-6">
+                                        <a href="/guide/{{ guide.id }}/update/"><button type="button"
+                                                class="btn btn-info btn-lg btn-block"> Update
+                                            </button></a>
+
+                                    </div>
+                                    <div class="col lg-6">
+                                        <a href="/guide/{{ guide.id }}/update/"> <button type="button"
+                                                class="btn btn-danger btn-lg btn-block">
+                                                Delete </button></a>
+
+
+                                    </div>
+
+                                </div> <br>
+                                <div class="row">
+                                    <div class="col lg-6">
+                                        <a href="/guide/{{ guide.id }}/availability/"><button type="button"
+                                                class="btn btn-secondary btn-lg btn-block"> Availability
+                                            </button></a>
+
+                                    </div>
+                                    <div class="col lg-6">
+                                        <a href="/guide/{{ guide.id }}/bookings/"> <button type="button"
+                                                class="btn btn-info btn-lg btn-block">
+                                                Bookings </button></a>
+
+
+                                    </div>
+
+                                </div>
+                                {% endif %}
+
+
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-1">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
+
 {% endblock %}

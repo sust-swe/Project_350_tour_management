@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content_1 %}
+<title></title>
+{% endblock content_1 %}
+
+{% block header %}
+{% endblock %}
+
+{% block content_2 %}
+
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Search
+                    Guide</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <!-- <table class="form_table"> -->
+                        {{ form|crispy }}
+                        <!-- </table> -->
+                        <br>
+                        <div class="text-right">
+                            <button type="submit" style="font-family: Ubuntu;"
+                                class="btn btn-dark btn-lg">Search</button>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div> <br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            {% if avails.exists %}
+            <div class="card searchbox">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Results</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                {% for avail in avails %}
+                <div class="card-body">
+                    <div class="text-center">
+                        <a href="/guide/{{avail.guide.id}}/">
+                            <button class="btn btn-secondary btn-lg btn-block">{{avail.guide.name}}</button>
+                        </a> <br>
+                        {% if request.user.is_authenticated %}
+                        <button class="book btn btn-info" guide="{{avail.guide.id}}">Book</button> <br>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="card-body">
+                    <div class="text-center">
+                        <button class="btn btn-dark">No Guides Found!</button>
+
+                    </div>
+
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
+
+
+
+
+<script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
+    load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
+    load_from_day="/search/ajax/load_from_day/">
+
+        $("#id_from_year").change(function () {
+            var year = $(this).val();
+            var url = $("#date_ajax").attr("load_from_month");
+
+            $.ajax({
+                url: url,
+                data: { 'year': year },
+                success: function (shoaib) { $("#id_from_month").html(shoaib); }
+            });
+
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_year"),
+                data: { 'year': year },
+                success: function (redata) { $("#id_to_year").html(redata) }
+            });
+        });
+
+        $("#id_from_month").change(function () {
+            var year = $("#id_from_year").val();
+            var month = $("#id_from_month").val();
+            var url = $("#date_ajax").attr("load_from_day");
+
+            $.ajax({
+                url: url,
+                data: { 'year': year, 'month': month },
+                success: function (tasrif) { $("#id_from_day").html(tasrif); }
+            });
+
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_month"),
+                data: { 'from_year': $("#id_from_year").val(), 'to_year': $("#id_to_year").val(), 'from_month': $("#id_from_month").val() },
+                success: function (redata) { $("#id_to_month").html(redata); }
+            });
+        });
+
+        $("#id_to_year").change(function () {
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_month"),
+                data: { 'from_year': $("#id_from_year").val(), 'to_year': $("#id_to_year").val(), 'from_month': $("#id_from_month").val() },
+                success: function (redata) { $("#id_to_month").html(redata); }
+            });
+        });
+
+        $("#id_to_month").change(function () {
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_day"),
+                data: {
+                    'from_year': $("#id_from_year").val(),
+                    'from_month': $("#id_from_month").val(),
+                    'from_day': $("#id_from_day").val(),
+                    'to_year': $("#id_to_year").val(),
+                    'to_month': $("#id_to_month").val(),
+                    "space_type": $(this).attr("")
+                },
+                success: function (redata) { $("#id_to_day").html(redata); }
+            });
+        });
+
+        $("#id_from_day").change(function () {
+            $.ajax({
+                url: $("#date_ajax").attr("load_to_day"),
+                data: {
+                    'from_year': $("#id_from_year").val(),
+                    'from_month': $("#id_from_month").val(),
+                    'from_day': $("#id_from_day").val(),
+                    'to_year': $("#id_to_year").val(),
+                    'to_month': $("#id_to_month").val(),
+                },
+                success: function (redata) { $("#id_to_day").html(redata); }
+            });
+        });
+    </script>
+
+<script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
+
+    $("#id_country").change(function () {
+        $.ajax({
+            url: $("#load_city_ajax").attr("load_city"),
+            data: { 'country': $("#id_country").val() },
+            success: function (redata) {
+                $("#id_city").html(redata);
+            }
+        });
+    });
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    $(".book").click(function () {
+        $.ajax({
+            url: "/guide/book/",
+            type: "POST",
+            data: {
+                "from_year": $("#id_from_year").val(),
+                "from_month": $("#id_from_month").val(),
+                "from_day": $("#id_from_day").val(),
+                "to_year": $("#id_to_year").val(),
+                "to_month": $("#id_to_month").val(),
+                "to_day": $("#id_to_day").val(),
+                "guide": $(this).attr("guide")
+            },
+            success: function (response) {
+                alert(response);
+                $(".book").hide();
+            }
+        });
+    });
+</script>
+
+{% endblock %}

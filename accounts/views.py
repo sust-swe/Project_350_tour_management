@@ -1,10 +1,11 @@
+from django import views
 from homepage.models import UserDetail
 from django.contrib import messages, auth
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User, auth
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import UserDetailForm, UserForm
+from .forms import UserDetailForm, UserForm, LoginForm
 import os
 import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bravo1.settings")
@@ -13,17 +14,26 @@ django.setup()
 # Create your views here.
 
 
-def my_register(request):
-    if request.user.is_authenticated:
-        return redirect('/home/')
-    else:
-        form1 = UserForm()
-        form2 = UserDetailForm()
+class MyRegister(views.View):
+    template_name = "register.html"
+    user_form = UserForm
+    user_detail_form = UserDetailForm
 
-        if request.method == 'POST':
-            user_form = UserForm(request.POST)
-            user_detail_form = UserDetailForm(request.POST)
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('/home/')
+        else:
+            form1 = self.user_form()
+            form2 = self.user_detail_form()
+            return render(request, self.template_name, {"form1": form1, "form2": form2})
 
+    def post(self, request):
+
+        user_form = self.user_form(request.POST, request.FILES)
+        user_detail_form = self.user_detail_form(request.POST, request.FILES)
+        if request.user.is_authenticated:
+            return redirect('/home/')
+        else:
             if user_form.is_valid() and user_detail_form.is_valid():
                 username = user_form.cleaned_data['username']
                 first_name = user_form.cleaned_data['first_name']
@@ -34,9 +44,9 @@ def my_register(request):
                 mobile = user_detail_form.cleaned_data['mobile']
 
                 if password1 != password2:
-                    messages.info(request, 'Passwords not matching')
+                    user_form.add_error("__all__", 'Passwords not matching')
                 elif User.objects.filter(email=email).exists():
-                    messages.info(request, 'Email Address Taken')
+                    user_form.add_error("email", 'Email Address Taken')
                 else:
                     current_user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name,
                                                             password=password1, email=email)
@@ -45,34 +55,41 @@ def my_register(request):
                     current_user_detail.save()
                     login(request, current_user)
                     return redirect('/home/')
-
-                return render(request, 'register.html', {'form1': user_form, 'form2': user_detail_form})
+                return render(request, self.template_name, {'form1': user_form, 'form2': user_detail_form})
             else:
-                messages.info(request, 'Invalid Credentials')
-                return render(request, 'register.html', {'form1': user_form, 'form2': user_detail_form})
+                return render(request, self.template_name, {'form1': user_form, 'form2': user_detail_form})
 
+
+class MyLogin(views.View):
+    template_name = "login.html"
+    form_class = LoginForm
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            return redirect('/home/')
         else:
-            return render(request, 'register.html', {'form1': form1, 'form2': form2})
-
-
-def my_login(request):
-    if request.user.is_authenticated:
-        return redirect('/home/')
-    else:
-        if request.method == 'POST':
-            username = request.POST['username']
-            password = request.POST['password']
-            current_user = authenticate(request, username=username, password=password)
-            print(type(current_user))
-            if current_user is None:
-                messages.info(request, 'Invalid username or password')
-                return redirect('/accounts/login/')
+            form = self.form_class(request.POST or None)
+            if form.is_valid():
+                username = form.cleaned_data["username"]
+                password = form.cleaned_data["password"]
+                current_user = authenticate(
+                    request, username=username, password=password)
+                # print(type(current_user))
+                if current_user is None:
+                    form.add_error("__all__", 'Invalid username or password')
+                    return render(request, self.template_name, {"form": form})
+                else:
+                    login(request, current_user)
+                    return redirect('/home/')
             else:
-                login(request, current_user)
-                return redirect('/home/')
+                return render(request, self.template_name, {"form": form})
 
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('/home/')
         else:
-            return render(request, 'login.html')
+            form = self.form_class()
+            return render(request, self.template_name, {"form": form})
 
 
 def my_logout(request):
@@ -86,3 +103,10 @@ def my_logout(request):
 # messages.info(request, '4')
 # return HttpResponse('hi') replaces current html content
 # render(request, 'base.html', {'a': b} process base with the json data
+
+
+class ShowProfileDetail(views.View):
+    def get(self, request, user_id):
+        user_detail = UserDetail.objects.get(pk=user_id)
+        user = User.objects.get(userdetail=user_detail)
+        return render(request, "profile.html", {'user': user, 'user_detail': user_detail})
