@@ -1,9 +1,5 @@
 # Project-350: Tour Management
 
-Contributors
-
-1. Mehedi Hasan(2016831023)
-2. Md. Shoaib Tasrif Emon (2016831001)
 
 Software Engineering, IICT, SUST.
 
