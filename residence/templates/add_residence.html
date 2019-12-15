@@ -1,23 +1,54 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content_1 %}
-<title>Add Residence</title>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 {% endblock %}
 
 {% block header %}
-Add New Residence
 {% endblock %}
 
 {% block content_2 %}
 
-<form id="form1" method="post" enctype="multipart/form-data" load-city="/search/ajax/load_city/" novalidate>
-    {% csrf_token %}
-    <table class="form_table">
-        {{ form.as_table }}
-    </table>
-<button type="submit" class="body_button_class">Add</button>
-</form>
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Add Residence</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+
+                    <form id="form1" method="post" enctype="multipart/form-data" load-city="/search/ajax/load_city/"
+                        novalidate>
+                        {% csrf_token %}
+                        <!-- <table class="form_table"> -->
+                        {{ form|crispy }}
+                        <!-- </table> -->
+                        <br>
+                        <div class="text-right">
+                            <button type="submit" style="font-family: Ubuntu;" class="btn btn-info btn-lg">Add
+                                Residence</button>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 <script>
     $("#id_country").change(function () {
@@ -34,4 +65,5 @@ Add New Residence
         });
     });
 </script>
+
 {% endblock %}

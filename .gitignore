@@ -2,5 +2,7 @@
 .vscode
 testme
 media
+static
+assets
 test_django.py
 test_python.py

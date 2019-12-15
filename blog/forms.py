@@ -9,12 +9,23 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content', 'status', 'display_pic']
+        labels = {
+            'title': 'Title',
+            'content': 'Post Description',
+            'display_pic': 'Display Photo'
+
+        }
 
 
 class UpdatePostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content', 'status', 'display_pic']
+        labels = {
+            'title': 'Title',
+            'content': 'Post Description',
+
+        }
 
 
 class CommentForm(forms.ModelForm):
@@ -22,6 +33,9 @@ class CommentForm(forms.ModelForm):
     class Meta():
         model = Comment
         fields = ['text']
+        labels = {
+            'text': ''
+        }
 
         # widgets = {
         #     # The class here is a CSS class.
