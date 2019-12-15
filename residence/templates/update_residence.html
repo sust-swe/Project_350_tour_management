@@ -1,46 +1,81 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
-{% block content_1 %}<title>Update Residence</title>{% endblock %}
+{% block content_1 %}
+{% endblock %}
 
 {% block header %}
-{{ residence.name }}
 {% endblock %}
 
 {% block content_2 %}
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table class="form_table">
-        {{ form.as_table }}
-    </table>
-<button type="submit" class="body_button_class">Update</button>
-</form>
 
-  <script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
-        $("#id_country").change(function () {
-            $.ajax({
-                url: $("#load_city_ajax").attr("load_city"),
-                data: { 'country': $("#id_country").val() },
-                success: function (redata) {
-                    $("#id_city").html(redata);
-                    $.ajax({
-                        url: $("#load_city_ajax").attr("load_residence"),
-                        data: { 'city': $("#id_city").val() },
-                        success: function (redata) { $("#id_residence").html(redata); }
-                    });
-                }
-            });
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">{{ residence.name }}</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- <table class="form_table"> -->
+                        {{ form|crispy }}
+                        <!-- </table> -->
+                        <br>
+                        <div class="text-right">
+                            <button type="submit" style="font-family: Ubuntu;"
+                                class="btn btn-info btn-lg">Update</button>
+
+                        </div>
+                    </form>
+                    <!-- <a href="/residence/{{ residence.id }}/"><button
+                            class="btn btn-outline-dark btn-lg btn-block">{{ residence.name }}</button> </a> -->
+
+                </div>
+
+
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
+<script id="load_city_ajax" load_city="/search/ajax/load_city/" load_residence="/search/ajax/load_city_residence/">
+    $("#id_country").change(function () {
+        $.ajax({
+            url: $("#load_city_ajax").attr("load_city"),
+            data: { 'country': $("#id_country").val() },
+            success: function (redata) {
+                $("#id_city").html(redata);
+                $.ajax({
+                    url: $("#load_city_ajax").attr("load_residence"),
+                    data: { 'city': $("#id_city").val() },
+                    success: function (redata) { $("#id_residence").html(redata); }
+                });
+            }
         });
-        $("#id_city").change(function () {
-            // $("#test").html("load_residence");
-            $.ajax({
-                url: $("#load_city_ajax").attr("load_residence"),
-                data: { 'city': $("#id_city").val() },
-                success: function (redata) { $("#id_residence").html(redata); }
-            });
+    });
+    $("#id_city").change(function () {
+        // $("#test").html("load_residence");
+        $.ajax({
+            url: $("#load_city_ajax").attr("load_residence"),
+            data: { 'city': $("#id_city").val() },
+            success: function (redata) { $("#id_residence").html(redata); }
         });
+    });
 </script>
 
 
 {% endblock %}
-
-
