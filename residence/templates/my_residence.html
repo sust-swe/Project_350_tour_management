@@ -1,25 +1,56 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% static "images" as statimgsrc %}
 {% block content_1 %}
-<title>My Residence</title>
-{% endblock %}
+<title></title>
+{% endblock content_1 %}
 
 {% block header %}
-My Residence
 {% endblock %}
 
 {% block content_2 %}
-<table>
-    {% for res in qs %}
-    <tr>
-        <td>
-            <a href="/residence/{{ res.id }}/"> <button class="body_button_class"> {{ res.name }}</button></a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% endblock %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
 
-{% block body_op %}
-<a href="/residence/add_residence/"><button class="body_op_button_class"> Add New Residence</button></a>
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">My Restaurants</h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        <!-- <table> -->
+                        {% for res in qs %}
+                        <!-- <tr> -->
+                        <!-- <td> -->
+                        <a href="/residence/{{ res.id }}/"><button class="btn btn-outline-dark btn-lg btn-block"
+                                style="font-family: Ubuntu;">{{res.name}}</button></a>
+                        <!-- </td> -->
+                        <!-- </tr> -->
+                        {% endfor %}
+                        <!-- </table> -->
+
+                        {% endblock %}
+                        {% block body_op %}
+                        <br> <br>
+                        <a href="/residence/add_residence/"><button class="btn btn-info btn-lg btn-block"
+                                style="font-family: Ubuntu;">Add New
+                                Residence</button></a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
 {% endblock %}

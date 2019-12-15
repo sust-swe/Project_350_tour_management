@@ -17,7 +17,7 @@
         </div>
         <div class="col-lg-8">
             <div class="card searchbox" style="height: max-content;">
-                <h3 class="card-header" style="background: #232524; color: #FFFF;">Book Space</h3>
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">{{space.name}}</h3>
                 <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
                 <div class="card-body">
 
@@ -53,117 +53,6 @@
 <br> <br>
 
 
-<script id="date_ajax" load_to_year="/residence/ajax/load_to_year/" load_to_month="/residence/ajax/load_to_month/"
-    load_to_day="/residence/ajax/load_to_day/" load_from_month="/residence/ajax/load_from_month/"
-    load_from_day="/residence/ajax/load_from_day/">
-
-        $("#b1").click(function () { $("#test").show(); });
-        $("#b1").dblclick(function () { $("#test").hide(); });
-
-
-        $("#id_from_year").change(function () {
-            // $("#test").html('changed');
-            var year = $(this).val();
-            var url = $("#date_ajax").attr("load_from_month");
-            // $("#test").html(url);
-
-            $.ajax({
-                url: url,
-                data: { 'year': year },
-                success: function (shoaib) { $("#id_from_month").html(shoaib); }
-            });
-
-            $.ajax({
-                url: $("#date_ajax").attr("load_to_year"),
-                data: { 'year': year },
-                success: function (redata) { $("#id_to_year").html(redata) }
-            });
-        });
-
-        $("#id_from_month").change(function () {
-            var year = $("#id_from_year").val();
-            var month = $("#id_from_month").val();
-            var url = $("#date_ajax").attr("load_from_day");
-            // $("#test").html('ok');
-            $.ajax({
-                url: url,
-                data: { 'year': year, 'month': month },
-                success: function (tasrif) { $("#id_from_day").html(tasrif); }
-            });
-
-            $.ajax({
-                url: $("#date_ajax").attr("load_to_month"),
-                data: { 'from_year': $("#id_from_year").val(), 'to_year': $("#id_to_year").val(), 'from_month': $("#id_from_month").val() },
-                success: function (redata) { $("#id_to_month").html(redata); }
-            });
-        });
-
-        $("#id_to_year").change(function () {
-            // $("#test").html('ok');
-            $.ajax({
-                url: $("#date_ajax").attr("load_to_month"),
-                data: { 'from_year': $("#id_from_year").val(), 'to_year': $("#id_to_year").val(), 'from_month': $("#id_from_month").val() },
-                success: function (redata) { $("#id_to_month").html(redata); }
-            });
-        });
-
-        $("#id_to_month").change(function () {
-            $.ajax({
-                url: $("#date_ajax").attr("load_to_day"),
-                data: {
-                    'from_year': $("#id_from_year").val(),
-                    'from_month': $("#id_from_month").val(),
-                    'from_day': $("#id_from_day").val(),
-                    'to_year': $("#id_to_year").val(),
-                    'to_month': $("#id_to_month").val(),
-                },
-                success: function (redata) { $("#id_to_day").html(redata); }
-            });
-        });
-
-        $("#id_from_day").change(function () {
-            $.ajax({
-                url: $("#date_ajax").attr("load_to_day"),
-                data: {
-                    'from_year': $("#id_from_year").val(),
-                    'from_month': $("#id_from_month").val(),
-                    'from_day': $("#id_from_day").val(),
-                    'to_year': $("#id_to_year").val(),
-                    'to_month': $("#id_to_month").val(),
-                },
-                success: function (redata) { $("#id_to_day").html(redata); }
-            });
-        });
-
-
-    </script>
-
-{% endblock %}
-
-
-
-
-
-
-{% extends 'base.html' %}
-
-
-{% block content_1 %}
-<title>csa</title>
-{% endblock content_1 %}
-
-{% block header %}
-{{ space.name }}
-{% endblock %}
-
-{% block content_2 %}
-<form method="POST">
-    {% csrf_token %}
-    <table class="form_table">
-        {{form.as_table}}
-    </table>
-    <button class="body_button_class" type="submit">Submit</button>
-</form>
 <script id="date_ajax" load_to_year="/search/ajax/load_to_year/" load_to_month="/search/ajax/load_to_month/"
     load_to_day="/search/ajax/load_to_day/" load_from_month="/search/ajax/load_from_month/"
     load_from_day="/search/ajax/load_from_day/">
@@ -246,8 +135,5 @@
             });
         });
     </script>
-{% endblock content_2 %}
 
-{% block body_op %}
-<a href="/residence/space/{{ space.id }}/"><button class="body_op_button_class">{{ space.name }}</button></a>
 {% endblock %}
