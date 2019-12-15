@@ -1,26 +1,55 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 
 {% block content_1 %}
-<title>Create Update Space Type</title>
-{% endblock content_1 %}
+{% endblock %}
 
 {% block header %}
-    Space Type
 {% endblock %}
 
 {% block content_2 %}
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table class="form_table">
-        {{form.as_table}}
-    </table>
-<button class="body_button_class" type="submit">Create</button>
-</form>
-{% endblock content_2 %}
 
-{% block body_op %}
-<a href="/residence/{{ residence.id }}/">
-    <button class="body_op_button_class">{{ residence.name }}</button>
-</a>
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">{{ residence.name }}'s Space</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- <table class="form_table"> -->
+                        {{ form|crispy }}
+                        <!-- </table> -->
+                        <br>
+                        <div class="text-right">
+                            <button type="submit" style="font-family: Ubuntu;"
+                                class="btn btn-info btn-lg">Create</button>
+
+                        </div>
+                    </form>
+                    <!-- <a href="/residence/{{ residence.id }}/"><button
+                            class="btn btn-outline-dark btn-lg btn-block">{{ residence.name }}</button> </a> -->
+
+                </div>
+
+
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
+
 {% endblock %}

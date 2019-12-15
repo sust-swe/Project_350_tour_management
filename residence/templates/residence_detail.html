@@ -1,66 +1,118 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-<title>Residence Detail</title>
 {% endblock %}
 
 {% block header %}
-{{ ob.name }}
+
 {% endblock %}
 
 {% block content_2 %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
 
-{% if ob.img %}
-<table>
-    <tr>
-        <td><img src="{{ ob.img.url }}" class="image_ste" /></td>
-    </tr>
-</table>
-{% endif %}
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    {% if ob.img %}
+                    <img src="{{ ob.img.url }}" class="card-img-top thumbnail">
+                    {% else %}
 
-<table class="body_table">
-    {% if ob.address %}
-    <tr>
-        <td>Address</td>
-        <td>{{ ob.address }}</td>
-    </tr>
-    {% endif %}
+                    <img src="/static/photo/res_img.jpg" alt="..." class="card-img-top thumbnail">
+                    {% endif %}
 
-    {% if ob.city %}
-    <tr>
-        <td>City</td>
-        <td>{{ ob.city }}</td>
-    </tr>
-    {% endif %}
+                    <div class="card-body">
+                        <!-- <div class="row"> -->
+                        <!-- <div class="col"> -->
 
-    {% if ob.mobile %}
-    <tr>
-        <td>Mobile</td>
-        <td>{{ ob.mobile }}</td>
-    </tr>
-    {% endif %}
-    {% if ob.description %}
-    <tr>
-        <td>Description</td>
-        <td>{{ ob.description }}</td>
-    </tr>
-    {% endif %}
-    <tr>
-        <td>Owner</td>
-        <td>
-            <a href="/accounts/profile/{{ob.user_detail.user.id}}/"><button
-                    class="body_table_data_button">{{ob.user_detail.user.username}}</button></a>
-        </td>
-    </tr>
-</table>
-{% endblock %}
 
-{% block body_op %}
-<a href="space_type/"><button class="body_op_button_class">Space Types</button></a>
-{% if request.user == ob.user_detail.user %}
-<a href="space/"><button class="body_op_button_class">Spaces</button></a>
-<a href="update/"><button class="body_op_button_class">Update</button></a>
-<a href="delete/"><button class="body_op_button_class">Delete</button></a>
-<a href="/residence/{{ ob.id }}/orders"><button class="body_op_button_class">Bookings</button></a>
-{% endif %}
+                        <!-- </div> -->
+                        <!-- <div class="col" style="margin-left: 20px;"> -->
+                        <h1 style="font-family: Ubuntu;">{{ ob.name }}</h1>
+                        <p><i class="fas fa-map-marker-alt" style="color: gray; font-size: large;">&nbsp;
+                                {{ ob.city }}, {{ ob.country }}.
+                            </i></p>
+                        <br>
+                        <div style="color:#383c3a;">{{ ob.description }} </div>
+                        <br>
+                        <ul class="list-unstyled">
+                            <li>
+                                <p>
+                                    <i class="fas fa-phone mr-3"></i> Phone No :&nbsp; {{ ob.mobile }}</p>
+                            </li>
+                            <li>
+                                <p>
+                                    <i class="fas fa-user mr-3"></i> Owned By :&nbsp; <a
+                                        href="/accounts/profile/{{ ob.user_detail.user.id }}">
+                                        {{ob.user_detail.user.first_name}}&nbsp;{{ob.user_detail.user.last_name}}</a>
+                                </p>
+                            </li>
+                        </ul>
+                        {% endblock %}
+                        {% block body_op %}
+                        <br>
+                        <div class="row">
+                            <div class="col">
+
+
+
+                                <a href="space_type/"> <button type="button" class="btn btn-info btn-lg btn-block">Space
+                                        Types</button></a>
+
+
+                                <!-- <a href="delete/"><button class="body_op_button_class">Delete</button></a> -->
+                                <!-- <a href="orders/"><button class="body_op_button_class">Orders</button></a> -->
+
+
+
+
+                            </div>
+                            {% if request.user == ob.user_detail.user %}
+                            <div class="col">
+                                <a href="update/"> <button type="button"
+                                        class="btn btn-dark btn-lg btn-block">Update</button></a>
+
+                            </div>
+                            <div class="col">
+                                <a href="delete/"> <button type="button"
+                                        class="btn btn-danger btn-lg btn-block">Delete</button></a>
+                                <!-- <button type="button" class="btn btn-danger btn-lg btn-block">Delete</button> -->
+
+                            </div>
+                            <div class="col">
+                                <a href="space/"> <button type="button"
+                                        class="btn btn-danger btn-lg btn-block">Spaces</button></a>
+                                <!-- <button type="button" class="btn btn-danger btn-lg btn-block">Delete</button> -->
+
+                            </div>
+                            <div class="col">
+                                <a href="/residence/{{ ob.id }}/orders"> <button type="button"
+                                        class="btn btn-dark btn-lg btn-block">Bookings</button></a>
+
+                            </div>
+                            {% endif %}
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+
+
+    <br> <br>
+</div>
 {% endblock %}
