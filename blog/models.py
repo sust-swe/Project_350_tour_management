@@ -75,7 +75,7 @@ class Comment(models.Model):
     user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
     text = RichTextField()
     created_on = models.DateTimeField(auto_now_add=True)
-    approve_comment = models.BooleanField(default=False)
+    approve_comment = models.BooleanField(default=True)
 
     def __str__(self):
         return self.text

@@ -1,20 +1,56 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content_1 %}
-<title>book space</title>
-{% endblock content_1 %}
+{% endblock %}
+
+{% block header %}
+{% endblock %}
 
 {% block content_2 %}
-<form method="POST">
-    {% csrf_token %}
-    <table>
-        {{form.as_table}}
-        <tr>
-            <td></td>
-            <td><input type="submit" value="Book"></td>
-        </tr>
-    </table>
-</form>
+
+<br> <br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <div class="card searchbox" style="height: max-content;">
+                <h3 class="card-header" style="background: #232524; color: #FFFF;">Book Space</h3>
+                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                <div class="card-body">
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- <table class="form_table"> -->
+                        {{ form|crispy }}
+                        <!-- </table> -->
+                        <br>
+                        <div class="text-right">
+                            <button type="submit" value="Book" style="font-family: Ubuntu;"
+                                class="btn btn-info btn-lg">Book Space</button>
+
+                        </div>
+                    </form>
+                    <!-- <a href="/residence/{{ residence.id }}/"><button
+                            class="btn btn-outline-dark btn-lg btn-block">{{ residence.name }}</button> </a> -->
+
+                </div>
+
+
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+
+
+    </div>
+
+</div>
+<br> <br>
 
 
 <script id="date_ajax" load_to_year="/residence/ajax/load_to_year/" load_to_month="/residence/ajax/load_to_month/"
@@ -102,5 +138,4 @@
 
     </script>
 
-
-{% endblock content_2 %}
+{% endblock %}

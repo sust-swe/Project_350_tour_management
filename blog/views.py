@@ -108,6 +108,7 @@ def PostList(request):
     paginator = Paginator(postlist, 6)
     # postlistd = Post.objects.filter(status=1).order_by('-created_on')
     page = request.GET.get('page')
+    postlist = paginator.get_page(page)
 
     if request.method == 'POST':
         query = request.POST['q']
@@ -115,8 +116,6 @@ def PostList(request):
         if query:
             postlist = Post.objects.filter(
                 status=1).filter(title__icontains=query)
-
-    postlist = paginator.get_page(page)
 
     context = {
         'post_lists': postlist,

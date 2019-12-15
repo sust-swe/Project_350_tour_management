@@ -9,10 +9,10 @@ from homepage.models import UserDetail, City, Country, Address, MyChoice, Cart
 class Residence(models.Model):
     user_detail = models.ForeignKey(UserDetail, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    city = models.ForeignKey(
-        City, on_delete=models.SET_NULL, null=True, default=None)
     country = models.ForeignKey(
         Country, on_delete=models.SET_NULL, null=True, default=None)
+    city = models.ForeignKey(
+        City, on_delete=models.SET_NULL, null=True, default=None)
     mobile = models.IntegerField(default=None, null=True, blank=True)
     description = models.CharField(
         max_length=255, null=True, blank=True, default=None)

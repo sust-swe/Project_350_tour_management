@@ -3,216 +3,175 @@
 {% load hitcount_tags %}
 {% block content_2 %}
 
+<div class="container" style="padding: 50px 100px;">
+    <div class="card searchbox">
+        {% if post.display_pic %}
+        <img src="{{ post.display_pic.url }}" alt="..." class="card-img-top thumbnail">
+        {% else %}
+        <img src="/static/photo/bgfinal2.jpg" alt="..." class="card-img-top thumbnail">
+        {% endif %}
 
-<br> <br>
-<div class="container">
-    <div class="row">
-        <div class="col-lg-1">
+        <div class="card-body">
+            <h1 style="font-family: Ubuntu;" class="text-capitalize">{{ post.title }}</h1>
 
-        </div>
-        <div class="col-lg-10">
-            <div class="card searchbox" style="height: max-content;">
-                {% if post.display_pic %}
-                <img src="{{ post.display_pic.url }}" alt="..." class="card-img-top thumbnail">
+            <h6 style="margin: 0px 5px; color: rgb(73, 70, 70);"><i class="far fa-eye mr-2"></i>Views &nbsp;:&nbsp;
+                {% get_hit_count for post %}</h6>
+
+
+
+            <p style="color: grey;">
+                {% if post.user_detail.img %}
+
+
+
+                <div style="font-family: Ubuntu; color: gray;"> <img src="{{ post.user_detail.img.url }}"
+                        style="width: 50px; height: 50px; border-radius: 50%;" alt="..." class="">
+                    <a href="/accounts/profile/{{post.user_detail.user.id}}">{{ post.user_detail.user }}</a>
+                    | {{ post.created_on }}</div>
                 {% else %}
-                <img src="/static/photo/bgfinal2.jpg" alt="..." class="card-img-top thumbnail">
+
+                <div style="font-family: Ubuntu; color: gray;"> <img src="/static/photo/guide_image.jpg"
+                        style="width: 50px; height: 50px; border-radius: 50%;" alt="..." class="">
+                    <a href="/accounts/profile/{{post.user_detail.user.id}}">{{ post.user_detail.user }}</a>
+                    | {{ post.created_on }}</div>
                 {% endif %}
+                <br>
 
-                <div class="card-body">
-                    <!-- <div class="row"> -->
-                    <!-- <div class="col"> -->
+                <div style="color: black;" style="margin-top: 40px;">{{ post.content | safe | linebreaksbr}}</div> <br>
+                <br>
 
+            </p>
+            {% if post.user_detail.user == request.user %}
+            <div class="row">
 
-                    <!-- </div> -->
-                    <!-- <div class="col" style="margin-left: 20px;"> -->
-                    <h1 style="font-family: Ubuntu;">{{ post.title }}</h1>Views : {% get_hit_count for post %}
-                    <p style="color: grey;">
-                        {% if post.user_detail.img %}
+                <div class="col lg-1">
+                    <a href="{% url 'post_edit' pk=post.pk %}"> <button class="btn btn-info btn-lg btn-block"><i
+                                class="far fa-edit">&nbsp; Edit</i></button></a>
 
-
-
-                        <div style="font-family: Ubuntu; color: gray;"> <img src="{{ post.user_detail.img.url }}"
-                                style="width: 25px; height: 25px; border-radius: 50%;" alt="..." class="">
-                            <a href="/accounts/profile/{{post.user_detail.user.id}}">{{ post.user_detail.user }}</a>
-                            | {{ post.created_on }}</div>
-                        {% else %}
-
-                        <div style="font-family: Ubuntu; color: gray;"> <img src="/static/photo/guide_image.jpg"
-                                style="width: 25px; height: 25px; border-radius: 50%;" alt="..." class="">
-                            <a href="/accounts/profile/{{post.user_detail.user.id}}">{{ post.user_detail.user }}</a>
-                            | {{ post.created_on }}</div>
-                        {% endif %}
-                    </p>
-                    <br>
-                    <div style="color:#383c3a;">{{ post.content | safe | linebreaksbr}}</div>
-                    <br>
-                    <div class="row">
-                        {% if user.is_authenticated %}
-                        <div class="col lg-1">
-                            <a href="{% url 'post_edit' pk=post.pk %}"> <button class="btn btn-info"><i
-                                        class="far fa-edit">&nbsp; Edit</i></button></a>
-
-                        </div>
-                        <div class="col lg-1">
-                            <button class="btn btn-danger" type="button" onclick="successfulz();"><i
-                                    class="far fa-trash-alt">&nbsp; Delete</i></button>
+                </div>
+                <div class="col lg-1">
+                    <button class="btn btn-danger btn-lg btn-block" type="button" onclick="successfulz();"><i
+                            class="far fa-trash-alt">&nbsp; Delete</i></button>
 
 
 
-                            <script type="text/javascript">
-                                function successfulz() {
-                                    swal({
-                                        title: "Are you sure?",
-                                        text: "Once deleted, you will not be able to recover this Post!",
-                                        icon: "warning",
-                                        buttons: true,
-                                        dangerMode: true,
-                                    })
-                                        .then((willDelete) => {
-                                            if (willDelete) {
-                                                window.location.href = "{% url 'post_remove' pk=post.pk %}";
-                                                // <a href="{% url 'post_remove' pk=post.pk %}" />
-                                                swal("Poof! Your Post has been deleted!", {
-                                                    icon: "success",
-                                                });
-                                            } else {
-                                                swal("Post is not Deleted!");
-                                            }
+                    <script type="text/javascript">
+                        function successfulz() {
+                            swal({
+                                title: "Are you sure?",
+                                text: "Once deleted, you will not be able to recover this Post!",
+                                icon: "warning",
+                                buttons: true,
+                                dangerMode: true,
+                            })
+                                .then((willDelete) => {
+                                    if (willDelete) {
+                                        window.location.href = "{% url 'post_remove' pk=post.pk %}";
+                                        // <a href="{% url 'post_remove' pk=post.pk %}" />
+                                        swal("Poof! Your Post has been deleted!", {
+                                            icon: "success",
                                         });
-                                }
+                                    } else {
+                                        swal("Post is not Deleted!");
+                                    }
+                                });
+                        }
 
 
-                            </script>
-                            <br>
-
-
-                        </div>
-                        {% endif %}
-                        <div class="col lg-1">
-                            <!-- <button class="btn btn-danger"><i class="far fa-trash-alt">&nbsp; Delete</i></button> -->
-                        </div>
-                        <div class="col lg-1">
-                            <!-- <button class="btn btn-danger"><i class="far fa-trash-alt">&nbsp; Delete</i></button> -->
-                        </div>
-                        <div class="col lg-1">
-                            <!-- <button class="btn btn-danger"><i class="far fa-trash-alt">&nbsp; Delete</i></button> -->
-                        </div>
-                        <div class="col lg-1">
-                            <!-- <button class="btn btn-danger"></button> -->
-                        </div>
-                        <div class="col lg-1">
-                            <!-- <button class="btn btn-danger"><i class="far fa-trash-alt">&nbsp; Delete</i></button> -->
-                        </div>
-                        <div class="col lg-1">
-                            <!-- <button class="btn btn-danger"><i class="far fa-trash-alt">&nbsp; Delete</i></button> -->
-                        </div>
-                        <div class="col lg-1">
-                            <!-- <button class="btn btn-danger"><i class="far fa-trash-alt">&nbsp; Delete</i></button> -->
-                        </div>
-                        <div class="col lg-1">
-                            <!-- <button class="btn btn-danger"><i class="far fa-trash-alt">&nbsp; Delete</i></button> -->
-                        </div>
-
-                    </div>
-
-                    <br> <br>
-                    <button class="btn btn-light">
-                        <a href="#" onClick="document.getElementById('likebutton').submit()">
-                            <i class="far fa-thumbs-up">&nbsp; Like</i></a>
-                        {{post.likes}} &nbsp;
-
-                    </button>
-                    <button class="btn btn-light">
-                        <a href="#" onClick="document.getElementById('dislikebutton').submit()"><i
-                                class="far fa-thumbs-down">&nbsp; Dislike</i></a>
-                        {{post.dislikes}}
-
-                    </button>
-
-
-
-                    <form id="likebutton" method="POST" action="/blog/bloglist/{{post.id}}/preference/1/">
-                        {% csrf_token %}
-                        <input type="hidden">
-                    </form>
-
-                    <form id="dislikebutton" method="POST" action="/blog/bloglist/{{post.id}}/preference/2/">
-                        {% csrf_token %}
-                        <input type="hidden">
-                    </form>
-                    <button type="button" class="btn btn-outline-secondary btn-lg btn-block">Comments</button> <br>
-                    {% for comment in post.comments.all %}
-                    {% if user.is_authenticated or comment.approve_comment %}
-                    <div class="card" style="margin-bottom: 30px;">
-                        <div class="card-body">
-                            <p style="color: grey;">
-                                {% if comment.post.user_detail.img %}
-
-
-
-                                <div style="font-family: Ubuntu; color: gray;"> <img
-                                        src="{{ post.user_detail.img.url }}"
-                                        style="width: 50px; height: 50px; border-radius: 50%;" alt="..." class="">
-                                    {{comment.user_detail.user}} <b style="color: black;">
-                                        {{ comment.text | safe }}</b>
-                                </div>
-                                {% else %}
-
-                                <div style="font-family: Ubuntu; color: gray;"> <img src="/static/photo/guideimg.jpg"
-                                        style="width: 50px; height: 50px; border-radius: 50%;" alt="..." class="">
-                                    {{comment.user_detail.user}} : <b style="color: black;">
-                                        {{ comment.text | safe }}</b>
-                                </div>
-                                {% endif %}
-                            </p>
-
-
-                        </div>
-                        {% if not comment.approve_comment %}
-                        <a href="{% url 'comment_approve' pk=comment.pk %}"> <button class="btn btn-info"><i
-                                    class="far fa-check-circle">Approve</i></button></a> <br>
-                        <a href="{% url 'comment_remove' pk=comment.pk %}"> <button class="btn btn-danger">
-                                <i class="far fa-check-circle">Remove</i>
-
-                            </button></a>
-                        {% endif %}
-                        <br>
-
-
-
-                        {% endif %}
-                        {% empty %}
-                        <p>No Comments!</p>
-                        {% endfor %}
-
-                    </div> <br>
-
-
-
-
-
+                    </script>
+                    <br>
 
 
                 </div>
-                <a href="{% url 'addcomment' pk=post.pk %}"> <button type="button"
-                        class="btn btn-secondary btn-lg btn-block">Post Your Comment!</button></a>
 
-                <br>
+                <div class="col lg-10">
+                </div>
 
             </div>
+            {% endif %}
+            <br>
+            <button class="btn btn-light">
+                <a href="#" onClick="document.getElementById('likebutton').submit()">
+                    <i class="far fa-thumbs-up">&nbsp; Like</i></a>
+                {{post.likes}} &nbsp;
 
+            </button>
+            <button class="btn btn-light">
+                <a href="#" onClick="document.getElementById('dislikebutton').submit()"><i
+                        class="far fa-thumbs-down">&nbsp; Dislike</i></a>
+                {{post.dislikes}}
+
+            </button> <br> <br>
+            <form id="likebutton" method="POST" action="/blog/bloglist/{{post.id}}/preference/1/">
+                {% csrf_token %}
+                <input type="hidden">
+            </form>
+
+            <form id="dislikebutton" method="POST" action="/blog/bloglist/{{post.id}}/preference/2/">
+                {% csrf_token %}
+                <input type="hidden">
+            </form>
+            <button type="button" class="btn btn-outline-secondary btn-lg btn-block"
+                style="margin: 20px 0px;">Comments</button>
+            {% for comment in post.comments.all %}
+            {% if comment.approve_comment %}
+            <div class="" style="margin-bottom: 10px;">
+
+
+                <div class=""
+                    style="background: #eeeeee;margin-bottom: 5px;border-radius: 5px;padding: 20px; margin-bottom: 10px;">
+
+                    {% if comment.post.user_detail.img %}
+
+                    <div style="font-family: Ubuntu; color: gray;">
+                        <div class="d-flex">
+                            <img src="{{ post.user_detail.img.url }}"
+                                style="width: 50px; height: 50px; border-radius: 50%;" alt="..." class="">
+                            <p style="margin-top: 12px;margin-left: 10px;">{{comment.user_detail.user}}
+                            </p>
+                        </div>
+                    </div>
+                    <h5 class="strong" style="color: black; margin-left: 60px;">
+                        {{ comment.text | safe }}
+                    </h5>
+                    {% else %}
+
+                    <div style="font-family: Ubuntu; color: gray;">
+                        <div class="d-flex">
+                            <img src="/static/photo/guide_image.jpg"
+                                style="width: 50px; height: 50px; border-radius: 50%;" alt="..." class="">
+                            <p style="margin-top: 12px;margin-left: 10px;">{{comment.user_detail.user}}
+                            </p>
+                        </div>
+                    </div>
+                    <h5 class="strong" style="color: black; margin-left: 60px;">
+                        {{ comment.text | safe }}
+                    </h5>
+                    {% endif %}
+
+                </div>
+
+
+
+            </div>
+            {% endif %}
+
+            {% empty %}
+            <p>No Comments!</p>
+
+            {% endfor %}
+
+            <a href="{% url 'addcomment' pk=post.pk %}"> <button type="button"
+                    class="btn btn-secondary btn-lg btn-block" style="margin: 40px 0px;">Post
+                    Your Comment!</button></a>
 
         </div>
+
+
+
     </div>
 
-</div>
-<div class="col-lg-1">
 
 </div>
 
-
-</div>
-
-</div>
-<br> <br>
-{% endblock content_2 %}
+{% endblock %}
