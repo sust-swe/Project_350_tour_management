@@ -1,29 +1,84 @@
 {% extends 'base.html' %}
+
 {% block content_1 %}
-<title>Residence Order Detail</title>
+<title></title>
 {% endblock content_1 %}
+
+{% block header %}
+{% endblock %}
+
 {% block content_2 %}
-<h1>Received Residence Orders</h1>
-<table class="spacing-table">
-    <tr>
-        <th>Order ID</th>
-        <th>Residence</th>
-        <th>Space Type</th>
-        <th>No of Space</th>
-        <th>From</th>
-        <th>To</th>
-        <th>Booked at</th>
-    </tr>
-    {% for order in orders %}
-    <tr>
-        <td>{{order.id}}</td>
-        <td> <a href="/residence/{{order.space_type.residence.id}}/">{{order.space_type.residence.name}}</a></td>
-        <td> <a href="/residence/space_type/{{order.space_type.id}}/">{{order.space_type.name}}</a></td>
-        <td>{{order.n_space}}</td>
-        <td>{{order.book_from}}</td>
-        <td>{{order.book_to}}</td>
-        <td>{{order.booking_time}}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% endblock content_2 %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">Received Residence Orders</h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        <table class="table">
+                            <thead>
+                                <tr>
+
+                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Residence</th>
+                                    <th scope="col">Space Type</th>
+                                    <th scope="col">No Of Space</th>
+                                    <th scope="col">From</th>
+                                    <th scope="col">To</th>
+                                    <th scope="col">Booked At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td>
+                                        {{order.id}}
+                                        </a>
+                                    </td>
+
+                                    <td> <a href="/residence/{{order.space_type.residence.id}}/"
+                                            class="btn btn-light">{{order.space_type.residence.name}}</a>
+                                    </td>
+                                    <td> <a href="/residence/space_type/{{order.space_type.id}}/"
+                                            class="btn btn-light">{{order.space_type.name}}</a>
+                                    </td>
+                                    <td>{{order.n_space}}</td>
+                                    <td>{{order.book_from}}</td>
+                                    <td>{{order.book_to}}</td>
+                                    <td>{{order.booking_time}}</td>
+
+
+                                <tr>
+                                    {% endfor %}
+
+                            </tbody>
+                        </table> <br>
+
+
+
+                        <br><br>
+
+
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
+{% endblock %}
