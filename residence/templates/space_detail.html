@@ -1,80 +1,127 @@
 {% extends 'base.html' %}
 
 {% block content_1 %}
-<title>Space Detail</title>
 {% endblock %}
 
 {% block header %}
-{{ space.name }}
+
 {% endblock %}
 
 {% block content_2 %}
-<table class="body_table">
-    {% if space.space_type.pic %}
-    <tr>
-        <td><img src="{{ space.space_type.pic.url }}" class="image_ste"></td>
-    </tr>
-    {% endif %}
-</table>
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
 
-<table class="body_table">
-    <tr>
-        <td>For </td>
-        <td>{{ space.space_type.person }} person</td>
-    </tr>
-    <tr>
-        <th colspan="2">
-            <a href="/residence/space_type/{{space.space_type.id}}/">
-                <button class="body_table_data_button">{{space.space_type.name}}</button>
-            </a>
-        </th>
-    </tr>
-</table>
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    {% if space.space_type.pic %}
+                    <img src="{{ space.space_type.pic.url }}" class="card-img-top thumbnail">
+                    {% else %}
+
+                    <img src="/static/photo/res_img.jpg" alt="..." class="card-img-top thumbnail">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <!-- <div class="row"> -->
+                        <!-- <div class="col"> -->
 
 
-{% if space.residence.user_detail.user == request.user %}
-<p id="owner_access">
+                        <!-- </div> -->
+                        <!-- <div class="col" style="margin-left: 20px;"> -->
+                        <h1 style="font-family: Ubuntu;">{{ space.name }}</h1>
+
+                        <h6>For {{ space.space_type.person }} Person</h6>
+                        <b>Space Type: </b> <a href="/residence/space_type/{{space.space_type.id}}/">
+                            <button class="btn btn-light">{{space.space_type.name}}</button>
+                        </a>
 
 
-    <p id="availables">
+                        {% if space.residence.user_detail.user == request.user %}
+                        <p id="owner_access">
 
-    </p>
-    {% if bookings.exists %}
-    <h1>Bookings</h1>
-    <p id="Bookings">
-        <table class="spacing-table">
-            <tr>
 
-                <td>From</td>
-                <td>To</td>
-                <td>By</td>
-                <td>Total Payable</td>
-                <td>Booked at</td>
-            </tr>
+                            <p id="availables">
 
-            {% for booking in bookings %}
-            <tr>
+                            </p>
+                            {% if bookings.exists %}
+                            <h1>Bookings</h1>
+                            <p id="Bookings">
+                                <table class="spacing-table">
+                                    <tr>
 
-                <td>{{booking.book_from}}</td>
-                <td>{{booking.book_to}}</td>
-                <td>{{booking.guest}}</td>
-                <td>{{booking.total_rent}}</td>
-                <td>{{booking.booking_time}}</td>
-            </tr>
-            {% endfor %}
-        </table>
+                                        <td>From</td>
+                                        <td>To </td>
+                                        <td>By</td>
+                                        <td>Total Payable</td>
+                                        <td>Booked at</td>
+                                    </tr>
 
-    </p>
-    {% endif %}
-</p>
-{% endif %}
-{% endblock %}
+                                    {% for booking in bookings %}
+                                    <tr>
 
-{% block body_op %}
-<a href="/residence/{{space.residence.id}}/"><button class="body_op_button_class">{{space.residence.name}}</button></a>
-{% if space.residence.user_detail.user == request.user %}
-<a href="/residence/space/{{ space.id }}/update/"><button class="body_op_button_class">Update</button></a>
-<a href="/residence/space/{{ space.id }}/delete/"><button class="body_op_button_class">Delete</button></a><a
-    href="/residence/space/{{ space.id }}/availability/"><button class="body_op_button_class">Availability</button></a>
-{% endif %}
+                                        <td>{{booking.book_from}}</td>
+                                        <td>{{booking.book_to}}</td>
+                                        <td>{{booking.guest}}</td>
+                                        <td>{{booking.total_rent}}</td>
+                                        <td>{{booking.booking_time}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+
+                            </p>
+                            {% endif %}
+                        </p>
+                        {% endif %}
+                        {% endblock %}
+
+                        {% block body_op %}
+                        <div class="row">
+                            <div class="col">
+                                <a href="/residence/{{space.residence.id}}/"><button
+                                        class="btn btn-secondary btn-lg btn-block">{{space.residence.name}}</button></a>
+
+                            </div>
+                            {% if space.residence.user_detail.user == request.user %}
+                            <div class="col">
+                                <a href="/residence/space/{{ space.id }}/update/"><button
+                                        class="btn btn-info btn-lg btn-block">Update</button></a>
+
+                            </div>
+                            <div class="col">
+                                <a href="/residence/space/{{ space.id }}/delete/"><button
+                                        class="btn btn-secondary btn-lg btn-block">Delete</button></a>
+
+                            </div>
+                            <div class="col">
+                                <a href="/residence/space/{{ space.id }}/availability/"><button
+                                        class="btn btn-info btn-lg btn-block">Availability</button></a>
+
+                            </div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+<div class="col-lg-2">
+
+</div>
+
+
+<br> <br>
+</div>
 {% endblock %}
