@@ -1,34 +1,56 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content_1 %}
-<title>Residence Orders</title>
-{% endblock %}
+<title></title>
+{% endblock content_1 %}
 
 {% block header %}
-{{ residence.name }} #bookings
 {% endblock %}
-
 
 {% block content_2 %}
-<table>
-    {% for order in orders %}
-    <tr>
-        <td>
-            <a href="/residence/order/{{ order.id }}/">
-                <button class="body_button_class">{{ order.guest.user.username }} at {{ order.booking_time }}</button>
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% endblock %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
 
-{% block body_op %}
-{% if residence.user_detail.user == request.user %}
-<a href="/residence/{{ residence.id }}/">
-    <button class="body_op_button_class">{{ residence.name }}</button>
-</a>
-{% endif %}
-{% endblock %}
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">{{ residence.name }}'s Bookings
+                    </h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        {% for order in orders %}
+                        <tr>
+                            <td>
+                                <a href="/residence/order/{{ order.id }}/"><button
+                                        class="btn btn-outline-dark btn-lg btn-block">{{ order.guest.user.username }} at
+                                        {{ order.booking_time }}</button> </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endblock %}
 
-orders, residence
+                        {% block body_op %}
+                        <br> <br>
+
+
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
+{% endblock %}
