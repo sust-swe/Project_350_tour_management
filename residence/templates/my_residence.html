@@ -18,7 +18,7 @@
             </div>
             <div class="col-lg-8">
                 <div class="card searchbox" style="height: max-content;">
-                    <h3 class="card-header" style="background: #232524; color: #FFFF;">My Restaurants</h3>
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">My Residences</h3>
                     <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
                     <div class="card-body">
                         <br>
@@ -36,9 +36,11 @@
                         {% endblock %}
                         {% block body_op %}
                         <br> <br>
+                        {% if residence.user_detail.user == request.user %}
                         <a href="/residence/add_residence/"><button class="btn btn-info btn-lg btn-block"
                                 style="font-family: Ubuntu; margin-top: 20px;">Add New
                                 Residence</button></a>
+                        {% endif %}
                     </div>
                 </div>
 

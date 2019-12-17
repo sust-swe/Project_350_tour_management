@@ -10,39 +10,26 @@
 {% block content_2 %}
 
 <br> <br>
-<div class="container" style="margin: 30px 0px;">
-    <div class="row">
-        <div class="col-lg-2">
+<div class="container" style="padding: 20px 130px;">
+    <div class="card searchbox" style="height: max-content;">
+        <h3 class="card-header" style="background: #232524; color: #FFFF;">{{ space.name }}</h3>
+        <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+        <div class="card-body">
 
-        </div>
-        <div class="col-lg-8">
-            <div class="card searchbox" style="height: max-content;">
-                <h3 class="card-header" style="background: #232524; color: #FFFF;">{{ space.name }}</h3>
-                <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
-                <div class="card-body">
-
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <!-- <table class="form_table"> -->
-                        {{ form|crispy }}
-                        <!-- </table> -->
-                        <br>
-                        <div class="text-right">
-                            <button type="submit" style="font-family: Ubuntu;" class="btn btn-info btn-lg">Create
-                                Availability</button>
-
-                        </div>
-                    </form>
-                    <!-- <a href="/residence/{{ residence.id }}/"><button
-                            class="btn btn-outline-dark btn-lg btn-block">{{ residence.name }}</button> </a> -->
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- <table class="form_table"> -->
+                {{ form|crispy }}
+                <!-- </table> -->
+                <br>
+                <div class="text-right">
+                    <button type="submit" style="font-family: Ubuntu;" class="btn btn-info btn-lg">Create
+                        Availability</button>
 
                 </div>
-
-
-            </div>
-
-        </div>
-        <div class="col-lg-2">
+            </form>
+            <!-- <a href="/residence/{{ residence.id }}/"><button
+                    class="btn btn-outline-dark btn-lg btn-block">{{ residence.name }}</button> </a> -->
 
         </div>
 

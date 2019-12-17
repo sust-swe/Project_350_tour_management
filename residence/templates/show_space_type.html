@@ -1,32 +1,59 @@
 {% extends 'base.html' %}
-
-
+{% load static %}
+{% static "images" as statimgsrc %}
 {% block content_1 %}
-<title>Space Types</title>
+<title></title>
 {% endblock content_1 %}
 
 {% block header %}
-Space Types
 {% endblock %}
 
 {% block content_2 %}
-<table>
-    {% for i in space_types %}
-    <tr>
-        <td>
-            <a href="/residence/space_type/{{i.id}}/"> <button class="body_button_class">{{i.name}}</button></a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% endblock content_2 %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">{{residence.name}}'s Space Types
+                    </h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        <!-- <table> -->
+                        {% for i in space_types %}
+                        <!-- <tr> -->
+                        <!-- <td> -->
+                        <a href="/residence/space_type/{{i.id}}/"><button class="btn btn-outline-dark btn-lg btn-block"
+                                style="font-family: Ubuntu; margin-top: 20px;">{{i.name}}</button></a>
+                        <!-- </td> -->
+                        <!-- </tr> -->
+                        {% endfor %}
+                        <!-- </table> -->
+
+                        {% endblock %}
+                        {% block body_op %}
+                        <br> <br>
+                        {% if residence.user_detail.user == request.user %}
+                        <a href="/residence/{{residence.id}}/create_space_type/"><button
+                                class="btn btn-info btn-lg btn-block"
+                                style="font-family: Ubuntu; margin-top: 20px;">Create Space Type</button></a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
 
 
+        </div>
 
-{% block body_op %}
-<a href="/residence/{{residence.id}}/"><button class="body_op_button_class">{{residence.name}}</button></a>
-{% if residence.user_detail.user == request.user %}
-<a href="/residence/{{residence.id}}/create_space_type/">
-    <button class="body_op_button_class">Create New Space Type</button></a>
-{%endif%}
+    </div>
+    <br> <br>
+</div>
 {% endblock %}
