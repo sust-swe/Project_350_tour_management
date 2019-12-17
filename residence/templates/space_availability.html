@@ -1,35 +1,86 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block content_1 %}
+<title></title>
+{% endblock content_1 %}
 
 {% block header %}
-    {{ space.name }} Available
 {% endblock %}
-
-{% block content_1 %} <title>Space Availability</title>  {% endblock %}
 
 {% block content_2 %}
-{%if avails.exists %}
-        <table class="body_table">
-            <tr>
-                <td>From</td>
-                <td>To</td>
-            </tr>
-            {% for avail in avails %}
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
 
-            <tr>
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">{{ space.name }}'s Schedule</h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        {%if avails.exists %}
+                        <table class="table">
+                            <thead>
+                                <tr>
 
-                <td>{{avail.avail_from}}</td>
-                <td>{{avail.avail_to}}</td>
-            </tr>
+                                    <th scope="col">From</th>
+                                    <th scope="col"></th>
+                                    <th scope="col">To</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for avail in avails %}
+                                <tr>
+                                    <td>
+                                        {{avail.avail_from}} </td>
+                                    <td>
 
-            {% endfor %}
-        </table>
-{%endif%}
-{% endblock %}
 
-{% block body_op %}
-    <a href="/residence/space/{{ space.id }}/"><button class="body_op_button_class">{{ space.name }}</button></a>
- {% if space.residence.user_detail.user == request.user %}
-    <a href="/residence/space/{{ space.id }}/avail/"><button class="body_op_button_class">Create Availability</button></a>
-    <a href="/residence/space/{{space.id}}/unavail/"><button class="body_op_button_class"> Make Unavailable</button></a>
-    {% endif %}
+                                    </td>
+                                    <td>
+                                        {{avail.avail_to}}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table> <br>
+                        {% endif %}
+
+
+
+
+
+                        {% endblock %}
+
+                        {% block body_op %} <br>
+                        {% if space.residence.user_detail.user == request.user %}
+                        <a href="/residence/space/{{ space.id }}/avail/">
+                            <button class="btn btn-secondary btn-lg btn-block">Create Availability</button></a>
+                        <br>
+                        <a href="/residence/space/{{ space.id }}/unavail/">
+                            <button class="btn btn-danger btn-lg btn-block">Make Unavailable</button></a>
+                        {%endif%}
+
+                        <br>
+
+
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
 {% endblock %}

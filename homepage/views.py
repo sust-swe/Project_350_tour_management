@@ -12,6 +12,8 @@ from django.contrib.auth import login, authenticate, logout
 def index(request):
     return render(request, 'index.html')
 
+def host(request):
+    return render(request, 'host.html')
 
 def home(request):
     return render(request, 'home.html')

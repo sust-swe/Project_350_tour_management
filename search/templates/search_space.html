@@ -19,7 +19,7 @@
         <div class="col-lg-8">
             <div class="card searchbox" style="height: max-content;">
                 <h3 class="card-header" style="background: #232524; color: #FFFF;">Search
-                    Restaurants</h3>
+                    Hotels/Residences</h3>
                 <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
                 <div class="card-body">
 
@@ -77,7 +77,8 @@
                                     class="body_table_data_button">{{name}}</button></a></td>
                         <td>{{count}} Space Available at ${{rent}} per space</td>
                         {% if request.user.is_authenticated %}
-                        <td><button class="btn btn-dark" space_type="{{pk}}" id="space_type_id_{{pk}}">Book</button>
+                        <td><button class="book btn btn-dark" space_type="{{pk}}"
+                                id="space_type_id_{{pk}}">Book</button>
                         </td>
                         {% endif %}
                     </tr>

@@ -1,23 +1,50 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content_1 %}
-my order
-{% endblock %}
+<title></title>
+{% endblock content_1 %}
 
 {% block header %}
-My Orders
 {% endblock %}
 
 {% block content_2 %}
-<table>
-    <tr>
-        <td><a href="/residence/purchased_order/"><button class="body_button_class">Space Bookings</button></a></td>
-    </tr>
-    <tr>
-        <td><a href="/restaurant/purchased_order/"><button class="body_button_class">Food Orders</button></a></td>
-    </tr>
-    <tr>
-        <td><a href="/guide/purchased_order/"><button class="body_button_class">Guide Bookings</button></a></td>
-    </tr>
-</table>
-{% endblock %}
+
+<div class="bgbg">
+    <br> <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+
+            </div>
+            <div class="col-lg-8">
+                <div class="card searchbox" style="height: max-content;">
+                    <h3 class="card-header" style="background: #232524; color: #FFFF;">My Feeds</h3>
+                    <!-- <img src="user.jpg" style="align-self: center;" class="card-img img-thumbnail" alt="..."> -->
+                    <div class="card-body">
+                        <br>
+                        <a href="/residence/purchased_order/"><button type="button"
+                                class="btn btn-outline-dark btn-lg btn-block" style="font-family: Ubuntu;">Hotel
+                                Bookings</button></a> <br>
+                        <a href="/restaurant/purchased_order/"><button type="button"
+                                class="btn btn-outline-dark btn-lg btn-block" style="font-family: Ubuntu;">Food
+                                Orders</button></a> <br>
+                        <a href="/guide/purchased_order/"><button type="button"
+                                class="btn btn-outline-dark btn-lg btn-block" style="font-family: Ubuntu;">Guide
+                                Bookings</button></a> <br>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+
+            </div>
+
+
+        </div>
+
+    </div>
+    <br> <br>
+</div>
+
+{% endblock content_2 %}

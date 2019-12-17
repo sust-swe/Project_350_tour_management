@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Ubuntu&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/CSS/bootstrap.min.css">
     <link rel="stylesheet" href="/static/CSS/style.css">
+    <link rel="stylesheet" href="/static/CSS/search.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <script src="/static/js-shoaib/bootstrap.min.js"></script>
@@ -38,7 +39,7 @@
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span> <i class="fas fa-list"></i></span>
             </button>
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <h8 style="color: khaki;">TravelX</h8>
             </a> &nbsp; &nbsp; &nbsp; &nbsp;
             <div class="collapse navbar-collapse" id="navbarText">
@@ -88,7 +89,7 @@
                             <a class="dropdown-item" href="/profile/">View Profile</a>
                             <a class="dropdown-item" href="/home/">My Feeds</a>
                             <a class="dropdown-item" href="/restaurant/gotocart/">My Carts</a>
-                            <a class="dropdown-item" href="#">My Orders</a>
+                            <a class="dropdown-item" href="/my_orders/">My Orders</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/accounts/logout/" style="color: crimson;">Sign Out</a>
                         </div>
@@ -107,7 +108,7 @@
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="/host/">
                             <button type="button" class="btn btn-outline-success btn-lg">
                                 <p2>Become a Host</p2>
                             </button>
